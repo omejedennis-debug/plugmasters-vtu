@@ -13,36 +13,25 @@ label{font-weight:bold;margin-top:14px;display:block;font-size:14px}
 <div class="box">
 <h1>PlugMasters</h1><p style="text-align:center;color:#888;margin-bottom:10px">Super Admin - 23 Menus</p>
 <div style="border:1px dashed #8B6914;padding:10px;border-radius:10px;background:#fffdf5;font-size:13px;margin-bottom:15px">
-<b>Default Super Admin:</b><br>Phone: 07067065724<br>PIN: 1234<br>Role: Super Admin
+<b>Default Super Admin:</b><br>Phone: 07067065724<br>PIN: 1234
 </div>
 <label>Phone Number</label>
-<input id="phone" value="07067065724" placeholder="07067065724">
+<input id="phone" value="07067065724">
 <label>Admin PIN</label>
-<input id="pin" type="password" value="1234" placeholder="1234">
+<input id="pin" type="password" value="1234">
 <button class="btn" id="loginBtn">➔ Login to Dashboard</button>
-<p class="error" id="err">Invalid Phone or PIN - Use 07067065724 / 1234</p>
+<p class="error" id="err">Invalid Phone or PIN</p>
 </div>
 <script>
-const phoneEl=document.getElementById('phone');
-const pinEl=document.getElementById('pin');
-const err=document.getElementById('err');
-const btn=document.getElementById('loginBtn');
-
-btn.addEventListener('click',()=>{
-  const phone=phoneEl.value.trim();
-  const pin=pinEl.value.trim();
-  console.log('Trying',phone,pin);
-  if((phone==="07067065724" && pin==="1234") || (phone==="admin@plugmasters.com" && (pin==="Admin123!"||pin==="1234"))){
+document.getElementById('loginBtn').addEventListener('click',function(){
+  const phone=document.getElementById('phone').value.trim();
+  const pin=document.getElementById('pin').value.trim();
+  if(phone==="07067065724" && pin==="1234"){
     localStorage.setItem('pm_admin','super');
-    window.location.href='admin-dashboard.html'; // or admin-dashboard.html if that's your file
+    window.location.href='admin-dashboard.html';
   }else{
-    err.style.display='block';
-    // prevent freeze
-    btn.textContent='➔ Login to Dashboard';
-    btn.disabled=false;
+    document.getElementById('err').style.display='block';
   }
 });
-// also allow Enter key
-pinEl.addEventListener('keydown',e=>{if(e.key==='Enter') btn.click()});
 </script>
 </body></html>
