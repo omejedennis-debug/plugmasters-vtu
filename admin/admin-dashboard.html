@@ -6,67 +6,55 @@
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#fdf6e9] min-h-screen">
-<div class="bg-[#7a5a1a] text-white p-4 flex justify-between items-center sticky top-0 z-10">
-<h1 class="font-bold">PlugMasters Super Admin LIVE</h1>
+<div class="bg-[#7a5a1a] text-white p-4 flex justify-between items-center sticky top-0 z-20">
+<h1 class="font-bold text-sm">PlugMasters Super Admin LIVE</h1>
 <button onclick="location.href='../login.html'" class="bg-white text-black px-4 py-1 rounded-full text-sm font-bold">Logout</button>
 </div>
 
 <div class="p-3 grid grid-cols-3 gap-2">
-<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalUsers" class="text-[#7a5a1a]">0</b><p class="text-sm">Total Users</p></div>
-<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalWallet" class="text-[#7a5a1a]">₦0</b><p class="text-sm">Total Wallet</p></div>
-<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalTx" class="text-[#7a5a1a]">0</b><p class="text-sm">Transactions</p></div>
+<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalUsers" class="text-[#7a5a1a]">0</b><p class="text-xs">Total Users</p></div>
+<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalWallet" class="text-[#7a5a1a]">₦0</b><p class="text-xs">Total Wallet</p></div>
+<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalTx" class="text-[#7a5a1a]">0</b><p class="text-xs">Transactions</p></div>
 </div>
 
-<div class="p-3 grid grid-cols-2 gap-2">
-<button onclick="showTab('dashboard')" id="b-dashboard" class="bg-[#fdf6e9] border-2 border-[#7a5a1a] rounded-xl p-3 font-bold">🏠 Dashboard</button>
-<button onclick="showTab('users')" id="b-users" class="bg-white rounded-xl p-3 font-bold shadow">👥 Users</button>
-<button onclick="showTab('transactions')" id="b-transactions" class="bg-white rounded-xl p-3 font-bold shadow">💳 Transactions</button>
-<button onclick="showTab('fund')" id="b-fund" class="bg-white rounded-xl p-3 font-bold shadow">💰 Fund Wallet</button>
-<button onclick="showTab('pricing')" id="b-pricing" class="bg-white rounded-xl p-3 font-bold shadow">⚙️ Pricing</button>
-<button onclick="showTab('api')" id="b-api" class="bg-white rounded-xl p-3 font-bold shadow">🔌 API</button>
-<button onclick="showTab('gateway')" id="b-gateway" class="bg-white rounded-xl p-3 font-bold shadow">🏦 Gateway</button>
-<button onclick="showTab('settings')" id="b-settings" class="bg-white rounded-xl p-3 font-bold shadow">⚙️ Settings</button>
+<div class="p-3">
+<div class="bg-white rounded-xl p-3 shadow mb-3">
+<h2 class="font-bold text-[#7a5a1a] mb-2 text-sm">Recent Users (Live Firebase)</h2>
+<div class="overflow-x-auto"><table class="w-full text-xs"><thead><tr class="bg-[#7a5a1a] text-white"><th class="p-2 text-left">Name</th><th>Phone</th><th>Wallet</th><th>Action</th></tr></thead><tbody id="usersTable"></tbody></table></div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="tab-dashboard" class="p-3">
-<div class="bg-white rounded-xl p-4 shadow">
-<h2 class="font-bold text-[#7a5a1a] mb-2">Recent Users (Live Firebase)</h2>
-<div class="overflow-x-auto">
-<table class="w-full text-sm"><thead><tr class="bg-[#7a5a1a] text-white"><th class="p-2 text-left">Name</th><th class="p-2">Phone</th><th class="p-2">Wallet</th><th class="p-2">Action</th></tr></thead><tbody id="usersTable"></tbody></table>
-</div></div>
+<h3 class="font-black mb-2 text-[#7a5a1a]">ALL 21 ADMIN PAGES</h3>
+<div class="grid grid-cols-2 gap-2">
+
+<a href="admin-users.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">👥 Users</a>
+<a href="admin-transactions.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">💳 Transactions</a>
+<a href="admin-pricing.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">⚙️ Pricing</a>
+<a href="admin-transfers.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🔄 Transfers</a>
+<a href="admin-convert.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">💱 Airtime Convert</a>
+<a href="admin-referral.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">👫 Referral</a>
+<a href="admin-cashback.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">💰 Cashback</a>
+<a href="admin-promo.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🎁 Promo</a>
+<a href="admin-api.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🔌 API</a>
+<a href="admin-wallet.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">👛 Wallet Funding</a>
+<a href="admin-kyc.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🪪 KYC</a>
+<a href="admin-dispute.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">⚠️ Disputes</a>
+<a href="admin-content.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">📝 Content</a>
+<a href="admin-maintenance.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🛠️ Maintenance</a>
+<a href="admin-fraud.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🚨 Fraud Check</a>
+<a href="admin-bulk.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">📦 Bulk SMS</a>
+<a href="admin-loyalty.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">⭐ Loyalty</a>
+<a href="admin-limits.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">📊 Limits</a>
+<a href="admin-affiliate.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🤝 Affiliate</a>
+<a href="admin-report.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">📈 Reports</a>
+<a href="admin-audit.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">🔍 Audit Log</a>
+<a href="admin-settings.html" class="bg-white rounded-xl p-4 shadow font-bold text-sm">⚙️ Settings</a>
+
 </div>
-
-<!-- USERS -->
-<div id="tab-users" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">All Users</h2><div id="allUsersList"></div></div></div>
-
-<!-- TRANSACTIONS -->
-<div id="tab-transactions" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">All Transactions</h2><p id="txList" class="text-sm text-gray-500">No transactions yet. Fund a user to create transaction.</p></div></div>
-
-<!-- FUND WALLET -->
-<div id="tab-fund" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow">
-<h2 class="font-bold mb-3">Fund Wallet (Like your video)</h2>
-<input id="fundPhone" placeholder="User Phone" class="w-full p-3 border rounded-xl mb-2">
-<input id="fundAmount" type="number" placeholder="Amount e.g 1429" class="w-full p-3 border rounded-xl mb-2">
-<button onclick="fundWallet()" class="w-full bg-[#7a5a1a] text-white p-3 rounded-xl font-bold">Fund Now</button>
-<p id="fundMsg" class="text-center mt-2 text-sm"></p>
-</div></div>
-
-<!-- PRICING -->
-<div id="tab-pricing" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">Pricing Control</h2><p class="text-sm">Data Plans: <input value="MTN 1GB = ₦280" class="border p-2 rounded w-full mt-2"><button class="bg-[#7a5a1a] text-white px-4 py-2 rounded mt-2">Save</button></p></div></div>
-
-<!-- API -->
-<div id="tab-api" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">API Settings</h2><input placeholder="VTU API Key" class="w-full p-3 border rounded-xl mb-2"><input placeholder="API URL" class="w-full p-3 border rounded-xl"><button class="w-full bg-[#7a5a1a] text-white p-3 rounded-xl mt-2 font-bold">Save API</button></div></div>
-
-<!-- GATEWAY -->
-<div id="tab-gateway" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">Payment Gateway</h2><p class="text-sm">Monnify / Paystack</p><input placeholder="Gateway Key" class="w-full p-3 border rounded-xl mt-2"><button class="w-full bg-[#7a5a1a] text-white p-3 rounded-xl mt-2 font-bold">Save Gateway</button></div></div>
-
-<!-- SETTINGS -->
-<div id="tab-settings" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">Settings</h2><p class="text-sm">Super Admin: 09053504806<br>Site: plugmasters-vtu.vercel.app</p><button onclick="location.href='../register.html'" class="w-full bg-blue-600 text-white p-3 rounded-xl mt-4">View Register Page</button></div></div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where, doc, updateDoc, addDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyCpQl-jOS4-6bLa5L383dqR5y3JmFT5exA",
   authDomain: "plugmasters-vtu.firebaseapp.com",
@@ -78,67 +66,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let usersCache = [];
-
-async function loadData(){
+async function load(){
   const snap = await getDocs(collection(db,"users"));
-  usersCache = [];
-  let totalW = 0;
-  snap.forEach(d=>{ const u=d.data(); u.id=d.id; usersCache.push(u); totalW+=(u.wallet||0); });
-  document.getElementById('totalUsers').textContent = usersCache.length;
-  document.getElementById('totalWallet').textContent = "₦"+totalW;
-
-  // tx count
+  let totalW=0; let rows="";
+  snap.forEach(d=>{
+    const u=d.data();
+    totalW+= (u.wallet||0);
+    rows+=`<tr class="border-b"><td class="p-2">${u.name}</td><td class="p-2 text-center">${u.phone}</td><td class="p-2 text-center">₦${u.wallet||0}</td><td class="p-2"><a href="admin-wallet.html?phone=${u.phone}" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs">Fund</a></td></tr>`;
+  });
+  document.getElementById('totalUsers').textContent=snap.size;
+  document.getElementById('totalWallet').textContent="₦"+totalW;
+  document.getElementById('usersTable').innerHTML=rows||"<tr><td colspan=4 class='p-2 text-center'>No users yet</td></tr>";
   try{
-    const txSnap = await getDocs(collection(db,"transactions"));
-    document.getElementById('totalTx').textContent = txSnap.size;
-    if(txSnap.size>0){
-      let html="";
-      txSnap.forEach(t=>{ const x=t.data(); html+=`<div class="border-b py-2 text-sm flex justify-between"><span>${x.phone} - ₦${x.amount}</span><span>${x.type||'fund'}</span></div>` });
-      document.getElementById('txList').innerHTML=html;
-    }
+    const tx = await getDocs(collection(db,"transactions"));
+    document.getElementById('totalTx').textContent=tx.size;
   }catch(e){}
-
-  // tables
-  let h="";
-  usersCache.forEach(u=>{
-    h+=`<tr class="border-b"><td class="p-2">${u.name}</td><td class="p-2 text-center">${u.phone}</td><td class="p-2 text-center">₦${u.wallet||0}</td><td class="p-2"><button onclick="quickFund('${u.phone}')" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs">Fund</button></td></tr>`;
-  });
-  document.getElementById('usersTable').innerHTML=h;
-  document.getElementById('allUsersList').innerHTML=h?`<table class="w-full text-sm"><tr class="bg-[#7a5a1a] text-white"><th class="p-2">Name</th><th>Phone</th><th>Wallet</th></tr>${h}</table>`:"No users";
 }
-loadData();
-
-window.showTab = (t)=>{
-  ['dashboard','users','transactions','fund','pricing','api','gateway','settings'].forEach(x=>{
-    document.getElementById('tab-'+x).classList.add('hidden');
-    document.getElementById('b-'+x).classList.remove('bg-[#fdf6e9]','border-2','border-[#7a5a1a]');
-    document.getElementById('b-'+x).classList.add('bg-white');
-  });
-  document.getElementById('tab-'+t).classList.remove('hidden');
-  document.getElementById('b-'+t).classList.add('bg-[#fdf6e9]','border-2','border-[#7a5a1a]');
-  document.getElementById('b-'+t).classList.remove('bg-white');
-};
-
-window.quickFund = (phone)=>{ showTab('fund'); document.getElementById('fundPhone').value=phone; };
-
-window.fundWallet = async ()=>{
-  const phone = document.getElementById('fundPhone').value.trim();
-  const amount = parseFloat(document.getElementById('fundAmount').value);
-  const msg = document.getElementById('fundMsg');
-  if(!phone ||!amount){ msg.textContent="Fill phone and amount"; msg.className="text-red-600 text-center mt-2"; return; }
-  msg.textContent="Funding..."; msg.className="text-blue-600 text-center mt-2";
-  try{
-    const q = query(collection(db,"users"), where("phone","==",phone));
-    const snap = await getDocs(q);
-    if(snap.empty){ msg.textContent="User not found"; msg.className="text-red-600 text-center mt-2"; return; }
-    const userDoc = snap.docs[0];
-    await updateDoc(doc(db,"users",userDoc.id), { wallet: increment(amount) });
-    await addDoc(collection(db,"transactions"), { phone, amount, type:"Admin Funding", createdAt: new Date() });
-    msg.textContent=`✅ Funded ₦${amount} to ${phone}`; msg.className="text-green-600 text-center mt-2";
-    loadData();
-  }catch(e){ msg.textContent="Error: "+e.message; msg.className="text-red-600 text-center mt-2"; }
-};
+load();
 </script>
 </body>
 </html>
