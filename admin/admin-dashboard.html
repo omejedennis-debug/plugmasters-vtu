@@ -3,132 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Super Admin - PlugMasters</title>
+<title>PlugMasters Super Admin - Live</title>
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 body{margin:0;background:#f8f5ec}
-.header{background:#8B6914;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99}
-.header h2{margin:0;font-size:16px}
+.header{background:#8B6914;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:999}
+.header h2{margin:0;font-size:15px}
 .btn-out{background:#fff;color:#8B6914;border:none;padding:6px 12px;border-radius:8px;font-weight:bold;cursor:pointer}
-.container{max-width:1100px;margin:10px auto;padding:0 10px}
+.container{max-width:1100px;margin:10px auto;padding:0 10px;padding-bottom:80px}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
 .stat{background:#fff;padding:12px;border-radius:12px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.stat b{font-size:20px;color:#8B6914;display:block}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat b{font-size:18px;color:#8B6914;display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 @media(min-width:700px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
-.menu{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,.06);text-align:center;cursor:pointer;border:1.5px solid #eee}
+.menu{background:#fff;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-align:center;cursor:pointer;border:1.5px solid #eee;font-size:12px}
 .menu.active{border-color:#8B6914;background:#fff9e6}
-.menu span{font-size:22px;display:block}
-.menu b{font-size:12px;color:#222;display:block;margin-top:4px}
+.menu b{font-size:12px;display:block;margin-top:3px}
 .section{display:none}
 .section.active{display:block}
-.card{background:#fff;border-radius:12px;padding:14px;margin-top:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:8px 0}
-.btn-main{background:#8B6914;color:#fff;border:none;padding:12px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer}
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.card h3{margin:0 0 10px;color:#8B6914;font-size:16px}
+input,select{width:100%;padding:11px;border:1.5px solid #ddd;border-radius:8px;margin:6px 0;font-size:14px}
+.btn-main{background:#8B6914;color:#fff;border:none;padding:12px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer;margin-top:6px}
+.btn-small{padding:6px 10px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:bold;margin:2px}
+.btn-green{background:#1a9e3f;color:#fff}
+.btn-red{background:#d32f2f;color:#fff}
+.btn-blue{background:#0d47a1;color:#fff}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
-th{background:#8B6914;color:#fff}
+th{background:#8B6914;color:#fff;position:sticky;top:0}
+.scroll{overflow:auto;max-height:400px}
+.badge{padding:3px 8px;border-radius:12px;font-size:10px;color:#fff}
+.ok{background:#1a9e3f} .bad{background:#d32f2f} .warn{background:#ff9800}
 </style>
 <script>
-(function(){
-  if(!localStorage.getItem('pm_admin')){ window.location.href='admin-login.html'; }
-})();
+if(!localStorage.getItem('pm_admin')){ location.href='admin-login.html'; }
 </script>
 </head>
 <body>
-<div class="header">
-<h2>PlugMasters Super Admin</h2>
-<button class="btn-out" onclick="logout()">Logout</button>
-</div>
-
+<div class="header"><h2>PlugMasters Super Admin LIVE</h2><button class="btn-out" onclick="logout()">Logout</button></div>
 <div class="container">
+
 <div class="stats">
 <div class="stat"><b id="totalUsers">0</b>Total Users</div>
-<div class="stat"><b id="totalWallet">₦0</b>Wallet</div>
-<div class="stat"><b>23</b>Menus</div>
+<div class="stat"><b id="totalWallet">₦0</b>Total Wallet</div>
+<div class="stat"><b id="totalTrans">0</b>Transactions</div>
 </div>
 
-<!-- MENUS -->
-<div class="grid" id="menuGrid">
-<div class="menu active" onclick="showSection('home',this)"><span>🏠</span><b>Dashboard</b></div>
-<div class="menu" onclick="showSection('users',this)"><span>👥</span><b>Users</b></div>
-<div class="menu" onclick="showSection('transactions',this)"><span>💳</span><b>Transactions</b></div>
-<div class="menu" onclick="showSection('airtime',this)"><span>📱</span><b>Airtime</b></div>
-<div class="menu" onclick="showSection('data',this)"><span>🌐</span><b>Data</b></div>
-<div class="menu" onclick="showSection('electricity',this)"><span>💡</span><b>Electricity</b></div>
-<div class="menu" onclick="showSection('cable',this)"><span>📺</span><b>Cable TV</b></div>
-<div class="menu" onclick="showSection('betting',this)"><span>⚽</span><b>Betting</b></div>
-<div class="menu" onclick="showSection('exam',this)"><span>🎓</span><b>Exam Pins</b></div>
-<div class="menu" onclick="showSection('wallet',this)"><span>💰</span><b>Wallet</b></div>
-<div class="menu" onclick="showSection('profit',this)"><span>📈</span><b>Profit</b></div>
-<div class="menu" onclick="showSection('api',this)"><span>🔌</span><b>API</b></div>
-<div class="menu" onclick="showSection('gateway',this)"><span>🏦</span><b>Gateway</b></div>
-<div class="menu" onclick="showSection('pricing',this)"><span>⚙️</span><b>Pricing</b></div>
-<div class="menu" onclick="showSection('staff',this)"><span>👮</span><b>Staff</b></div>
-<div class="menu" onclick="showSection('support',this)"><span>💬</span><b>Support</b></div>
-<div class="menu" onclick="showSection('settings',this)"><span>⚙️</span><b>Settings</b></div>
-<div class="menu" onclick="window.location.href='../index.html'"><span>🌐</span><b>User Site</b></div>
+<div class="grid">
+<div class="menu active" onclick="show('home',this)"><b>🏠 Dashboard</b></div>
+<div class="menu" onclick="show('users',this)"><b>👥 Users</b></div>
+<div class="menu" onclick="show('transactions',this)"><b>💳 Transactions</b></div>
+<div class="menu" onclick="show('wallet',this)"><b>💰 Fund Wallet</b></div>
+<div class="menu" onclick="show('pricing',this)"><b>⚙️ Pricing</b></div>
+<div class="menu" onclick="show('api',this)"><b>🔌 API</b></div>
+<div class="menu" onclick="show('gateway',this)"><b>🏦 Gateway</b></div>
+<div class="menu" onclick="show('settings',this)"><b>⚙️ Settings</b></div>
 </div>
 
-<!-- SECTIONS -->
+<!-- HOME -->
 <div id="home" class="section active">
+<div class="card"><h3>Recent Users (Live Firebase)</h3><div class="scroll"><table id="homeUsers"><thead><tr><th>Name</th><th>Phone</th><th>Wallet</th><th>Action</th></tr></thead><tbody>Loading...</tbody></table></div></div>
+</div>
+
+<!-- USERS -->
+<div id="users" class="section">
 <div class="card">
-<h3>All Users (Firebase)</h3>
-<table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Wallet</th></tr></thead><tbody><tr><td colspan="3">Loading...</td></tr></tbody></table>
+<h3>Users Management - Search / Block / Fund</h3>
+<input id="searchInput" placeholder="Search name, phone or email" onkeyup="filterUsers()">
+<div class="scroll"><table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Wallet</th><th>Status</th><th>Action</th></tr></thead><tbody>Loading...</tbody></table></div>
 </div>
 </div>
 
-<div id="users" class="section"><div class="card"><h3>Users Management</h3><p>Search, block, fund wallet, delete user</p><input placeholder="Search phone/email"><button class="btn-main">Search User</button><div id="users2"></div></div></div>
-<div id="transactions" class="section"><div class="card"><h3>All Transactions</h3><p>All airtime, data, bills history will show here from Firebase `transactions` collection</p><table><tr><th>ID</th><th>Type</th><th>Amount</th><th>Status</th></tr><tr><td colspan="4">No transactions yet</td></tr></table></div></div>
-<div id="airtime" class="section"><div class="card"><h3>Airtime Control</h3><input placeholder="MTN profit %"><input placeholder="Glo profit %"><button class="btn-main">Save</button></div></div>
-<div id="data" class="section"><div class="card"><h3>Data Plans Control</h3><p>Edit data prices and profit</p><button class="btn-main">Load Plans</button></div></div>
-<div id="electricity" class="section"><div class="card"><h3>Electricity Bills</h3><p>Enable/disable Discos</p></div></div>
-<div id="cable" class="section"><div class="card"><h3>Cable TV</h3><p>DSTV, GOTV, Startimes control</p></div></div>
-<div id="betting" class="section"><div class="card"><h3>Betting Funding</h3></div></div>
-<div id="exam" class="section"><div class="card"><h3>Exam Pins</h3></div></div>
-<div id="wallet" class="section"><div class="card"><h3>Wallet Funding</h3><input placeholder="User Phone"><input placeholder="Amount to credit"><button class="btn-main">Credit Wallet</button></div></div>
-<div id="profit" class="section"><div class="card"><h3>Profit & Loss</h3><b>Total Profit: ₦0</b></div></div>
-<div id="api" class="section"><div class="card"><h3>API Settings</h3><input placeholder="VTU.ng API Key"><input placeholder="ClubKonnect API"><button class="btn-main">Save API Keys</button></div></div>
-<div id="gateway" class="section"><div class="card"><h3>Payment Gateway</h3><input placeholder="Paystack Secret Key"><button class="btn-main">Save</button></div></div>
-<div id="pricing" class="section"><div class="card"><h3>Pricing Control</h3><p>Set all service prices here</p></div></div>
-<div id="staff" class="section"><div class="card"><h3>Staff Roles</h3><p>Add support, accountant, viewer - Phone + PIN</p><input placeholder="Staff Phone"><input placeholder="PIN"><select><option>Support</option><option>Accountant</option><option>Viewer</option></select><button class="btn-main">Create Staff</button></div></div>
-<div id="support" class="section"><div class="card"><h3>Support Tickets</h3><p>No tickets yet</p></div></div>
-<div id="settings" class="section"><div class="card"><h3>General Settings</h3><input placeholder="Site Name" value="PlugMasters"><input placeholder="Support WhatsApp"><button class="btn-main">Save Settings</button></div></div>
+<!-- TRANSACTIONS -->
+<div id="transactions" class="section">
+<div class="card">
+<h3>All Transactions - Real Time</h3>
+<div class="scroll"><table id="transTable"><thead><tr><th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>Loading...</tbody></table></div>
+</div>
+</div>
+
+<!-- WALLET -->
+<div id="wallet" class="section">
+<div class="card">
+<h3>💰 Credit / Debit Wallet - Instant</h3>
+<input id="wPhone" placeholder="User Phone e.g 07067065724">
+<input id="wAmount" type="number" placeholder="Amount e.g 5000">
+<select id="wType"><option value="credit">Credit (+)</option><option value="debit">Debit (-)</option></select>
+<button class="btn-main" onclick="fundWallet()">Execute Wallet Update</button>
+<p id="wMsg" style="font-size:13px;margin-top:8px"></p>
+</div>
+</div>
+
+<!-- PRICING -->
+<div id="pricing" class="section">
+<div class="card">
+<h3>⚙️ Pricing Control - Controls User Prices</h3>
+<label>Airtime Discount % (e.g 2 = 2% off)</label><input id="pAirtime" placeholder="2">
+<label>Data Profit ₦ per GB</label><input id="pData" placeholder="50">
+<label>Electricity Charge ₦</label><input id="pElec" placeholder="100">
+<label>Cable Charge ₦</label><input id="pCable" placeholder="100">
+<button class="btn-main" onclick="savePricing()">Save Pricing to Firebase</button>
+<p id="pMsg" style="font-size:12px"></p>
+</div>
+</div>
+
+<!-- API -->
+<div id="api" class="section">
+<div class="card">
+<h3>🔌 VTU API Settings</h3>
+<input id="apiVtu" placeholder="VTU.ng API Key / ClubKonnect Token">
+<input id="apiMode" placeholder="Mode: TEST or LIVE" value="LIVE">
+<button class="btn-main" onclick="saveAPI()">Save API Keys</button>
+<p id="apiMsg" style="font-size:12px"></p>
+</div>
+</div>
+
+<!-- GATEWAY -->
+<div id="gateway" class="section">
+<div class="card">
+<h3>🏦 Paystack Gateway</h3>
+<input id="gwPaystack" placeholder="Paystack Secret Key sk_live_xxx">
+<input id="gwWebhook" placeholder="Webhook URL">
+<button class="btn-main" onclick="saveGateway()">Save Gateway</button>
+<p id="gwMsg" style="font-size:12px"></p>
+</div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings" class="section">
+<div class="card">
+<h3>⚙️ General Settings</h3>
+<input id="sName" value="PlugMasters" placeholder="Site Name">
+<input id="sWhatsapp" placeholder="Support WhatsApp Number">
+<input id="sMinFund" type="number" placeholder="Min Funding e.g 100">
+<button class="btn-main" onclick="saveSettings()">Save Settings</button>
+<p id="sMsg" style="font-size:12px"></p>
+</div>
+</div>
 
 </div>
 
 <script>
-function showSection(id, el){
+function show(id, el){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.menu').forEach(m=>m.classList.remove('active'));
   if(el) el.classList.add('active');
   window.scrollTo(0,0);
 }
-function logout(){ localStorage.clear(); window.location.href='admin-login.html'; }
+function logout(){ localStorage.clear(); location.href='admin-login.html'; }
 </script>
 
 <script type="module">
 import { db } from '../firebase.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-async function load(){
+import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let allUsers = [];
+
+async function loadUsers(){
   try{
     const snap = await getDocs(collection(db,'users'));
-    const tbody=document.querySelector('#usersTable tbody');
-    const tbody2=document.getElementById('users2');
-    tbody.innerHTML=''; let c=0,w=0;
+    allUsers=[]; let totalW=0;
     snap.forEach(d=>{
-      const u=d.data(); c++; w+=Number(u.wallet||0);
-      tbody.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>₦${u.wallet||0}</td></tr>`;
+      const u={id:d.id, ...d.data()};
+      allUsers.push(u);
+      totalW+=Number(u.wallet||0);
     });
-    document.getElementById('totalUsers').textContent=c;
-    document.getElementById('totalWallet').textContent='₦'+w;
-    if(c==0) tbody.innerHTML='<tr><td colspan="3">No users - Enable Firestore & create user via /signup.html</td></tr>';
+    document.getElementById('totalUsers').textContent=allUsers.length;
+    document.getElementById('totalWallet').textContent='₦'+totalW.toLocaleString();
+    renderUsers(allUsers);
+    // home
+    const homeT=document.querySelector('#homeUsers tbody');
+    homeT.innerHTML='';
+    allUsers.slice(0,10).forEach(u=>{
+      homeT.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>₦${u.wallet||0}</td><td><button class="btn-small btn-blue" onclick="quickFund('${u.phone}')">Fund</button></td></tr>`;
+    });
+    if(allUsers.length==0){
+      document.querySelector('#homeUsers tbody').innerHTML='<tr><td colspan="4">No users yet. Go to /signup.html and create user, then enable Firestore Test Mode</td></tr>';
+      document.querySelector('#usersTable tbody').innerHTML='<tr><td colspan="6">No users</td></tr>';
+    }
   }catch(e){
-    document.querySelector('#usersTable tbody').innerHTML=`<tr><td colspan="3" style="color:red">${e.message}</td></tr>`;
+    document.querySelector('#usersTable tbody').innerHTML=`<tr><td colspan="6" style="color:red">Error: ${e.message} - Enable Firestore Database in Firebase Console > Create Database > Test Mode</td></tr>`;
   }
 }
-load();
+
+function renderUsers(list){
+  const tbody=document.querySelector('#usersTable tbody');
+  tbody.innerHTML='';
+  list.forEach(u=>{
+    const status = u.blocked ? '<span class="badge bad">Blocked</span>' : '<span class="badge ok">Active</span>';
+    tbody.innerHTML+=`<tr>
+      <td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>${u.email||'-'}</td><td>₦${u.wallet||0}</td><td>${status}</td>
+      <td>
+        <button class="btn-small btn-green" onclick="creditPrompt('${u.id}','${u.phone}',${u.wallet||0})">+₦</button>
+        <button class="btn-small ${u.blocked?'btn-green':'btn-red'}" onclick="toggleBlock('${u.id}',${u.blocked||false})">${u.blocked?'Unblock':'Block'}</button>
+        <button class="btn-small btn-red" onclick="delUser('${u.id}')">Del</button>
+      </td></tr>`;
+  });
+}
+
+window.filterUsers=()=>{
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const f=allUsers.filter(u=> (u.name||'').toLowerCase().includes(q) || (u.phone||'').includes(q) || (u.email||'').toLowerCase().includes(q) );
+  renderUsers(f);
+}
+
+window.quickFund=(phone)=>{ show('wallet',null); document.getElementById('wPhone').value=phone; }
+
+window.fundWallet=async()=>{
+  const phone=document.getElementById('wPhone').value.trim();
+  const amount=Number(document.getElementById('wAmount').value);
+  const type=document.getElementById('wType').value;
+  const msg=document.getElementById('wMsg');
+  if(!phone||!amount){ msg.textContent='Enter phone & amount'; return; }
+  msg.textContent='Processing...';
+  const user=allUsers.find(u=>u.phone==phone);
+  if(!user){ msg.textContent='User not found'; return; }
+  const newWallet = type=='credit' ? Number(user.wallet||0)+amount : Number(user.wallet||0)-amount;
+  try{
+    await updateDoc(doc(db,'users',user.id),{wallet:newWallet});
+    msg.textContent=`✅ Success! New wallet: ₦${newWallet}`;
+    loadUsers();
+  }catch(e){ msg.textContent='Error: '+e.message; }
+}
+
+window.creditPrompt=async(id,phone,oldW)=>{
+  const amt=prompt(`Credit how much for ${phone}? Current: ₦${oldW}`);
+  if(!amt) return;
+  await updateDoc(doc(db,'users',id),{wallet:oldW+Number(amt)});
+  alert('Credited!'); loadUsers();
+}
+
+window.toggleBlock=async(id,blocked)=>{
+  await updateDoc(doc(db,'users',id),{blocked:!blocked});
+  loadUsers();
+}
+
+window.delUser=async(id)=>{
+  if(!confirm('Delete user permanently?')) return;
+  await deleteDoc(doc(db,'users',id));
+  loadUsers();
+}
+
+// Transactions
+async function loadTrans(){
+  try{
+    const snap=await getDocs(collection(db,'transactions'));
+    const tbody=document.querySelector('#transTable tbody');
+    tbody.innerHTML=''; let c=0;
+    snap.forEach(d=>{
+      c++; const t=d.data();
+      tbody.innerHTML+=`<tr><td>${(t.date||t.createdAt||'').slice(0,16)}</td><td>${t.phone||t.user||'-'}</td><td>${t.type||'-'}</td><td>₦${t.amount||0}</td><td>${t.status||'success'}</td></tr>`;
+    });
+    document.getElementById('totalTrans').textContent=c;
+    if(c==0) tbody.innerHTML='<tr><td colspan="5">No transactions yet</td></tr>';
+  }catch(e){ document.querySelector('#transTable tbody').innerHTML='<tr><td colspan="5">'+e.message+'</td></tr>'; }
+}
+
+// Settings save
+window.savePricing=async()=>{
+  await setDoc(doc(db,'settings','pricing'),{
+    airtime:document.getElementById('pAirtime').value,
+    data:document.getElementById('pData').value,
+    elec:document.getElementById('pElec').value,
+    cable:document.getElementById('pCable').value,
+    updated: new Date().toISOString()
+  });
+  document.getElementById('pMsg').textContent='✅ Pricing Saved! User app will use this';
+}
+window.saveAPI=async()=>{
+  await setDoc(doc(db,'settings','api'),{key:document.getElementById('apiVtu').value, mode:document.getElementById('apiMode').value});
+  document.getElementById('apiMsg').textContent='✅ API Saved';
+}
+window.saveGateway=async()=>{
+  await setDoc(doc(db,'settings','gateway'),{paystack:document.getElementById('gwPaystack').value, webhook:document.getElementById('gwWebhook').value});
+  document.getElementById('gwMsg').textContent='✅ Gateway Saved';
+}
+window.saveSettings=async()=>{
+  await setDoc(doc(db,'settings','general'),{name:document.getElementById('sName').value, whatsapp:document.getElementById('sWhatsapp').value, minFund:document.getElementById('sMinFund').value});
+  document.getElementById('sMsg').textContent='✅ Settings Saved';
+}
+
+loadUsers(); loadTrans();
 </script>
 </body>
 </html>
+
