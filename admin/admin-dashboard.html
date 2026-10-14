@@ -3,30 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Dashboard - PlugMasters</title>
+<title>Super Admin - PlugMasters</title>
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{margin:0;background:#f4f1e8}
-.header{background:#8B6914;color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
-.header h2{margin:0;font-size:18px}
-.btn-out{background:#fff;color:#8B6914;border:none;padding:7px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
-.container{max-width:1000px;margin:15px auto;padding:0 12px}
-.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-h3{margin:0 0 10px;color:#8B6914}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+body{margin:0;background:#f8f5ec}
+.header{background:#8B6914;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99}
+.header h2{margin:0;font-size:16px}
+.btn-out{background:#fff;color:#8B6914;border:none;padding:6px 12px;border-radius:8px;font-weight:bold;cursor:pointer}
+.container{max-width:1100px;margin:10px auto;padding:0 10px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:#fff;padding:12px;border-radius:12px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.stat b{font-size:20px;color:#8B6914;display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:700px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
+.menu{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,.06);text-align:center;cursor:pointer;border:1px solid #eee}
+.menu:hover{border-color:#8B6914;transform:translateY(-2px)}
+.menu span{font-size:24px;display:block;margin-bottom:6px}
+.menu b{font-size:13px;color:#222;display:block}
+.menu small{font-size:11px;color:#888}
+.card{background:#fff;border-radius:12px;padding:14px;margin-top:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
 th{background:#8B6914;color:#fff}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
-.stat{background:#fff;padding:14px;border-radius:12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.05)}
-.stat b{font-size:20px;display:block;color:#8B6914}
 </style>
 <script>
-// FIX REDIRECT LOOP - check all 3 keys
+// AUTH CHECK
 (function(){
-  const ok = localStorage.getItem('pm_admin') || localStorage.getItem('isAdmin') || localStorage.getItem('adminLoggedIn');
-  if(!ok){
-    window.location.href='admin-login.html';
-  }
+  const ok = localStorage.getItem('pm_admin') || localStorage.getItem('isAdmin');
+  if(!ok){ window.location.href='admin-login.html'; }
 })();
 </script>
 </head>
@@ -38,48 +42,71 @@ th{background:#8B6914;color:#fff}
 
 <div class="container">
 <div class="stats">
-<div class="stat"><b id="totalUsers">0</b><span>Total Users</span></div>
-<div class="stat"><b id="totalWallet">₦0</b><span>Wallet Balance</span></div>
-<div class="stat"><b>23</b><span>Menus Active</span></div>
+<div class="stat"><b id="totalUsers">0</b>Total Users</div>
+<div class="stat"><b id="totalWallet">₦0</b>Wallet Balance</div>
+<div class="stat"><b>23</b>Menus Active</div>
+</div>
+
+<!-- 23 MENUS GRID -->
+<div class="grid">
+<div class="menu" onclick="go('users.html')"><span>👥</span><b>Users</b><small>Manage Users</small></div>
+<div class="menu" onclick="go('transactions.html')"><span>💳</span><b>Transactions</b><small>All History</small></div>
+<div class="menu" onclick="go('airtime.html')"><span>📱</span><b>Airtime</b><small>MTN, Glo...</small></div>
+<div class="menu" onclick="go('data.html')"><span>🌐</span><b>Data</b><small>Data Plans</small></div>
+<div class="menu" onclick="go('electricity.html')"><span>💡</span><b>Electricity</b><small>PHCN, EKEDC</small></div>
+<div class="menu" onclick="go('cable.html')"><span>📺</span><b>Cable TV</b><small>DSTV, GOTV</small></div>
+<div class="menu" onclick="go('betting.html')"><span>⚽</span><b>Betting</b><small>Fund Betting</small></div>
+<div class="menu" onclick="go('exam.html')"><span>🎓</span><b>Exam Pins</b><small>WAEC, JAMB</small></div>
+<div class="menu" onclick="go('wallet.html')"><span>💰</span><b>Wallet Funding</b><small>Credit / Debit</small></div>
+<div class="menu" onclick="go('profit.html')"><span>📈</span><b>Profit & Loss</b><small>Earnings</small></div>
+<div class="menu" onclick="go('api.html')"><span>🔌</span><b>API Settings</b><small>VTU Provider</small></div>
+<div class="menu" onclick="go('gateway.html')"><span>🏦</span><b>Payment Gateway</b><small>Paystack, Flutter</small></div>
+<div class="menu" onclick="go('notifications.html')"><span>🔔</span><b>Notifications</b><small>Push / SMS</small></div>
+<div class="menu" onclick="go('support.html')"><span>💬</span><b>Support Tickets</b><small>Help Desk</small></div>
+<div class="menu" onclick="go('staff.html')"><span>👮</span><b>Staff Roles</b><small>Support, Cashier</small></div>
+<div class="menu" onclick="go('pricing.html')"><span>⚙️</span><b>Pricing Control</b><small>Set Prices</small></div>
+<div class="menu" onclick="go('banners.html')"><span>🖼️</span><b>Banners & Ads</b><small>Homepage</small></div>
+<div class="menu" onclick="go('referral.html')"><span>🔗</span><b>Referrals</b><small>Bonus System</small></div>
+<div class="menu" onclick="go('kyc.html')"><span>🪪</span><b>KYC / BVN</b><small>Verification</small></div>
+<div class="menu" onclick="go('audit.html')"><span>📜</span><b>Audit Logs</b><small>IP, Device, Time</small></div>
+<div class="menu" onclick="go('settings.html')"><span>⚙️</span><b>General Settings</b><small>Site Config</small></div>
+<div class="menu" onclick="go('../index.html')"><span>🏠</span><b>Back to User Site</b><small>Frontend</small></div>
+<div class="menu" onclick="go('backup.html')"><span>💾</span><b>Backup</b><small>Export Data</small></div>
 </div>
 
 <div class="card">
-<h3>All Users (Real from Firebase)</h3>
-<table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Wallet</th><th>Date</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table>
+<h3 style="margin:0 0 8px;color:#8B6914">All Users (Real from Firebase)</h3>
+<table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Wallet</th></tr></thead><tbody><tr><td colspan="4">Loading...</td></tr></tbody></table>
+<p style="font-size:12px;color:#666;margin-top:8px">If it says "No users yet" -> Your Firestore not enabled. Go Firebase Console > Firestore Database > Create Database > Start in Test Mode</p>
 </div>
 </div>
+
+<script>
+function go(page){ window.location.href=page; }
+function logout(){ localStorage.clear(); window.location.href='admin-login.html'; }
+</script>
 
 <script type="module">
 import { db } from '../firebase.js';
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 async function load(){
   try{
     const snap = await getDocs(collection(db,'users'));
-    const tbody = document.querySelector('#usersTable tbody');
+    const tbody=document.querySelector('#usersTable tbody');
     tbody.innerHTML='';
-    let count=0, totalW=0;
-    snap.forEach(d=>{
-      count++;
-      const u=d.data();
-      totalW+=Number(u.wallet||0);
-      tbody.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>${u.email||'-'}</td><td>₦${u.wallet||0}</td><td>${(u.createdAt||'').slice(0,10)}</td></tr>`;
+    let c=0,w=0;
+    snap.forEach(doc=>{
+      const u=doc.data(); c++; w+=Number(u.wallet||0);
+      tbody.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>${u.email||'-'}</td><td>₦${u.wallet||0}</td></tr>`;
     });
-    document.getElementById('totalUsers').textContent=count;
-    document.getElementById('totalWallet').textContent='₦'+totalW;
-    if(count===0) tbody.innerHTML='<tr><td colspan="5">No users yet - Create via /signup.html</td></tr>';
+    document.getElementById('totalUsers').textContent=c;
+    document.getElementById('totalWallet').textContent='₦'+w;
+    if(c==0) tbody.innerHTML='<tr><td colspan="4">No users yet - Create via /signup.html</td></tr>';
   }catch(e){
-    document.querySelector('#usersTable tbody').innerHTML=`<tr><td colspan="5">Error: ${e.message}<br>Go Firebase Console > Firestore > Create Database > Test Mode</td></tr>`;
+    document.querySelector('#usersTable tbody').innerHTML=`<tr><td colspan="4" style="color:red">Enable Firestore in Firebase Console to see users: ${e.message}</td></tr>`;
   }
 }
 load();
-
-window.logout=function(){
-  localStorage.removeItem('pm_admin');
-  localStorage.removeItem('isAdmin');
-  localStorage.removeItem('adminLoggedIn');
-  window.location.href='admin-login.html';
-}
 </script>
 </body>
 </html>
