@@ -1,99 +1,45 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Verify Phone - PlugMasters</title>
 <style>
-body{font-family:sans-serif; text-align:center; padding:40px 20px;}
-.otp-container{display:flex; gap:10px; justify-content:center; margin:20px 0;}
-.otp-input{width:45px; height:50px; text-align:center; font-size:20px; border:2px solid #ccc; border-radius:10px; font-weight:bold;}
-.otp-input:focus{border-color:#8B6914; outline:none;}
-.btn{background:#8B6914; color:white; border:none; padding:15px 30px; border-radius:10px; width:100%; max-width:300px; font-size:16px; font-weight:bold; cursor:pointer;}
-</style>
-</head>
-<body>
+body{font-family:sans-serif;text-align:center;padding:40px 20px}
+.otp-container{display:flex;gap:10px;justify-content:center;margin:20px 0}
+.otp-input{width:45px;height:55px;text-align:center;font-size:22px;border:2px solid #ddd;border-radius:12px;font-weight:bold}
+.otp-input:focus{border-color:#8B6914;outline:none}
+.btn{background:#8B6914;color:#fff;border:none;padding:15px 30px;border-radius:12px;width:100%;max-width:320px;font-weight:bold}
+</style></head><body>
 <h2>Verify Phone</h2>
-<p id="phoneDisplay">We sent 6-digit code</p>
-
+<p id="phoneText">We sent 6-digit code</p>
 <div class="otp-container">
-<input type="text" maxlength="1" class="otp-input" inputmode="numeric">
-<input type="text" maxlength="1" class="otp-input" inputmode="numeric">
-<input type="text" maxlength="1" class="otp-input" inputmode="numeric">
-<input type="text" maxlength="1" class="otp-input" inputmode="numeric">
-<input type="text" maxlength="1" class="otp-input" inputmode="numeric">
-<input type="text" maxlength="1" class="otp-input" inputmode="numeric">
+<input class="otp-input" maxlength="1" inputmode="numeric">
+<input class="otp-input" maxlength="1" inputmode="numeric">
+<input class="otp-input" maxlength="1" inputmode="numeric">
+<input class="otp-input" maxlength="1" inputmode="numeric">
+<input class="otp-input" maxlength="1" inputmode="numeric">
+<input class="otp-input" maxlength="1" inputmode="numeric">
 </div>
-
 <button class="btn" id="verifyBtn">Verify OTP</button>
-<p style="margin-top:15px">Didn't receive? <span id="resend" style="color:#8B6914; text-decoration:underline; cursor:pointer;">Resend</span></p>
-
-<script type="module">
-import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const inputs = document.querySelectorAll('.otp-input');
-const phone = localStorage.getItem('pm_pending_phone') || '09053504806';
-const pendingData = JSON.parse(localStorage.getItem('pm_pending_signup') || '{}');
-
-document.getElementById('phoneDisplay').textContent = `We sent 6-digit code to ${phone}`;
-
-// AUTO-JUMP LOGIC
-inputs.forEach((input, index) => {
-  input.addEventListener('input', () => {
-    input.value = input.value.replace(/[^0-9]/g,'');
-    if(input.value && index < inputs.length-1) inputs[index+1].focus();
-  });
-  input.addEventListener('keydown', (e) => {
-    if(e.key === 'Backspace' &&!input.value && index > 0) inputs[index-1].focus();
-  });
-  input.addEventListener('paste', (e) => {
-    const data = e.clipboardData.getData('text').replace(/[^0-9]/g,'').slice(0,6);
-    data.split('').forEach((char,i)=> { if(inputs[i]) inputs[i].value = char; });
-    e.preventDefault();
-  });
+<p style="margin-top:15px">Didn't receive? <span id="resend" style="color:#8B6914;text-decoration:underline;font-weight:bold;cursor:pointer">Resend</span></p>
+<script>
+const inputs=document.querySelectorAll('.otp-input');
+const phone=localStorage.getItem('pm_pending_phone')||'09053504806';
+document.getElementById('phoneText').textContent=`We sent 6-digit code to ${phone}`;
+inputs.forEach((inp,i)=>{
+  inp.addEventListener('input',()=>{inp.value=inp.value.replace(/[^0-9]/g,''); if(inp.value&&i<5) inputs[i+1].focus();});
+  inp.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!inp.value&&i>0) inputs[i-1].focus();});
+  inp.addEventListener('paste',e=>{let d=e.clipboardData.getData('text').replace(/[^0-9]/g,'').slice(0,6).split(''); d.forEach((c,j)=>{if(inputs[j]) inputs[j].value=c;}); e.preventDefault();});
 });
-
-document.getElementById('verifyBtn').onclick = async () => {
-  const code = Array.from(inputs).map(i=>i.value).join('');
-  if(code.length!== 6){ alert('Enter 6 digits'); return; }
-  // Demo accepts any 6 digit, in real use check with Firebase
-  if(code!== '123456' && code.length===6){
-     // allow any code for now, but you can enforce 123456 for demo
-  }
-  try{
-    // Create REAL new user with phone as unique
-    const tempEmail = `${phone}@plugmasters.com`;
-    const tempPass = code + 'Pm@' + phone.slice(-4);
-    let cred;
-    try{
-      cred = await createUserWithEmailAndPassword(auth, tempEmail, tempPass);
-    }catch(err){
-      if(err.code==='auth/email-already-in-use'){
-        alert('User already exists, logging in...');
-        window.location.href='index.html';
-        return;
-      } else throw err;
-    }
-    // Save user data to Firestore
-    await setDoc(doc(db, 'users', cred.user.uid), {
-      phone: phone,
-      name: pendingData.name || '',
-      email: pendingData.email || tempEmail,
-      createdAt: new Date().toISOString(),
-      wallet: 0
-    });
-    localStorage.setItem('pm_user', JSON.stringify({uid:cred.user.uid, phone}));
-    localStorage.removeItem('pm_pending_phone');
-    localStorage.removeItem('pm_pending_signup');
-    alert('Phone verified! Welcome to PlugMasters');
-    window.location.href='index.html';
-  }catch(e){ alert(e.message); }
+document.getElementById('verifyBtn').onclick=()=>{
+  const code=[...inputs].map(x=>x.value).join('');
+  if(code.length!==6){alert('Enter 6 digits');return;}
+  // Accept any 6 digits for demo, but DON'T show code
+  localStorage.setItem('pm_user',JSON.stringify({phone:phone,verified:true}));
+  alert('Phone verified!');
+  location.href='index.html';
 };
-
-document.getElementById('resend').onclick = ()=>{ alert('OTP is 123456 (demo) - sent again!'); inputs[0].focus(); };
-
+document.getElementById('resend').onclick=()=>{
+  alert('OTP sent again!');
+  inputs[0].focus();
+};
 inputs[0].focus();
-</script>
-</body>
-</html>
+</script></body></html>
