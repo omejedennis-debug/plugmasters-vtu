@@ -1,215 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - PlugMasters Admin</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard - PlugMasters</title>
 <style>
-:root{--primary:#8B6914;--bg:#F5F5F5;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{background:var(--bg);}
-
-/* FIXED TOPBAR - ALWAYS VISIBLE */
-.topbar{
-position:fixed;top:0;left:0;width:100%;height:60px;background:#111;color:white;
-display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:100;
-border-bottom:2px solid var(--primary);
-}
-.top-left{display:flex;align-items:center;gap:12px;}
-.top-left b{color:var(--primary);font-size:16px;}
-.top-right{
-display:flex;align-items:center;gap:10px;background:#1E1E1E;padding:6px 12px;
-border-radius:30px;border:1px solid #333;
-}
-.top-right small{color:#BBB;font-size:12px;white-space:nowrap;}
-.logout-btn{
-width:34px;height:34px;border-radius:50%;background:#E53935;color:white;
-display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;
-}
-.logout-btn:hover{background:#C62828;}
-.hamburger{font-size:22px;cursor:pointer;padding:8px 10px;background:#1E1E1E;border-radius:8px;border:1px solid #333;}
-.hamburger:hover{background:#333;}
-
-/* SIDEBAR */
-.sidebar{
-width:260px;background:#111;color:white;min-height:100vh;padding:16px;
-position:fixed;top:60px;left:0;overflow:auto;transform:translateX(-100%);
-transition:0.3s;z-index:99;height:calc(100vh - 60px);
-}
-.sidebar.show{transform:translateX(0);}
-.sidebar b.title{color:var(--primary);font-size:13px;display:block;margin-bottom:10px;letter-spacing:0.5px;}
-.menu-item{
-padding:11px 12px;border-radius:8px;font-size:13px;display:flex;align-items:center;gap:10px;
-color:#CCC;margin:2px 0;text-decoration:none;transition:0.2s;
-}
-.menu-item:hover,.menu-item.active{background:var(--primary);color:white;}
-.menu-item i{width:18px;text-align:center;}
-
-/* MAIN */
-.main{margin-left:0;margin-top:60px;padding:14px;transition:0.3s;}
-.main.shift{margin-left:260px;}
-.cards{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
-.card{background:white;padding:14px;border-radius:12px;border:1px solid #EEE;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
-.card small{color:#888;font-size:11px;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
-.card b{font-size:16px;color:#111;}
-.card .trend{font-size:10px;margin-top:4px;}
-.section{background:white;border-radius:12px;padding:14px;border:1px solid #EEE;overflow:auto;min-height:60vh;margin-bottom:14px;}
-table{width:100%;border-collapse:collapse;margin-top:10px;display:block;overflow-x:auto;white-space:nowrap;}
-th,td{padding:10px;border-bottom:1px solid #EEE;font-size:12px;text-align:left;}
-th{background:#F9F9F9;font-size:11px;text-transform:uppercase;color:#666;}
-.btn{padding:7px 10px;background:var(--primary);color:white;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;margin:2px;}
-.btn-green{background:#00A86B;}.btn-red{background:#E53935;}.btn-blue{background:#1976D2;}
-.badge{padding:3px 7px;border-radius:20px;font-size:10px;font-weight:700;color:white;}
-.overlay{position:fixed;top:60px;left:0;width:100%;height:calc(100vh - 60px);background:rgba(0,0,0,0.5);z-index:98;display:none;}
-.overlay.show{display:block;}
-
-@media(min-width:901px){
-.sidebar{transform:translateX(0);}
-.main{margin-left:260px;}
-.overlay{display:none!important;}
-.hamburger{display:none;}
-}
-@media(max-width:900px){
-.cards{grid-template-columns:1fr 1fr;}
-.sidebar{width:280px;}
-}
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{margin:0;background:#f4f1e8}
+.header{background:#8B6914;color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.header h2{margin:0;font-size:18px}
+.btn-out{background:#fff;color:#8B6914;border:none;padding:7px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
+.container{max-width:1000px;margin:15px auto;padding:0 12px}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+h3{margin:0 0 10px;color:#8B6914}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+th{background:#8B6914;color:#fff}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:#fff;padding:14px;border-radius:12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.stat b{font-size:20px;display:block;color:#8B6914}
 </style>
+<script>
+// FIX REDIRECT LOOP - check all 3 keys
+(function(){
+  const ok = localStorage.getItem('pm_admin') || localStorage.getItem('isAdmin') || localStorage.getItem('adminLoggedIn');
+  if(!ok){
+    window.location.href='admin-login.html';
+  }
+})();
+</script>
 </head>
 <body>
-
-<!-- FIXED TOPBAR WITH SUPER ADMIN VISIBLE + RED LOGOUT -->
-<div class="topbar">
-<div class="top-left">
-<span class="hamburger" onclick="toggleSide()"><i class="fa-solid fa-bars"></i></span>
-<b>PlugMasters</b><span style="font-size:12px;color:#888;">/ Dashboard</span>
-</div>
-<div class="top-right">
-<i class="fa-solid fa-user-shield" style="color:#8B6914;"></i>
-<small id="adminInfo">Super Admin - 07067065724</small>
-<button class="logout-btn" onclick="logout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
-</div>
+<div class="header">
+<h2>PlugMasters Super Admin</h2>
+<button class="btn-out" onclick="logout()">Logout</button>
 </div>
 
-<div class="overlay" id="overlay" onclick="toggleSide()"></div>
-
-<!-- SIDEBAR WITH ALL 23 LINKS ATTACHED -->
-<div class="sidebar" id="sidebar">
-<b class="title">PlugMasters - 23 MENU</b>
-<a href="admin-dashboard.html" class="menu-item active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-<a href="admin-users.html" class="menu-item"><i class="fa-solid fa-users"></i> Users (1,245)</a>
-<a href="admin-transactions.html" class="menu-item"><i class="fa-solid fa-list"></i> Transactions</a>
-<a href="admin-pricing.html" class="menu-item"><i class="fa-solid fa-tags"></i> VTU Pricing</a>
-<a href="admin-transfers.html" class="menu-item"><i class="fa-solid fa-money-bill-transfer"></i> Transfers</a>
-<a href="admin-convert.html" class="menu-item"><i class="fa-solid fa-repeat"></i> Conversions (5)</a>
-<a href="admin-referral.html" class="menu-item"><i class="fa-solid fa-gift"></i> Referral</a>
-<a href="admin-cashback.html" class="menu-item"><i class="fa-solid fa-coins"></i> Cashback</a>
-<a href="admin-promo.html" class="menu-item"><i class="fa-solid fa-ticket"></i> Promo Codes</a>
-<a href="admin-api.html" class="menu-item"><i class="fa-solid fa-plug"></i> API Switch</a>
-<a href="admin-wallet.html" class="menu-item"><i class="fa-solid fa-wallet"></i> Wallet & Finance</a>
-<a href="admin-kyc.html" class="menu-item"><i class="fa-solid fa-id-card"></i> KYC (12)</a>
-<a href="admin-dispute.html" class="menu-item"><i class="fa-solid fa-headset"></i> Disputes</a>
-<a href="admin-content.html" class="menu-item"><i class="fa-solid fa-bullhorn"></i> Content & Ads</a>
-<a href="admin-maintenance.html" class="menu-item"><i class="fa-solid fa-screwdriver-wrench"></i> Maintenance</a>
-<a href="admin-fraud.html" class="menu-item"><i class="fa-solid fa-shield"></i> Fraud & Blacklist</a>
-<a href="admin-bulk.html" class="menu-item"><i class="fa-solid fa-layer-group"></i> Bulk Actions</a>
-<a href="admin-loyalty.html" class="menu-item"><i class="fa-solid fa-crown"></i> Loyalty Tiers</a>
-<a href="admin-limits.html" class="menu-item"><i class="fa-solid fa-sliders"></i> Limits & Fees</a>
-<a href="admin-affiliate.html" class="menu-item"><i class="fa-solid fa-user-group"></i> Affiliate/Agent</a>
-<a href="admin-report.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i> Profit Report</a>
-<a href="admin-audit.html" class="menu-item"><i class="fa-solid fa-clipboard-list"></i> Audit Logs</a>
-<a href="admin-settings.html" class="menu-item"><i class="fa-solid fa-gear"></i> Settings & Staff</a>
-<div style="height:100px;"></div>
+<div class="container">
+<div class="stats">
+<div class="stat"><b id="totalUsers">0</b><span>Total Users</span></div>
+<div class="stat"><b id="totalWallet">₦0</b><span>Wallet Balance</span></div>
+<div class="stat"><b>23</b><span>Menus Active</span></div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="main" id="main">
-
-<div class="cards">
-<div class="card"><small>Total Users</small><b>1,245</b><div class="trend" style="color:green;">+12 today</div></div>
-<div class="card"><small>Today Transactions</small><b>542</b><div class="trend" style="color:green;">+23% vs yesterday</div></div>
-<div class="card"><small>Today Profit</small><b style="color:green;">₦48,320</b><div class="trend">Net after cashback</div></div>
-<div class="card"><small>Pending KYC</small><b style="color:orange;">12</b><div class="trend">Need approval</div></div>
-<div class="card"><small>Pending Conversions</small><b style="color:orange;">5</b><div class="trend">Airtime to cash</div></div>
-<div class="card"><small>Total Wallet All Users</small><b>₦1,850,400</b><div class="trend">All balances</div></div>
-<div class="card"><small>API Balances</small><b>ClubK ₦5.2k LOW!</b><div class="trend" style="color:red;">Need fund</div></div>
-<div class="card"><small>Referral Cost Today</small><b>₦4,000</b><div class="trend">20 referrals x ₦200</div></div>
-</div>
-
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;">
-<div class="section">
-<h3>Recent Transactions - Quick Actions</h3>
-<table>
-<tr><th>ID</th><th>User</th><th>Service</th><th>Amount</th><th>Profit</th><th>Status</th><th>Action</th></tr>
-<tr><td>TX001</td><td>07067065724 James</td><td>MTN Airtime ₦500</td><td>₦500</td><td>₦15</td><td><span class="badge" style="background:green;">Success</span></td><td><button class="btn">Refund</button></td></tr>
-<tr><td>TX002</td><td>08012345678 Adebayo</td><td>1GB MTN Data</td><td>₦550</td><td>₦100</td><td><span class="badge" style="background:green;">Success</span></td><td><button class="btn btn-blue">Receipt</button></td></tr>
-<tr><td>TX003</td><td>07067065724</td><td>DSTV Compact</td><td>₦13,700</td><td>₦200</td><td><span class="badge" style="background:orange;">Pending</span></td><td><button class="btn btn-green">Retry VTU.ng</button></td></tr>
-<tr><td>CV001</td><td>07067065724</td><td>Convert ₦1000 MTN to Cash</td><td>₦850 credit</td><td>₦150</td><td><span class="badge" style="background:orange;">Waiting Airtime</span></td><td><button class="btn btn-green">Confirm Received</button></td></tr>
-</table>
-<button class="btn" style="margin-top:10px;" onclick="location.href='admin-transactions.html'">View All 542 Transactions</button>
-</div>
-
-<div class="section">
-<h3>Quick Controls</h3>
-<div style="display:grid;gap:8px;margin-top:10px;">
-<button class="btn btn-blue" style="padding:10px;">🔄 Switch API to VTU.ng - If ClubKonnect Down</button>
-<button class="btn btn-green" style="padding:10px;">✅ Approve All 12 KYC</button>
-<button class="btn btn-green" style="padding:10px;">✅ Approve All 5 Conversions</button>
-<button class="btn" style="padding:10px;background:#111;">📢 Send Push to All Users</button>
-<button class="btn btn-red" style="padding:10px;">🔴 Enable Maintenance Mode</button>
-</div>
-<div style="margin-top:14px;background:#FFF8E6;padding:10px;border-radius:8px;border:1px dashed #8B6914;">
-<small><b>System Health:</b><br>
-ClubKonnect: <span style="color:red;">Balance Low ₦5,200</span><br>
-VTU.ng: <span style="color:green;">OK ₦50k</span><br>
-Paystack: <span style="color:green;">OK</span><br>
-Today Profit: <b style="color:green;">₦48,320</b></small>
-</div>
+<div class="card">
+<h3>All Users (Real from Firebase)</h3>
+<table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Wallet</th><th>Date</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table>
 </div>
 </div>
 
-<div class="section" style="margin-top:10px;">
-<h3>Today Summary for Accountant</h3>
-<table>
-<tr><th>Service</th><th>Count</th><th>Sales</th><th>Cost</th><th>Profit</th><th>Cashback</th><th>Net Profit</th></tr>
-<tr><td>Airtime</td><td>300</td><td>₦150k</td><td>₦145.5k</td><td>₦4.5k</td><td>₦3k</td><td>₦1.5k</td></tr>
-<tr><td>Data</td><td>150</td><td>₦82.5k</td><td>₦67.5k</td><td>₦15k</td><td>₦2.25k</td><td>₦12.75k</td></tr>
-<tr><td>TV + Electricity</td><td>50</td><td>₦250k</td><td>₦242k</td><td>₦8k</td><td>₦1.5k</td><td>₦6.5k</td></tr>
-<tr><td>Conversions 15%</td><td>10</td><td>₦20k</td><td>₦17k credit</td><td>₦3k</td><td>₦0</td><td>₦3k</td></tr>
-<tr><th>Total</th><th>555</th><th>₦502.9k</th><th>₦472k</th><th>₦30.9k</th><th>₦6.75k</th><th style="color:green;">₦24.2k Net</th></tr>
-</table>
-<button class="btn btn-blue" onclick="location.href='admin-report.html'">Full Profit Report + Download CSV</button>
-</div>
+<script type="module">
+import { db } from '../firebase.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-</div>
+async function load(){
+  try{
+    const snap = await getDocs(collection(db,'users'));
+    const tbody = document.querySelector('#usersTable tbody');
+    tbody.innerHTML='';
+    let count=0, totalW=0;
+    snap.forEach(d=>{
+      count++;
+      const u=d.data();
+      totalW+=Number(u.wallet||0);
+      tbody.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>${u.email||'-'}</td><td>₦${u.wallet||0}</td><td>${(u.createdAt||'').slice(0,10)}</td></tr>`;
+    });
+    document.getElementById('totalUsers').textContent=count;
+    document.getElementById('totalWallet').textContent='₦'+totalW;
+    if(count===0) tbody.innerHTML='<tr><td colspan="5">No users yet - Create via /signup.html</td></tr>';
+  }catch(e){
+    document.querySelector('#usersTable tbody').innerHTML=`<tr><td colspan="5">Error: ${e.message}<br>Go Firebase Console > Firestore > Create Database > Test Mode</td></tr>`;
+  }
+}
+load();
 
-<script>
-
-  if(!localStorage.getItem('pm_admin')){
+window.logout=function(){
+  localStorage.removeItem('pm_admin');
+  localStorage.removeItem('isAdmin');
+  localStorage.removeItem('adminLoggedIn');
   window.location.href='admin-login.html';
 }
-// CHECK LOGIN
-if(localStorage.getItem('plug_admin_logged')!=='true'){
-location.href='admin-login.html';
-}
-
-// Show admin info
-let phone = localStorage.getItem('plug_admin_phone') || '07067065724';
-let role = localStorage.getItem('plug_admin_role') || 'Super Admin';
-document.getElementById('adminInfo').innerText = role + ' - ' + phone;
-
-function toggleSide(){
-document.getElementById('sidebar').classList.toggle('show');
-document.getElementById('overlay').classList.toggle('show');
-document.getElementById('main').classList.toggle('shift');
-}
-function logout(){
-localStorage.setItem('plug_admin_logged','false');
-localStorage.removeItem('plug_admin_phone');
-localStorage.removeItem('plug_admin_role');
-location.href='admin-login.html';
-}
-
 </script>
 </body>
 </html>
