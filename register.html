@@ -2,70 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register - PlugMasters</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign Up - PlugMasters</title>
 <style>
-:root{--primary:#8B6914;--primary-light:#FFF8E6;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{background:#F5F5F5;display:flex;justify-content:center;}
-.phone{width:390px;background:white;min-height:100vh;padding:20px;position:relative;}
-.logo{text-align:center;margin:20px 0;}
-.logo b{font-size:28px;color:var(--primary);}
-.logo small{display:block;color:#888;font-size:12px;}
-.input-group{margin:14px 0;}
-.input-group label{font-size:12px;font-weight:600;display:block;margin-bottom:5px;}
-.input-group input{width:100%;padding:14px;border:1.5px solid #EEE;border-radius:12px;outline:none;font-size:14px;}
-.input-group input:focus{border-color:var(--primary);}
-.btn{width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;margin-top:16px;}
-.btn:disabled{background:#CCC;}
-.divider{text-align:center;margin:16px 0;font-size:12px;color:#888;}
-.link{text-align:center;font-size:13px;}
-.link a{color:var(--primary);font-weight:700;text-decoration:none;}
-.refer-box{background:var(--primary-light);padding:10px;border-radius:10px;border:1px dashed var(--primary);margin-top:10px;}
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{margin:0;background:#f8f5ec;display:flex;justify-content:center;padding:20px}
+.box{background:#fff;max-width:400px;width:100%;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+h2{text-align:center;color:#8B6914;margin:0 0 10px}
+input{width:100%;padding:13px;border:1.5px solid #ddd;border-radius:10px;margin:8px 0;font-size:15px}
+.btn{width:100%;background:#8B6914;color:#fff;border:none;padding:14px;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:10px}
+a{color:#8B6914;text-decoration:none;font-weight:bold}
+.msg{padding:10px;border-radius:8px;margin-top:10px;text-align:center;display:none;font-size:13px}
+.err{background:#ffe6e6;color:#d00} .ok{background:#e6ffe6;color:#0a0}
 </style>
 </head>
 <body>
-<div class="phone">
-  <div class="logo"><b>PlugMasters</b><small>VTU - Main Build v1</small></div>
-  <h3 style="margin:10px 0;">Create Account</h3>
-  <p style="font-size:12px;color:#888;">Join over 100,000 masters earning cashback</p>
-
-  <div class="input-group"><label>Full Name</label><input type="text" id="fullName" placeholder="Plug Masters"></div>
-  <div class="input-group"><label>Phone Number</label><input type="tel" id="phone" placeholder="07067065724"></div>
-  <div class="input-group"><label>Email Address</label><input type="email" id="email" placeholder="PlugMasters@gmail.com"></div>
-  <div class="input-group"><label>Password</label><input type="password" id="password" placeholder="Min 6 characters"></div>
-  <div class="input-group"><label>Referral Code (Optional)</label><div class="refer-box"><input type="text" id="referral" placeholder="PlugMasters-123" style="border:none;background:transparent;padding:8px;width:100%;"></div><small style="font-size:10px;color:var(--primary);">You and your friend get ₦200 each!</small></div>
-
-  <button class="btn" onclick="register()">Create Account</button>
-  <div class="divider">Already have account?</div>
-  <div class="link"><a href="login.html">Login Here</a></div>
-  <p style="font-size:10px;text-align:center;color:#AAA;margin-top:20px;">By registering you agree to our Terms & KYC Policy - Level 1 Limit ₦50,000</p>
+<div class="box">
+<h2>Create Account</h2>
+<input id="name" placeholder="Full Name">
+<input id="phone" placeholder="Phone e.g 07067065724">
+<input id="email" placeholder="Email e.g james@gmail.com">
+<input id="password" type="password" placeholder="Password (min 6)">
+<button class="btn" id="btn">Create Account</button>
+<div class="msg err" id="err"></div>
+<div class="msg ok" id="ok"></div>
+<p style="text-align:center;font-size:13px;margin-top:14px">Already have account? <a href="login.html">Login</a></p>
 </div>
-<script type="module">
-import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const form = document.querySelector('form');
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const name = document.querySelector('input[name="name"]')?.value || document.querySelector('input[placeholder*="Name"]')?.value;
-  const phone = document.querySelector('input[name="phone"]')?.value || document.querySelector('input[placeholder*="Phone"]')?.value;
-  const email = document.querySelector('input[type="email"]').value;
-  const password = document.querySelector('input[type="password"]').value;
+<script type="module">
+import { db } from './firebase.js';
+import { collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+document.getElementById('btn').addEventListener('click', async()=>{
+  const name=document.getElementById('name').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value.trim();
+  const err=document.getElementById('err');
+  const ok=document.getElementById('ok');
+  err.style.display='none'; ok.style.display='none';
+
+  if(!name||!phone||!email||!password){ err.textContent='Fill all fields'; err.style.display='block'; return; }
+  if(password.length<6){ err.textContent='Password min 6'; err.style.display='block'; return; }
+
+  const btn=document.getElementById('btn');
+  btn.textContent='Creating...'; btn.disabled=true;
 
   try{
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await setDoc(doc(db, "users", cred.user.uid), {
-      name, phone, email,
-      wallet: 0,
-      role: "user",
+    // check if phone exists
+    const q=query(collection(db,'users'), where('phone','==',phone));
+    const snap=await getDocs(q);
+    if(!snap.empty){ throw new Error('Phone already registered, login instead'); }
+
+    await addDoc(collection(db,'users'),{
+      name, phone, email, password,
+      wallet:0,
+      blocked:false,
       createdAt: new Date().toISOString()
     });
-    alert('Account created! Welcome to PlugMasters');
-    window.location.href = 'index.html';
-  }catch(err){ alert(err.message); }
+
+    ok.textContent='✅ Account created! Redirecting to login...';
+    ok.style.display='block';
+    setTimeout(()=>{ window.location.href='login.html'; },1500);
+
+  }catch(e){
+    err.textContent=e.message;
+    err.style.display='block';
+    btn.textContent='Create Account'; btn.disabled=false;
+  }
 });
 </script>
 </body>
