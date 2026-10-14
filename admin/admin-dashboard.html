@@ -1,292 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PlugMasters Super Admin - Live</title>
-<style>
-*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{margin:0;background:#f8f5ec}
-.header{background:#8B6914;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:999}
-.header h2{margin:0;font-size:15px}
-.btn-out{background:#fff;color:#8B6914;border:none;padding:6px 12px;border-radius:8px;font-weight:bold;cursor:pointer}
-.container{max-width:1100px;margin:10px auto;padding:0 10px;padding-bottom:80px}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.stat{background:#fff;padding:12px;border-radius:12px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.stat b{font-size:18px;color:#8B6914;display:block}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-@media(min-width:700px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
-.menu{background:#fff;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-align:center;cursor:pointer;border:1.5px solid #eee;font-size:12px}
-.menu.active{border-color:#8B6914;background:#fff9e6}
-.menu b{font-size:12px;display:block;margin-top:3px}
-.section{display:none}
-.section.active{display:block}
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-.card h3{margin:0 0 10px;color:#8B6914;font-size:16px}
-input,select{width:100%;padding:11px;border:1.5px solid #ddd;border-radius:8px;margin:6px 0;font-size:14px}
-.btn-main{background:#8B6914;color:#fff;border:none;padding:12px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer;margin-top:6px}
-.btn-small{padding:6px 10px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:bold;margin:2px}
-.btn-green{background:#1a9e3f;color:#fff}
-.btn-red{background:#d32f2f;color:#fff}
-.btn-blue{background:#0d47a1;color:#fff}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
-th{background:#8B6914;color:#fff;position:sticky;top:0}
-.scroll{overflow:auto;max-height:400px}
-.badge{padding:3px 8px;border-radius:12px;font-size:10px;color:#fff}
-.ok{background:#1a9e3f} .bad{background:#d32f2f} .warn{background:#ff9800}
-</style>
-<script>
-if(!localStorage.getItem('pm_admin')){ location.href='admin-login.html'; }
-</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlugMasters Super Admin LIVE</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="header"><h2>PlugMasters Super Admin LIVE</h2><button class="btn-out" onclick="logout()">Logout</button></div>
-<div class="container">
-
-<div class="stats">
-<div class="stat"><b id="totalUsers">0</b>Total Users</div>
-<div class="stat"><b id="totalWallet">₦0</b>Total Wallet</div>
-<div class="stat"><b id="totalTrans">0</b>Transactions</div>
+<body class="bg-[#fdf6e9] min-h-screen">
+<div class="bg-[#7a5a1a] text-white p-4 flex justify-between items-center sticky top-0 z-10">
+<h1 class="font-bold">PlugMasters Super Admin LIVE</h1>
+<button onclick="location.href='../login.html'" class="bg-white text-black px-4 py-1 rounded-full text-sm font-bold">Logout</button>
 </div>
 
-<div class="grid">
-<div class="menu active" onclick="show('home',this)"><b>🏠 Dashboard</b></div>
-<div class="menu" onclick="show('users',this)"><b>👥 Users</b></div>
-<div class="menu" onclick="show('transactions',this)"><b>💳 Transactions</b></div>
-<div class="menu" onclick="show('wallet',this)"><b>💰 Fund Wallet</b></div>
-<div class="menu" onclick="show('pricing',this)"><b>⚙️ Pricing</b></div>
-<div class="menu" onclick="show('api',this)"><b>🔌 API</b></div>
-<div class="menu" onclick="show('gateway',this)"><b>🏦 Gateway</b></div>
-<div class="menu" onclick="show('settings',this)"><b>⚙️ Settings</b></div>
+<div class="p-3 grid grid-cols-3 gap-2">
+<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalUsers" class="text-[#7a5a1a]">0</b><p class="text-sm">Total Users</p></div>
+<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalWallet" class="text-[#7a5a1a]">₦0</b><p class="text-sm">Total Wallet</p></div>
+<div class="bg-white rounded-xl p-3 text-center shadow"><b id="totalTx" class="text-[#7a5a1a]">0</b><p class="text-sm">Transactions</p></div>
 </div>
 
-<!-- HOME -->
-<div id="home" class="section active">
-<div class="card"><h3>Recent Users (Live Firebase)</h3><div class="scroll"><table id="homeUsers"><thead><tr><th>Name</th><th>Phone</th><th>Wallet</th><th>Action</th></tr></thead><tbody>Loading...</tbody></table></div></div>
+<div class="p-3 grid grid-cols-2 gap-2">
+<button onclick="showTab('dashboard')" id="b-dashboard" class="bg-[#fdf6e9] border-2 border-[#7a5a1a] rounded-xl p-3 font-bold">🏠 Dashboard</button>
+<button onclick="showTab('users')" id="b-users" class="bg-white rounded-xl p-3 font-bold shadow">👥 Users</button>
+<button onclick="showTab('transactions')" id="b-transactions" class="bg-white rounded-xl p-3 font-bold shadow">💳 Transactions</button>
+<button onclick="showTab('fund')" id="b-fund" class="bg-white rounded-xl p-3 font-bold shadow">💰 Fund Wallet</button>
+<button onclick="showTab('pricing')" id="b-pricing" class="bg-white rounded-xl p-3 font-bold shadow">⚙️ Pricing</button>
+<button onclick="showTab('api')" id="b-api" class="bg-white rounded-xl p-3 font-bold shadow">🔌 API</button>
+<button onclick="showTab('gateway')" id="b-gateway" class="bg-white rounded-xl p-3 font-bold shadow">🏦 Gateway</button>
+<button onclick="showTab('settings')" id="b-settings" class="bg-white rounded-xl p-3 font-bold shadow">⚙️ Settings</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="tab-dashboard" class="p-3">
+<div class="bg-white rounded-xl p-4 shadow">
+<h2 class="font-bold text-[#7a5a1a] mb-2">Recent Users (Live Firebase)</h2>
+<div class="overflow-x-auto">
+<table class="w-full text-sm"><thead><tr class="bg-[#7a5a1a] text-white"><th class="p-2 text-left">Name</th><th class="p-2">Phone</th><th class="p-2">Wallet</th><th class="p-2">Action</th></tr></thead><tbody id="usersTable"></tbody></table>
+</div></div>
 </div>
 
 <!-- USERS -->
-<div id="users" class="section">
-<div class="card">
-<h3>Users Management - Search / Block / Fund</h3>
-<input id="searchInput" placeholder="Search name, phone or email" onkeyup="filterUsers()">
-<div class="scroll"><table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Wallet</th><th>Status</th><th>Action</th></tr></thead><tbody>Loading...</tbody></table></div>
-</div>
-</div>
+<div id="tab-users" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">All Users</h2><div id="allUsersList"></div></div></div>
 
 <!-- TRANSACTIONS -->
-<div id="transactions" class="section">
-<div class="card">
-<h3>All Transactions - Real Time</h3>
-<div class="scroll"><table id="transTable"><thead><tr><th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>Loading...</tbody></table></div>
-</div>
-</div>
+<div id="tab-transactions" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">All Transactions</h2><p id="txList" class="text-sm text-gray-500">No transactions yet. Fund a user to create transaction.</p></div></div>
 
-<!-- WALLET -->
-<div id="wallet" class="section">
-<div class="card">
-<h3>💰 Credit / Debit Wallet - Instant</h3>
-<input id="wPhone" placeholder="User Phone e.g 07067065724">
-<input id="wAmount" type="number" placeholder="Amount e.g 5000">
-<select id="wType"><option value="credit">Credit (+)</option><option value="debit">Debit (-)</option></select>
-<button class="btn-main" onclick="fundWallet()">Execute Wallet Update</button>
-<p id="wMsg" style="font-size:13px;margin-top:8px"></p>
-</div>
-</div>
+<!-- FUND WALLET -->
+<div id="tab-fund" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow">
+<h2 class="font-bold mb-3">Fund Wallet (Like your video)</h2>
+<input id="fundPhone" placeholder="User Phone" class="w-full p-3 border rounded-xl mb-2">
+<input id="fundAmount" type="number" placeholder="Amount e.g 1429" class="w-full p-3 border rounded-xl mb-2">
+<button onclick="fundWallet()" class="w-full bg-[#7a5a1a] text-white p-3 rounded-xl font-bold">Fund Now</button>
+<p id="fundMsg" class="text-center mt-2 text-sm"></p>
+</div></div>
 
 <!-- PRICING -->
-<div id="pricing" class="section">
-<div class="card">
-<h3>⚙️ Pricing Control - Controls User Prices</h3>
-<label>Airtime Discount % (e.g 2 = 2% off)</label><input id="pAirtime" placeholder="2">
-<label>Data Profit ₦ per GB</label><input id="pData" placeholder="50">
-<label>Electricity Charge ₦</label><input id="pElec" placeholder="100">
-<label>Cable Charge ₦</label><input id="pCable" placeholder="100">
-<button class="btn-main" onclick="savePricing()">Save Pricing to Firebase</button>
-<p id="pMsg" style="font-size:12px"></p>
-</div>
-</div>
+<div id="tab-pricing" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">Pricing Control</h2><p class="text-sm">Data Plans: <input value="MTN 1GB = ₦280" class="border p-2 rounded w-full mt-2"><button class="bg-[#7a5a1a] text-white px-4 py-2 rounded mt-2">Save</button></p></div></div>
 
 <!-- API -->
-<div id="api" class="section">
-<div class="card">
-<h3>🔌 VTU API Settings</h3>
-<input id="apiVtu" placeholder="VTU.ng API Key / ClubKonnect Token">
-<input id="apiMode" placeholder="Mode: TEST or LIVE" value="LIVE">
-<button class="btn-main" onclick="saveAPI()">Save API Keys</button>
-<p id="apiMsg" style="font-size:12px"></p>
-</div>
-</div>
+<div id="tab-api" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">API Settings</h2><input placeholder="VTU API Key" class="w-full p-3 border rounded-xl mb-2"><input placeholder="API URL" class="w-full p-3 border rounded-xl"><button class="w-full bg-[#7a5a1a] text-white p-3 rounded-xl mt-2 font-bold">Save API</button></div></div>
 
 <!-- GATEWAY -->
-<div id="gateway" class="section">
-<div class="card">
-<h3>🏦 Paystack Gateway</h3>
-<input id="gwPaystack" placeholder="Paystack Secret Key sk_live_xxx">
-<input id="gwWebhook" placeholder="Webhook URL">
-<button class="btn-main" onclick="saveGateway()">Save Gateway</button>
-<p id="gwMsg" style="font-size:12px"></p>
-</div>
-</div>
+<div id="tab-gateway" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">Payment Gateway</h2><p class="text-sm">Monnify / Paystack</p><input placeholder="Gateway Key" class="w-full p-3 border rounded-xl mt-2"><button class="w-full bg-[#7a5a1a] text-white p-3 rounded-xl mt-2 font-bold">Save Gateway</button></div></div>
 
 <!-- SETTINGS -->
-<div id="settings" class="section">
-<div class="card">
-<h3>⚙️ General Settings</h3>
-<input id="sName" value="PlugMasters" placeholder="Site Name">
-<input id="sWhatsapp" placeholder="Support WhatsApp Number">
-<input id="sMinFund" type="number" placeholder="Min Funding e.g 100">
-<button class="btn-main" onclick="saveSettings()">Save Settings</button>
-<p id="sMsg" style="font-size:12px"></p>
-</div>
-</div>
-
-</div>
-
-<script>
-function show(id, el){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.menu').forEach(m=>m.classList.remove('active'));
-  if(el) el.classList.add('active');
-  window.scrollTo(0,0);
-}
-function logout(){ localStorage.clear(); location.href='admin-login.html'; }
-</script>
+<div id="tab-settings" class="p-3 hidden"><div class="bg-white rounded-xl p-4 shadow"><h2 class="font-bold mb-3">Settings</h2><p class="text-sm">Super Admin: 09053504806<br>Site: plugmasters-vtu.vercel.app</p><button onclick="location.href='../register.html'" class="w-full bg-blue-600 text-white p-3 rounded-xl mt-4">View Register Page</button></div></div>
 
 <script type="module">
-import { db } from '../firebase.js';
-import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where, doc, updateDoc, addDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCpQl-jOS4-6bLa5L383dqR5y3JmFT5exA",
+  authDomain: "plugmasters-vtu.firebaseapp.com",
+  projectId: "plugmasters-vtu",
+  storageBucket: "plugmasters-vtu.firebasestorage.app",
+  messagingSenderId: "217536430232",
+  appId: "1:217536430232:web:8a56dd1f34b38a380e10ed"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-let allUsers = [];
+let usersCache = [];
 
-async function loadUsers(){
+async function loadData(){
+  const snap = await getDocs(collection(db,"users"));
+  usersCache = [];
+  let totalW = 0;
+  snap.forEach(d=>{ const u=d.data(); u.id=d.id; usersCache.push(u); totalW+=(u.wallet||0); });
+  document.getElementById('totalUsers').textContent = usersCache.length;
+  document.getElementById('totalWallet').textContent = "₦"+totalW;
+
+  // tx count
   try{
-    const snap = await getDocs(collection(db,'users'));
-    allUsers=[]; let totalW=0;
-    snap.forEach(d=>{
-      const u={id:d.id, ...d.data()};
-      allUsers.push(u);
-      totalW+=Number(u.wallet||0);
-    });
-    document.getElementById('totalUsers').textContent=allUsers.length;
-    document.getElementById('totalWallet').textContent='₦'+totalW.toLocaleString();
-    renderUsers(allUsers);
-    // home
-    const homeT=document.querySelector('#homeUsers tbody');
-    homeT.innerHTML='';
-    allUsers.slice(0,10).forEach(u=>{
-      homeT.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>₦${u.wallet||0}</td><td><button class="btn-small btn-blue" onclick="quickFund('${u.phone}')">Fund</button></td></tr>`;
-    });
-    if(allUsers.length==0){
-      document.querySelector('#homeUsers tbody').innerHTML='<tr><td colspan="4">No users yet. Go to /signup.html and create user, then enable Firestore Test Mode</td></tr>';
-      document.querySelector('#usersTable tbody').innerHTML='<tr><td colspan="6">No users</td></tr>';
+    const txSnap = await getDocs(collection(db,"transactions"));
+    document.getElementById('totalTx').textContent = txSnap.size;
+    if(txSnap.size>0){
+      let html="";
+      txSnap.forEach(t=>{ const x=t.data(); html+=`<div class="border-b py-2 text-sm flex justify-between"><span>${x.phone} - ₦${x.amount}</span><span>${x.type||'fund'}</span></div>` });
+      document.getElementById('txList').innerHTML=html;
     }
-  }catch(e){
-    document.querySelector('#usersTable tbody').innerHTML=`<tr><td colspan="6" style="color:red">Error: ${e.message} - Enable Firestore Database in Firebase Console > Create Database > Test Mode</td></tr>`;
-  }
-}
+  }catch(e){}
 
-function renderUsers(list){
-  const tbody=document.querySelector('#usersTable tbody');
-  tbody.innerHTML='';
-  list.forEach(u=>{
-    const status = u.blocked ? '<span class="badge bad">Blocked</span>' : '<span class="badge ok">Active</span>';
-    tbody.innerHTML+=`<tr>
-      <td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>${u.email||'-'}</td><td>₦${u.wallet||0}</td><td>${status}</td>
-      <td>
-        <button class="btn-small btn-green" onclick="creditPrompt('${u.id}','${u.phone}',${u.wallet||0})">+₦</button>
-        <button class="btn-small ${u.blocked?'btn-green':'btn-red'}" onclick="toggleBlock('${u.id}',${u.blocked||false})">${u.blocked?'Unblock':'Block'}</button>
-        <button class="btn-small btn-red" onclick="delUser('${u.id}')">Del</button>
-      </td></tr>`;
+  // tables
+  let h="";
+  usersCache.forEach(u=>{
+    h+=`<tr class="border-b"><td class="p-2">${u.name}</td><td class="p-2 text-center">${u.phone}</td><td class="p-2 text-center">₦${u.wallet||0}</td><td class="p-2"><button onclick="quickFund('${u.phone}')" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs">Fund</button></td></tr>`;
   });
+  document.getElementById('usersTable').innerHTML=h;
+  document.getElementById('allUsersList').innerHTML=h?`<table class="w-full text-sm"><tr class="bg-[#7a5a1a] text-white"><th class="p-2">Name</th><th>Phone</th><th>Wallet</th></tr>${h}</table>`:"No users";
 }
+loadData();
 
-window.filterUsers=()=>{
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const f=allUsers.filter(u=> (u.name||'').toLowerCase().includes(q) || (u.phone||'').includes(q) || (u.email||'').toLowerCase().includes(q) );
-  renderUsers(f);
-}
-
-window.quickFund=(phone)=>{ show('wallet',null); document.getElementById('wPhone').value=phone; }
-
-window.fundWallet=async()=>{
-  const phone=document.getElementById('wPhone').value.trim();
-  const amount=Number(document.getElementById('wAmount').value);
-  const type=document.getElementById('wType').value;
-  const msg=document.getElementById('wMsg');
-  if(!phone||!amount){ msg.textContent='Enter phone & amount'; return; }
-  msg.textContent='Processing...';
-  const user=allUsers.find(u=>u.phone==phone);
-  if(!user){ msg.textContent='User not found'; return; }
-  const newWallet = type=='credit' ? Number(user.wallet||0)+amount : Number(user.wallet||0)-amount;
-  try{
-    await updateDoc(doc(db,'users',user.id),{wallet:newWallet});
-    msg.textContent=`✅ Success! New wallet: ₦${newWallet}`;
-    loadUsers();
-  }catch(e){ msg.textContent='Error: '+e.message; }
-}
-
-window.creditPrompt=async(id,phone,oldW)=>{
-  const amt=prompt(`Credit how much for ${phone}? Current: ₦${oldW}`);
-  if(!amt) return;
-  await updateDoc(doc(db,'users',id),{wallet:oldW+Number(amt)});
-  alert('Credited!'); loadUsers();
-}
-
-window.toggleBlock=async(id,blocked)=>{
-  await updateDoc(doc(db,'users',id),{blocked:!blocked});
-  loadUsers();
-}
-
-window.delUser=async(id)=>{
-  if(!confirm('Delete user permanently?')) return;
-  await deleteDoc(doc(db,'users',id));
-  loadUsers();
-}
-
-// Transactions
-async function loadTrans(){
-  try{
-    const snap=await getDocs(collection(db,'transactions'));
-    const tbody=document.querySelector('#transTable tbody');
-    tbody.innerHTML=''; let c=0;
-    snap.forEach(d=>{
-      c++; const t=d.data();
-      tbody.innerHTML+=`<tr><td>${(t.date||t.createdAt||'').slice(0,16)}</td><td>${t.phone||t.user||'-'}</td><td>${t.type||'-'}</td><td>₦${t.amount||0}</td><td>${t.status||'success'}</td></tr>`;
-    });
-    document.getElementById('totalTrans').textContent=c;
-    if(c==0) tbody.innerHTML='<tr><td colspan="5">No transactions yet</td></tr>';
-  }catch(e){ document.querySelector('#transTable tbody').innerHTML='<tr><td colspan="5">'+e.message+'</td></tr>'; }
-}
-
-// Settings save
-window.savePricing=async()=>{
-  await setDoc(doc(db,'settings','pricing'),{
-    airtime:document.getElementById('pAirtime').value,
-    data:document.getElementById('pData').value,
-    elec:document.getElementById('pElec').value,
-    cable:document.getElementById('pCable').value,
-    updated: new Date().toISOString()
+window.showTab = (t)=>{
+  ['dashboard','users','transactions','fund','pricing','api','gateway','settings'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.add('hidden');
+    document.getElementById('b-'+x).classList.remove('bg-[#fdf6e9]','border-2','border-[#7a5a1a]');
+    document.getElementById('b-'+x).classList.add('bg-white');
   });
-  document.getElementById('pMsg').textContent='✅ Pricing Saved! User app will use this';
-}
-window.saveAPI=async()=>{
-  await setDoc(doc(db,'settings','api'),{key:document.getElementById('apiVtu').value, mode:document.getElementById('apiMode').value});
-  document.getElementById('apiMsg').textContent='✅ API Saved';
-}
-window.saveGateway=async()=>{
-  await setDoc(doc(db,'settings','gateway'),{paystack:document.getElementById('gwPaystack').value, webhook:document.getElementById('gwWebhook').value});
-  document.getElementById('gwMsg').textContent='✅ Gateway Saved';
-}
-window.saveSettings=async()=>{
-  await setDoc(doc(db,'settings','general'),{name:document.getElementById('sName').value, whatsapp:document.getElementById('sWhatsapp').value, minFund:document.getElementById('sMinFund').value});
-  document.getElementById('sMsg').textContent='✅ Settings Saved';
-}
+  document.getElementById('tab-'+t).classList.remove('hidden');
+  document.getElementById('b-'+t).classList.add('bg-[#fdf6e9]','border-2','border-[#7a5a1a]');
+  document.getElementById('b-'+t).classList.remove('bg-white');
+};
 
-loadUsers(); loadTrans();
+window.quickFund = (phone)=>{ showTab('fund'); document.getElementById('fundPhone').value=phone; };
+
+window.fundWallet = async ()=>{
+  const phone = document.getElementById('fundPhone').value.trim();
+  const amount = parseFloat(document.getElementById('fundAmount').value);
+  const msg = document.getElementById('fundMsg');
+  if(!phone ||!amount){ msg.textContent="Fill phone and amount"; msg.className="text-red-600 text-center mt-2"; return; }
+  msg.textContent="Funding..."; msg.className="text-blue-600 text-center mt-2";
+  try{
+    const q = query(collection(db,"users"), where("phone","==",phone));
+    const snap = await getDocs(q);
+    if(snap.empty){ msg.textContent="User not found"; msg.className="text-red-600 text-center mt-2"; return; }
+    const userDoc = snap.docs[0];
+    await updateDoc(doc(db,"users",userDoc.id), { wallet: increment(amount) });
+    await addDoc(collection(db,"transactions"), { phone, amount, type:"Admin Funding", createdAt: new Date() });
+    msg.textContent=`✅ Funded ₦${amount} to ${phone}`; msg.className="text-green-600 text-center mt-2";
+    loadData();
+  }catch(e){ msg.textContent="Error: "+e.message; msg.className="text-red-600 text-center mt-2"; }
+};
 </script>
 </body>
 </html>
-
