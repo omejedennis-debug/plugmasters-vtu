@@ -34,7 +34,7 @@ btn.addEventListener('click',()=>{
   console.log('Trying',phone,pin);
   if((phone==="07067065724" && pin==="1234") || (phone==="admin@plugmasters.com" && (pin==="Admin123!"||pin==="1234"))){
     localStorage.setItem('pm_admin','super');
-    window.location.href='dashboard.html'; // or admin-dashboard.html if that's your file
+    window.location.href='admin-dashboard.html'; // or admin-dashboard.html if that's your file
   }else{
     err.style.display='block';
     // prevent freeze
