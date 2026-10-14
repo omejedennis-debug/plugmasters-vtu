@@ -3,34 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Signup - Plugmasters VTU</title>
+<title>Register - Plugmasters</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen">
-<div class="bg-white p-8 rounded-xl w-96">
-<h2 class="text-2xl font-bold mb-6 text-center">Create Account</h2>
-<input id="name" placeholder="Full Name" class="w-full p-3 border rounded mb-3">
-<input id="phone" placeholder="Phone 070..." class="w-full p-3 border rounded mb-3">
-<input id="email" placeholder="Email" class="w-full p-3 border rounded mb-3">
-<input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded mb-3">
-<button id="btn" class="w-full bg-blue-600 text-white p-3 rounded font-bold">Create Account</button>
-<p id="msg" class="text-center mt-3 text-sm"></p>
+<body class="bg-[#0f172a] flex items-center justify-center min-h-screen p-4">
+<div class="bg-white p-8 rounded-2xl w-full max-w-md shadow-2xl">
+<h2 class="text-2xl font-black mb-2 text-center">Create Account</h2>
+<p class="text-gray-500 text-center mb-6 text-sm">Join Plugmasters VTU</p>
+<input id="name" placeholder="Full Name" class="w-full p-3.5 border rounded-xl mb-3">
+<input id="phone" placeholder="Phone e.g 07067065724" class="w-full p-3.5 border rounded-xl mb-3">
+<input id="email" placeholder="Email" class="w-full p-3.5 border rounded-xl mb-3">
+<input id="password" type="password" placeholder="Password (min 6)" class="w-full p-3.5 border rounded-xl mb-4">
+<button id="btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-xl font-bold">Create Account</button>
+<p id="msg" class="text-center mt-4 text-sm font-medium"></p>
+<p class="text-center mt-6 text-sm">Already have account? <a href="login.html" class="text-blue-600 font-bold">Login</a></p>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyCpQl-jOS4-6bLa5L383dqR5y3JmFT5exA",
   authDomain: "plugmasters-vtu.firebaseapp.com",
   projectId: "plugmasters-vtu",
   storageBucket: "plugmasters-vtu.firebasestorage.app",
   messagingSenderId: "217536430232",
-  appId: "1:217536430232:web:8a56dd1f34b38a380e10ed",
-  measurementId: "G-DMX4JC8X78"
+  appId: "1:217536430232:web:8a56dd1f34b38a380e10ed"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -40,34 +39,16 @@ document.getElementById('btn').onclick = async () => {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
   const msg = document.getElementById('msg');
-  
-  if(!name || !phone || !email || !password){ msg.textContent="Fill all fields"; msg.className="text-red-600 text-center mt-3 text-sm"; return; }
-  
-  msg.textContent="Creating account..."; 
-  msg.className="text-blue-600 text-center mt-3 text-sm";
-  
+  if(!name || !phone || !email || !password){ msg.textContent="Fill all fields"; msg.className="text-red-600 text-center mt-4"; return; }
+  msg.textContent="Creating account..."; msg.className="text-blue-600 text-center mt-4";
   try {
-    // Check if user exists
     const q = query(collection(db, "users"), where("phone", "==", phone));
     const snap = await getDocs(q);
-    if(!snap.empty){ msg.textContent="Phone already exists"; msg.className="text-red-600 text-center mt-3 text-sm"; return; }
-    
-    await addDoc(collection(db, "users"), {
-      name, phone, email, password,
-      wallet: 0,
-      role: "user",
-      createdAt: new Date()
-    });
-    
-    msg.textContent="Account created! Redirecting...";
-    msg.className="text-green-600 text-center mt-3 text-sm";
+    if(!snap.empty){ msg.textContent="Phone already exists, login"; msg.className="text-red-600 text-center mt-4"; return; }
+    await addDoc(collection(db, "users"), { name, phone, email, password, wallet: 0, role: "user", createdAt: new Date() });
+    msg.textContent="✅ Account created! Redirecting to login..."; msg.className="text-green-600 text-center mt-4";
     setTimeout(()=>{ window.location.href="login.html"; },1500);
-    
-  } catch(e) {
-    console.error(e);
-    msg.textContent="Error: " + e.message;
-    msg.className="text-red-600 text-center mt-3 text-sm";
-  }
+  } catch(e) { msg.textContent="Error: "+e.message; msg.className="text-red-600 text-center mt-4"; console.error(e); }
 };
 </script>
 </body>
