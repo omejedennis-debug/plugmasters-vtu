@@ -1,37 +1,60 @@
 <!DOCTYPE html>
-<html><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Login - PlugMasters</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlugMasters - Super Admin Login</title>
 <style>
-*{box-sizing:border-box;font-family:sans-serif}body{background:#f5f1e6;padding:15px}
-.box{max-width:420px;margin:30px auto;background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
-h1{text-align:center;color:#8B6914}input{width:100%;padding:13px;margin-top:8px;border:1.5px solid #ddd;border-radius:10px}
-label{font-weight:bold;margin-top:14px;display:block;font-size:14px}
-.btn{width:100%;background:#8B6914;color:#fff;border:none;padding:14px;border-radius:12px;margin-top:18px;font-weight:bold;cursor:pointer}
-.error{color:red;text-align:center;margin-top:10px;display:none}
-</style></head><body>
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#f5f1e6;padding:15px;margin:0}
+.box{max-width:420px;margin:40px auto;background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+h1{text-align:center;color:#8B6914;margin:0}
+.sub{text-align:center;color:#888;margin:5px 0 15px}
+.info{border:1.5px dashed #8B6914;border-radius:10px;padding:12px;background:#fffdf5;font-size:13px;line-height:1.6;margin-bottom:18px}
+label{font-weight:600;font-size:14px;margin:14px 0 6px;display:block}
+input{width:100%;padding:13px;border:1.5px solid #ddd;border-radius:10px;font-size:16px}
+.btn{width:100%;background:#8B6914;color:#fff;border:none;padding:14px;border-radius:12px;font-size:16px;font-weight:bold;margin-top:18px;cursor:pointer}
+.error{color:#d00;background:#ffe6e6;padding:10px;border-radius:8px;margin-top:12px;text-align:center;display:none;font-size:14px}
+</style>
+</head>
+<body>
 <div class="box">
-<h1>PlugMasters</h1><p style="text-align:center;color:#888;margin-bottom:10px">Super Admin - 23 Menus</p>
-<div style="border:1px dashed #8B6914;padding:10px;border-radius:10px;background:#fffdf5;font-size:13px;margin-bottom:15px">
-<b>Default Super Admin:</b><br>Phone: 07067065724<br>PIN: 1234
+<h1>PlugMasters</h1>
+<p class="sub">Super Admin - 23 Menus</p>
+<div class="info">
+<b>Default Super Admin:</b><br>
+Phone: 07067065724<br>
+PIN: 1234<br>
+Role: Super Admin - All Access
 </div>
 <label>Phone Number</label>
-<input id="phone" value="07067065724">
+<input id="phone" type="text" value="07067065724">
 <label>Admin PIN</label>
 <input id="pin" type="password" value="1234">
-<button class="btn" id="loginBtn">➔ Login to Dashboard</button>
-<p class="error" id="err">Invalid Phone or PIN</p>
+<button class="btn" id="loginBtn">Login to Dashboard</button>
+<div class="error" id="err">Invalid Phone or PIN</div>
 </div>
+
 <script>
-document.getElementById('loginBtn').addEventListener('click',function(){
-  const phone=document.getElementById('phone').value.trim();
-  const pin=document.getElementById('pin').value.trim();
-  if(phone==="07067065724" && pin==="1234"){
+// NO FIREBASE HERE - pure local check to avoid hang
+document.getElementById('loginBtn').addEventListener('click', function(){
+  const phone = document.getElementById('phone').value.trim();
+  const pin = document.getElementById('pin').value.trim();
+  const err = document.getElementById('err');
+  
+  // ACCEPT BOTH
+  if( (phone==="07067065724" && pin==="1234") || (phone==="admin@plugmasters.com" && pin==="Admin123!") ){
+    // save 3 keys so any dashboard check passes
     localStorage.setItem('pm_admin','super');
-    window.location.href='admin-dashboard.html';
+    localStorage.setItem('isAdmin','true');
+    localStorage.setItem('adminLoggedIn','yes');
+    // go to dashboard
+    window.location.href = 'admin-dashboard.html';
   }else{
-    document.getElementById('err').style.display='block';
+    err.textContent = 'Invalid - Use 07067065724 / 1234';
+    err.style.display='block';
   }
 });
 </script>
-</body></html>
+</body>
+</html>
