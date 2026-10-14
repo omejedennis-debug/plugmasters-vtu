@@ -184,6 +184,10 @@ Today Profit: <b style="color:green;">₦48,320</b></small>
 </div>
 
 <script>
+
+  if(!localStorage.getItem('pm_admin')){
+  window.location.href='admin-login.html';
+}
 // CHECK LOGIN
 if(localStorage.getItem('plug_admin_logged')!=='true'){
 location.href='admin-login.html';
@@ -206,9 +210,6 @@ localStorage.removeItem('plug_admin_role');
 location.href='admin-login.html';
 }
 
-  if(!localStorage.getItem('pm_admin')){
-  window.location.href='admin-login.html';
-}
 </script>
 </body>
 </html>
