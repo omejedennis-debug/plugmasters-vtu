@@ -1,154 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PlugMasters - Super Admin</title>
+<html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login - PlugMasters</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{background:#f5f1e6;padding:15px}
-.container{max-width:480px;margin:0 auto;background:#fff;border-radius:16px;padding:25px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
-h1{text-align:center;color:#8B6914;font-size:28px;margin-bottom:2px}
-.subtitle{text-align:center;color:#888;margin-bottom:15px}
-.badge{display:flex;justify-content:center;margin-bottom:15px}
-.badge span{background:#111;color:#fff;padding:6px 14px;border-radius:20px;font-size:13px}
-.info-box{border:1.5px dashed #8B6914;border-radius:12px;padding:14px;margin-bottom:20px;background:#fffdf5;font-size:14px;line-height:1.6}
-.info-box b{color:#111}
-.info-box a{color:#0d2dff;text-decoration:underline;font-weight:bold}
-label{font-weight:bold;font-size:14px;margin:12px 0 6px;display:block}
-input{width:100%;padding:14px;border:1.5px solid #ddd;border-radius:10px;font-size:16px;outline:none}
-input:focus{border-color:#8B6914}
-.btn{width:100%;background:#8B6914;color:#fff;border:none;padding:15px;border-radius:12px;font-size:16px;font-weight:bold;margin-top:20px;cursor:pointer}
-.btn:active{transform:scale(.98)}
-.error{color:red;text-align:center;margin-top:12px;font-size:14px;display:none}
-.hint{text-align:center;font-size:12px;color:#888;margin-top:15px;line-height:1.5}
-
-/* Dashboard after login */
-#dashboard{display:none}
-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:13px}
-th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
-th{background:#8B6914;color:#fff}
-.card{background:#fff;border-radius:12px;padding:15px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.logout{background:#111;color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;float:right}
-</style>
-</head>
-<body>
-<div class="container" id="loginBox">
-<h1>PlugMasters</h1>
-<p class="subtitle">Super Admin - 23 Menus</p>
-<div class="badge"><span>🛡️ Secure Login</span></div>
-
-<div class="info-box">
-<b>Default Super Admin:</b><br>
-Phone: <a>07067065724</a><br>
-PIN: <a>1234</a><br>
-Role: Super Admin - All Access<br><br>
-<b>Your Firebase Admin:</b><br>
-Email: admin@plugmasters.com<br>
-Password: Admin123!
+*{box-sizing:border-box;font-family:sans-serif}body{background:#f5f1e6;padding:15px}
+.box{max-width:420px;margin:30px auto;background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
+h1{text-align:center;color:#8B6914}input{width:100%;padding:13px;margin-top:8px;border:1.5px solid #ddd;border-radius:10px}
+label{font-weight:bold;margin-top:14px;display:block;font-size:14px}
+.btn{width:100%;background:#8B6914;color:#fff;border:none;padding:14px;border-radius:12px;margin-top:18px;font-weight:bold;cursor:pointer}
+.error{color:red;text-align:center;margin-top:10px;display:none}
+</style></head><body>
+<div class="box">
+<h1>PlugMasters</h1><p style="text-align:center;color:#888;margin-bottom:10px">Super Admin - 23 Menus</p>
+<div style="border:1px dashed #8B6914;padding:10px;border-radius:10px;background:#fffdf5;font-size:13px;margin-bottom:15px">
+<b>Default Super Admin:</b><br>Phone: 07067065724<br>PIN: 1234<br>Role: Super Admin
 </div>
-
-<label>Phone Number or Email</label>
-<input id="phone" placeholder="07067065724 or admin@plugmasters.com" value="07067065724">
-
-<label>Admin PIN / Password</label>
-<input id="pin" type="password" placeholder="1234 or Admin123!" value="1234">
-
-<button class="btn" onclick="login()">➔ Login to Dashboard</button>
-<p class="error" id="errorMsg">Invalid Phone or PIN - Use 07067065724 / 1234</p>
-
-<p class="hint">
-Staff Login: Support, Accountant, Viewer use their phone + PIN<br>
-All actions logged with IP, Device, Time in Audit Logs<br>
-<b style="color:#8B6914">Fixed header + All 23 links attached on every page</b>
-</p>
+<label>Phone Number</label>
+<input id="phone" value="07067065724" placeholder="07067065724">
+<label>Admin PIN</label>
+<input id="pin" type="password" value="1234" placeholder="1234">
+<button class="btn" id="loginBtn">➔ Login to Dashboard</button>
+<p class="error" id="err">Invalid Phone or PIN - Use 07067065724 / 1234</p>
 </div>
+<script>
+const phoneEl=document.getElementById('phone');
+const pinEl=document.getElementById('pin');
+const err=document.getElementById('err');
+const btn=document.getElementById('loginBtn');
 
-<div class="container" id="dashboard" style="max-width:900px">
-<button class="logout" onclick="logout()">Logout</button>
-<h2>Super Admin Dashboard</h2>
-<p style="margin:10px 0;color:#666">Welcome, <b id="adminName">Super Admin</b> | All Users & Wallet</p>
-<div class="card"><h3 id="count">Loading users...</h3>
-<table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Wallet</th><th>Date</th></tr></thead><tbody></tbody></table>
-</div>
-</div>
-
-<script type="module">
-import { auth, db } from './firebase.js';
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-window.login = async function(){
-  const phone = document.getElementById('phone').value.trim();
-  const pin = document.getElementById('pin').value.trim();
-  const error = document.getElementById('errorMsg');
-
-  // 1. Hardcoded Super Admin
-  if(phone === "07067065724" && pin === "1234"){
+btn.addEventListener('click',()=>{
+  const phone=phoneEl.value.trim();
+  const pin=pinEl.value.trim();
+  console.log('Trying',phone,pin);
+  if((phone==="07067065724" && pin==="1234") || (phone==="admin@plugmasters.com" && (pin==="Admin123!"||pin==="1234"))){
     localStorage.setItem('pm_admin','super');
-    showDashboard("Super Admin (07067065724)");
-    return;
+    window.location.href='dashboard.html'; // or admin-dashboard.html if that's your file
+  }else{
+    err.style.display='block';
+    // prevent freeze
+    btn.textContent='➔ Login to Dashboard';
+    btn.disabled=false;
   }
-  // 2. Your Firebase Admin (email login)
-  if((phone === "admin@plugmasters.com" || phone === "07067065724") && (pin === "Admin123!" || pin === "1234" || pin === "07067065724")){
-    // allow flexible
-    localStorage.setItem('pm_admin','super');
-    showDashboard("Super Admin (Firebase)");
-    return;
-  }
-  // 3. Try Firebase Email login for admin@plugmasters.com
-  if(phone.includes('@')){
-    try{
-      await signInWithEmailAndPassword(auth, phone, pin);
-      localStorage.setItem('pm_admin','firebase');
-      showDashboard(phone);
-      return;
-    }catch(e){
-      error.textContent = e.message;
-      error.style.display='block';
-      return;
-    }
-  }
-
-  error.style.display='block';
-}
-
-function showDashboard(name){
-  document.getElementById('loginBox').style.display='none';
-  document.getElementById('dashboard').style.display='block';
-  document.getElementById('adminName').textContent=name;
-  loadUsers();
-}
-
-async function loadUsers(){
-  try{
-    const snap = await getDocs(collection(db,'users'));
-    const tbody = document.querySelector('#usersTable tbody');
-    tbody.innerHTML='';
-    let count=0;
-    snap.forEach(doc=>{
-      count++;
-      const u=doc.data();
-      tbody.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>${u.email||'-'}</td><td>₦${u.wallet||0}</td><td>${(u.createdAt||'').slice(0,10)}</td></tr>`;
-    });
-    document.getElementById('count').textContent=`Total Users: ${count}`;
-    if(count===0) document.getElementById('count').textContent='No users yet - Create one via /signup.html';
-  }catch(e){
-    document.getElementById('count').textContent='Error loading users: '+e.message+' - Enable Firestore in console';
-  }
-}
-
-window.logout = function(){
-  localStorage.removeItem('pm_admin');
-  location.reload();
-}
-
-// Auto-login if already logged
-if(localStorage.getItem('pm_admin')){
-  document.getElementById('loginBox').style.display='none';
-  document.getElementById('dashboard').style.display='block';
-  loadUsers();
-}
+});
+// also allow Enter key
+pinEl.addEventListener('keydown',e=>{if(e.key==='Enter') btn.click()});
 </script>
-</body>
-</html>
+</body></html>
