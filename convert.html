@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert - PlugMasters VTU Main Build v1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--primary-light:#FFF8E6;--success:#00A86B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#F6F6F6;display:flex;justify-content:center;}
+.phone{width:390px;background:#F6F6F6;min-height:100vh;position:relative;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;border-bottom:1px solid #EEE;}
+.tabs{display:flex;background:white;padding:8px;gap:8px;}
+.tab{flex:1;padding:10px;border-radius:20px;text-align:center;font-size:12px;cursor:pointer;border:1.5px solid #EEE;}
+.tab.active{background:var(--primary);color:white;border-color:var(--primary);font-weight:700;}
+.form{background:white;padding:16px;margin-top:8px;border-radius:18px 18px 0 0;}
+.net-box{display:flex;gap:8px;overflow-x:auto;padding:8px 0;}
+.net{padding:8px 14px;border-radius:20px;border:1.5px solid #EEE;cursor:pointer;font-size:13px;white-space:nowrap;}
+.net.active{background:var(--primary);color:white;border-color:var(--primary);}
+.input{width:100%;padding:12px;border:1.5px solid #EEE;border-radius:10px;margin:8px 0;outline:none;}
+.info{background:#FFF8E6;border:1px solid #FFE69C;padding:10px;border-radius:10px;font-size:11px;margin:8px 0;}
+.pay{width:100%;padding:14px;border-radius:12px;border:none;background:var(--primary);color:white;font-weight:800;margin-top:16px;}
+.success{position:absolute;top:0;left:0;width:100%;height:100%;background:white;z-index:90;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;}.success.show{display:flex;}
+.check{width:64px;height:64px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:32px;margin-bottom:12px;}
+</style>
+
+<script>
+    // LOGIN PROTECTION FOR ALL PAGES
+    (function(){
+     if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+       location.href='login.html';
+     }
+    })();
+    </script>
+</head>
+<body>
+<div class="phone">
+  <div class="header"><span onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></span><b>Convert Airtime</b><a href="history.html?filter=Convert" style="color:var(--primary);font-weight:700;text-decoration:none;">History</a></div>
+  <div class="tabs"><div class="tab active" id="tabCash" onclick="switchTab('cash')">Airtime to Cash</div><div class="tab" id="tabData" onclick="switchTab('data')">Airtime to Data</div></div>
+  <div class="form">
+    <p style="font-size:12px;color:#888;">Select Network</p>
+    <div class="net-box">
+      <div class="net active" onclick="pickNet(this,'MTN')">MTN</div><div class="net" onclick="pickNet(this,'Airtel')">Airtel</div><div class="net" onclick="pickNet(this,'GLO')">GLO</div><div class="net" onclick="pickNet(this,'T2')">T2</div>
+    </div>
+    <div class="info">Rate: <b id="rateText">MTN 85% - Airtel 80% - GLO 75% - T2 70%</b><br>Minimum ₦500, you receive cash directly to your PlugMasters wallet.</div>
+    <input class="input" id="phone" placeholder="Phone that will send airtime e.g 07067065724" value="070 6706 5724">
+    <input class="input" id="amount" type="number" placeholder="Amount to convert e.g 1000" oninput="calc()">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px;"><span>You will receive:</span><b id="receive" style="color:var(--success);">₦0.00</b></div>
+    <div id="dataPlans" style="display:none;">
+      <p style="font-size:12px;margin-top:8px;">Choose Data to receive</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+        <div style="border:1.5px solid #EEE;border-radius:10px;padding:10px;text-align:center;cursor:pointer;" onclick="pickDataPlan(this,'1GB')">1GB - ₦500 airtime</div>
+        <div style="border:1.5px solid #EEE;border-radius:10px;padding:10px;text-align:center;cursor:pointer;" onclick="pickDataPlan(this,'2GB')">2GB - ₦1000 airtime</div>
+      </div>
+    </div>
+    <button class="pay" onclick="convert()">Convert Now</button>
+    <div style="margin-top:12px;font-size:11px;color:#888;">Step: After you click Convert, we go give you number to transfer airtime to. Once you transfer, wallet go credit automatically.</div>
+  </div>
+  <div class="success" id="success"><div class="check">✓</div><h3 id="successTitle">Convert Request Created</h3><p style="font-size:13px;color:#666;margin-top:8px;" id="successDesc">Send ₦1000 MTN airtime to 09012345678.<br>Use USSD: *600*09012345678*1000*PIN#</p><button class="pay" style="width:80%;" onclick="location.reload()">Done</button></div>
+</div>
+<script>
+let currentNet='MTN',currentMode='cash',selectedData='';
+const rates={MTN:0.85,Airtel:0.80,GLO:0.75,T2:0.70};
+function switchTab(m){currentMode=m;document.getElementById('tabCash').classList.toggle('active',m=='cash');document.getElementById('tabData').classList.toggle('active',m=='data');document.getElementById('dataPlans').style.display=m=='data'?'block':'none';}
+function pickNet(el,n){document.querySelectorAll('.net').forEach(x=>x.classList.remove('active'));el.classList.add('active');currentNet=n;calc();}
+function calc(){let amt=parseFloat(document.getElementById('amount').value)||0;let rec=amt*rates[currentNet];document.getElementById('receive').innerText='₦'+rec.toFixed(2);}
+function pickDataPlan(el,name){document.querySelectorAll('#dataPlans div div').forEach(d=>d.style.borderColor='#EEE');el.style.borderColor='#8B6914';selectedData=name;}
+function convert(){let amt=document.getElementById('amount').value;if(!amt||amt<500){alert('Minimum ₦500');return;}document.getElementById('success').classList.add('show');document.getElementById('successDesc').innerHTML=`Send ₦${amt} ${currentNet} airtime to <b>09012345678</b>.<br>${currentMode=='cash'? 'You will receive ₦'+(amt*rates[currentNet]).toFixed(2)+' to wallet' : 'You will receive '+ (selectedData||'1GB')+' data'}<br><br>Dial: *600*09012345678*${amt}*PIN#`;}
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+    <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+    <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+    <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+    <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+    <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+    </div>
+    <script>
+    function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+    </script>
+</body>
+</html>

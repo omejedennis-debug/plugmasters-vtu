@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homepage Settings - PlugMasters</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+.switch{position:relative;width:48px;height:26px;display:inline-block}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ddd;transition:.4s;border-radius:34px}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:4px;bottom:4px;background:white;transition:.4s;border-radius:50%}
+input:checked + .slider{background:#b88e2f}
+input:checked + .slider:before{transform:translateX(22px)}
+.item{background:white;border-radius:16px;padding:18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,0.04);}
+.preview-card{border:1.5px solid #f0d78c;border-radius:16px;padding:15px;margin-top:20px;background:white}
+</style>
+
+<script>
+  // LOGIN PROTECTION FOR ALL PAGES
+  (function(){
+   if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+     location.href='login.html';
+   }
+  })();
+  </script>
+</head>
+<body>
+<div class="app">
+  <header>
+    <i class="fa-solid fa-arrow-left" onclick="history.back()" style="font-size:18px;cursor:pointer"></i>
+    <b>Homepage Settings</b><span></span>
+  </header>
+
+  <div class="content">
+    <small style="color:#b88e2f;letter-spacing:2px;font-weight:bold;">HOMEPAGE DISPLAY</small>
+
+    <!-- Toggle 1 -->
+    <div class="item" style="margin-top:10px;">
+      <div style="max-width:68%">
+        <b style="font-size:14px;">Show my recent transactions on the homepage</b>
+        <p style="font-size:11px;color:#888;margin-top:4px;">Visible on home dashboard</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="recentToggle" checked onchange="saveSettings()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Toggle 2 - Hide Balance -->
+    <div class="item">
+      <div style="max-width:68%">
+        <b style="font-size:14px;">Hide wallet balance on homepage</b>
+        <p style="font-size:11px;color:#888;margin-top:4px;">Show as **** for privacy</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="balanceToggle" onchange="saveSettings()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- PREVIEW -->
+    <small style="color:#b88e2f;letter-spacing:2px;font-weight:bold;margin-top:20px;display:block;">PREVIEW</small>
+    <div class="preview-card">
+      <small style="background:#b88e2f;color:white;padding:4px 10px;border-radius:20px;font-size:10px;"><i class="fa-regular fa-eye"></i> Homepage Preview</small>
+      
+      <div style="background: linear-gradient(135deg,#d4b86a,#b88e2f);color:white;padding:15px;border-radius:12px;margin-top:15px;display:flex;justify-content:space-between;">
+        <div>
+          <small>Wallet Balance <i id="previewEye" class="fa-regular fa-eye"></i></small><br>
+          <b id="previewBalance" style="font-size:22px;">₦24,500.00</b>
+        </div>
+      </div>
+
+      <div id="previewTrans" style="margin-top:15px;">
+        <b style="font-size:13px;">Recent Transaction</b>
+        <div class="trans" style="margin-top:8px;"><span class="icon gold"><i class="fa-solid fa-mobile"></i></span><div><b>Airtime Purchase - MTN</b><br><small>Today • 09:24</small></div><b style="margin-left:auto;color:#c00">-₦1,000</b></div>
+      </div>
+    </div>
+
+    <p style="text-align:center;color:#888;font-size:11px;margin-top:12px;" id="statusText">Changes apply instantly to your homepage</p>
+  </div>
+</div>
+
+<script>
+  // Load saved
+  document.getElementById('recentToggle').checked = localStorage.getItem('showRecent') !== 'false';
+  document.getElementById('balanceToggle').checked = localStorage.getItem('hideBalance') === 'true';
+  updatePreview();
+
+  function saveSettings(){
+    const showRecent = document.getElementById('recentToggle').checked;
+    const hideBalance = document.getElementById('balanceToggle').checked;
+    localStorage.setItem('showRecent', showRecent);
+    localStorage.setItem('hideBalance', hideBalance);
+    updatePreview();
+    if(navigator.vibrate) navigator.vibrate(30);
+  }
+
+  function updatePreview(){
+    const showRecent = document.getElementById('recentToggle').checked;
+    const hideBalance = document.getElementById('balanceToggle').checked;
+    document.getElementById('previewTrans').style.display = showRecent ? 'block' : 'none';
+    document.getElementById('previewBalance').innerText = hideBalance ? '₦ ****' : '₦24,500.00';
+    document.getElementById('previewEye').className = hideBalance ? 'fa-solid fa-eye-slash' : 'fa-regular fa-eye';
+  }
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+  <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+  <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+  <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+  <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+  <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+  </div>
+  <script>
+  function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+  </script>
+</body>
+</html>

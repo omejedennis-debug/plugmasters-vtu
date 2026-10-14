@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transactions - PlugMasters</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--success:#00A86B;--bg:#F5F5F5;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:var(--bg);display:flex;justify-content:center;}
+.app{width:100%;max-width:420px;background:white;min-height:100vh;position:relative;padding-bottom:20px;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;position:sticky;top:0;z-index:10;border-bottom:1px solid #EEE;}
+.header b{font-size:16px;}
+.filters{display:flex;gap:10px;padding:10px 16px;background:white;position:sticky;top:50px;z-index:9;}
+.filter-btn{flex:1;padding:8px 12px;border-radius:20px;border:1.5px solid #E0E0E0;background:white;font-size:13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.filter-btn.active{border-color:var(--primary);background:#FFF8E6;color:var(--primary);}
+.month-group{padding:10px 16px;}
+.month-head{display:flex;justify-content:space-between;align-items:center;padding:8px 0;}
+.month-head b{font-size:14px;}
+.month-head small{font-size:11px;color:#888;}
+.analysis{padding:4px 10px;border-radius:12px;background:#E8F5E9;color:var(--success);font-size:11px;font-weight:700;cursor:pointer;}
+.tx{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #F8F8F8;}
+.tx-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.tx-icon.green{background:#E8F5E9;color:var(--success);} .tx-icon.orange{background:#FFF3E0;color:#FF9800;} .tx-icon.purple{background:#F3E5F5;color:#9C27B0;} .tx-icon.brown{background:var(--primary-light,#FFF8E6);color:var(--primary);}
+.tx-info{flex:1;}
+.tx-info b{font-size:13px;display:block;}
+.tx-info small{font-size:11px;color:#888;}
+.tx-amt{text-align:right;}
+.tx-amt b{font-size:13px;display:block;}
+.tx-amt small{font-size:10px;color:var(--success);}
+
+/* BOTTOM SHEETS */
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:100;display:none;}
+.overlay.show{display:block;}
+.sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:420px;background:white;border-radius:20px 20px 0 0;z-index:101;transition:0.35s;max-height:85vh;overflow:auto;}
+.sheet.show{transform:translateX(-50%) translateY(0);}
+.sheet-head{display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;}
+.tabs{display:flex;gap:20px;padding:0 16px;border-bottom:1px solid #EEE;}
+.tab{padding:12px 0;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;}
+.tab.active{border-color:var(--primary);color:var(--primary);font-weight:700;}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:16px;}
+.cat{padding:8px 12px;border-radius:20px;border:1px solid #E0E0E0;background:white;font-size:12px;text-align:center;cursor:pointer;}
+.cat.active{background:var(--primary);color:white;border-color:var(--primary);}
+.status-grid{display:flex;flex-wrap:wrap;gap:8px;padding:16px;}
+.time-tabs{display:flex;gap:20px;padding:0 16px;margin-top:10px;}
+.duration{display:flex;gap:10px;padding:16px;}
+.dur{flex:1;padding:10px;border-radius:10px;border:1.5px solid #E0E0E0;text-align:center;font-size:12px;cursor:pointer;}
+.dur.active{border-color:var(--success);background:#E8F5E9;color:var(--success);}
+.date-row{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #F0F0F0;}
+.confirm{margin:16px;background:var(--success);color:white;border:none;width:calc(100% - 32px);padding:14px;border-radius:12px;font-weight:700;}
+.download-page{display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:white;min-height:100vh;z-index:200;overflow:auto;padding-bottom:30px;}
+.download-page.show{display:block;}
+.dl-section{padding:16px;}
+.dl-label{font-size:13px;font-weight:600;margin:16px 0 8px;display:block;}
+.dl-box{border:1.5px solid #E0E0E0;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;}
+.toggle{width:42px;height:24px;background:#ccc;border-radius:24px;position:relative;cursor:pointer;}
+.toggle.on{background:var(--success);}
+.toggle:after{content:"";position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:3px;left:3px;transition:0.3s;}
+.toggle.on:after{left:21px;}
+</style>
+
+<script>
+  // LOGIN PROTECTION FOR ALL PAGES
+  (function(){
+   if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+     location.href='login.html';
+   }
+  })();
+  </script>
+</head>
+<body>
+<div class="app">
+  <div class="header"><span onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></span><b>Transactions</b><span style="color:var(--success);font-size:13px;font-weight:700;cursor:pointer;" onclick="openDownload()">Download</span></div>
+  
+  <div class="filters">
+    <div class="filter-btn" id="catBtn" onclick="openSheet('catSheet')">All Categories <i class="fa-solid fa-caret-down"></i></div>
+    <div class="filter-btn" id="statusBtn" onclick="openSheet('statusSheet')">All Status <i class="fa-solid fa-caret-down"></i></div>
+  </div>
+
+  <div id="txList"></div>
+</div>
+
+<!-- CATEGORY SHEET -->
+<div class="overlay" id="overlay" onclick="closeAllSheets()"></div>
+<div class="sheet" id="catSheet">
+  <div class="sheet-head"><b>All Categories</b><span onclick="closeAllSheets()">✕</span></div>
+  <div class="cat-grid" id="catGrid"></div>
+</div>
+
+<!-- STATUS SHEET -->
+<div class="sheet" id="statusSheet">
+  <div class="sheet-head"><b>All Status</b><span onclick="closeAllSheets()">✕</span></div>
+  <div class="status-grid">
+    <div class="cat active" data-status="All">All Status</div>
+    <div class="cat" data-status="Successful">Successful</div>
+    <div class="cat" data-status="Pending">Pending</div>
+    <div class="cat" data-status="Failed">Failed</div>
+    <div class="cat" data-status="To be paid">To be paid</div>
+    <div class="cat" data-status="Reversed">Reversed</div>
+  </div>
+</div>
+
+<!-- MONTH / TIMEFRAME SHEET -->
+<div class="sheet" id="timeSheet">
+  <div class="sheet-head"><b>Select Date</b><span onclick="closeAllSheets()">✕</span></div>
+  <div class="tabs"><div class="tab active" id="tabMonth" onclick="switchTab('month')">Month</div><div class="tab" id="tabTime" onclick="switchTab('time')">Time Frame</div></div>
+  
+  <div id="monthView">
+    <div style="display:flex;justify-content:space-between;padding:16px;"><span>August</span><span>2025</span></div>
+    <div style="display:flex;justify-content:space-between;padding:16px;background:#F5F5F5;"><b>September</b><b>2026</b></div>
+    <div style="display:flex;justify-content:space-between;padding:16px;"><b>October</b><b>2026</b></div>
+    <button class="confirm" onclick="applyMonth()">Confirm</button>
+  </div>
+
+  <div id="timeView" style="display:none;">
+    <div class="duration"><div class="dur" onclick="setDur(this,'3m')">Last 3 months</div><div class="dur active" onclick="setDur(this,'6m')">Last 6 months</div><div class="dur" onclick="setDur(this,'custom')">Custom</div></div>
+    <div class="date-row"><span>Start Date</span><span>May, 2026 <i class="fa-solid fa-chevron-right"></i></span></div>
+    <div class="date-row"><span>End Date</span><span>Oct, 2026 <i class="fa-solid fa-chevron-right"></i></span></div>
+    <button class="confirm" onclick="applyTime()">Confirm</button>
+  </div>
+</div>
+
+<!-- DOWNLOAD STATEMENT PAGE - AS SEEN IN VIDEO -->
+<div class="download-page" id="downloadPage">
+  <div class="header"><span onclick="closeDownload()"><i class="fa-solid fa-arrow-left"></i></span><b>Download Statement</b><span></span></div>
+  <div class="dl-section">
+    <span class="dl-label">Time Frame</span>
+    <div style="display:flex;gap:8px;"><div class="cat active">Last month</div><div class="cat">Last 2 months</div><div class="cat active">Custom</div></div>
+    
+    <div style="display:flex;gap:10px;margin-top:16px;"><div style="flex:1;"><span class="dl-label">Start Date</span><div class="dl-box">13 Aug, 2026</div></div><div style="flex:1;"><span class="dl-label">End Date</span><div class="dl-box">11 Oct, 2026</div></div></div>
+
+    <span class="dl-label">Email</span>
+    <div class="dl-box"><div><small>Your account statement will be sent to your email.</small><br><b>D*@gmail.com</b></div><span style="color:var(--success);font-size:12px;">Edit ></span></div>
+
+    <span class="dl-label">Based On</span>
+    <div class="dl-box" onclick="selectAccount()"><span>7067065724</span><i class="fa-solid fa-chevron-right"></i></div>
+
+    <span class="dl-label">File Type</span>
+    <div class="dl-box" onclick="openFileType()"><span id="fileTypeText">PDF</span><i class="fa-solid fa-chevron-right"></i></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+      <span class="dl-label" style="margin:0;">Address shown on statement</span>
+      <div class="toggle on" id="addrToggle" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <small style="color:#888;">Linked road off sapele road, Benin city, Club Joker, Benin City (capital), Oredo, Edo</small>
+
+    <button class="confirm" onclick="confirmDownload()" style="margin-top:20px;">Continue</button>
+  </div>
+</div>
+
+<script>
+const categories=["All Categories","Bank Deposit","Transfer from","Transfer to","Airtime","Betting","Mobile Data","Cash Deposit","OWealth","OPay Card Payment","Electricity","TV","Remit","Reversal","Cash Withdraw","Online Payment","Add Money","Savings","Fixed","Targets","Spend & Save","SafeBox","USSD Charge","SMS Subscription"];
+const transactions=[
+  {month:"Oct", date:"Oct 1st, 10:45 AM", type:"Transfer to NATHANIEL BASSEY GEO..", amt:"-₦500.00", cat:"Transfer to", status:"Successful", icon:"green", symbol:"↑"},
+  {month:"Oct", date:"Oct 1st, 10:41 AM", type:"Spend & Save Deposit", amt:"₦150.00", cat:"Spend & Save", status:"Successful", icon:"orange", symbol:"₦"},
+  {month:"Oct", date:"Oct 1st, 10:41 AM", type:"Transfer to NATHANIEL BASSEY G..", amt:"-₦1,500.00", cat:"Transfer to", status:"Successful", icon:"green", symbol:"↑"},
+  {month:"Oct", date:"Oct 1st, 9:23 AM", type:"Transfer to IZIENGBE PATIENCE U..", amt:"-₦3,000.00", cat:"Transfer to", status:"Successful", icon:"green", symbol:"↑"},
+  {month:"Oct", date:"Oct 1st, 8:50 AM", type:"Transfer from ALIYU ALAMIN OY..", amt:"+₦19,000.00", cat:"Transfer from", status:"Successful", icon:"green", symbol:"↓"},
+  {month:"Oct", date:"Oct 1st, 4:10 AM", type:"SafeBox Interest", amt:"+₦2.70", cat:"SafeBox", status:"Successful", icon:"purple", symbol:"%"},
+  {month:"Oct", date:"Oct 1st, 2:31 AM", type:"OWealth Interest Earned", amt:"+₦0.09", cat:"OWealth", status:"Successful", icon:"purple", symbol:"%"},
+  {month:"Oct", date:"Oct 1st, 1:19 AM", type:"Spend & Save Interest", amt:"+₦0.71", cat:"Spend & Save", status:"Successful", icon:"purple", symbol:"%"},
+  {month:"Sep", date:"Sep 30th, 9:01 PM", type:"Transfer to PROSPER AISAGBONBU", amt:"-₦600.00", cat:"Transfer to", status:"Successful", icon:"green", symbol:"↑"},
+  {month:"Oct", date:"Oct 12th, 4:05 PM", type:"Bonus from Airtime Purchase", amt:"+₦1.00", cat:"Airtime", status:"Successful", icon:"brown", symbol:"🎁"},
+  {month:"Oct", date:"Oct 12th, 4:05 PM", type:"Airtime", amt:"-₦50.00", cat:"Airtime", status:"Successful", icon:"brown", symbol:"📱"},
+  {month:"Oct", date:"Oct 12th, 12:44 PM", type:"Transfer to POS Transfer - CHRIS..", amt:"-₦5,700.00", cat:"Transfer to", status:"Successful", icon:"green", symbol:"↑"},
+];
+
+let selectedCat="All Categories", selectedStatus="All Status", selectedMonth="Oct";
+
+function render(){
+  let filtered=transactions.filter(t=>{
+    if(selectedCat!=="All Categories" && t.cat!==selectedCat) return false;
+    if(selectedStatus!=="All Status" && selectedStatus!=="All" && t.status!==selectedStatus) return false;
+    return true;
+  });
+  const grouped={};
+  filtered.forEach(t=>{if(!grouped[t.month]) grouped[t.month]=[]; grouped[t.month].push(t);});
+  let html="";
+  for(let m in grouped){
+    html+=`<div class="month-group"><div class="month-head"><div><b onclick="openSheet('timeSheet')">${m} <i class="fa-solid fa-caret-down"></i></b><br><small>In ₦57,062.46 &nbsp; Out ₦56,550.00</small></div><span class="analysis">Analysis</span></div>`;
+    grouped[m].forEach(tx=>{
+      html+=`<div class="tx"><span class="tx-icon ${tx.icon}">${tx.symbol}</span><div class="tx-info"><b>${tx.type}</b><small>${tx.date}</small></div><div class="tx-amt"><b>${tx.amt}</b><small>${tx.status}</small></div></div>`;
+    });
+    html+=`</div>`;
+  }
+  document.getElementById('txList').innerHTML=html || "<p style='text-align:center;padding:40px;color:#888;'>No transactions</p>";
+}
+function buildCatGrid(){
+  document.getElementById('catGrid').innerHTML=categories.map(c=>`<div class="cat ${c===selectedCat?'active':''}" onclick="pickCat('${c}')">${c}</div>`).join('');
+}
+function pickCat(c){selectedCat=c;document.getElementById('catBtn').innerHTML=c+' <i class="fa-solid fa-caret-down"></i>';closeAllSheets();render();}
+function openSheet(id){document.getElementById('overlay').classList.add('show');document.getElementById(id).classList.add('show');if(id==='catSheet')buildCatGrid();}
+function closeAllSheets(){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));document.getElementById('overlay').classList.remove('show');}
+function switchTab(t){document.getElementById('tabMonth').classList.toggle('active',t==='month');document.getElementById('tabTime').classList.toggle('active',t==='time');document.getElementById('monthView').style.display=t==='month'?'block':'none';document.getElementById('timeView').style.display=t==='time'?'block':'none';}
+function setDur(el){document.querySelectorAll('.dur').forEach(d=>d.classList.remove('active'));el.classList.add('active');}
+function applyMonth(){selectedMonth="Oct";closeAllSheets();render();}
+function applyTime(){closeAllSheets();render();}
+document.querySelectorAll('[data-status]').forEach(el=>{el.onclick=()=>{document.querySelectorAll('[data-status]').forEach(e=>e.classList.remove('active'));el.classList.add('active');selectedStatus=el.dataset.status;document.getElementById('statusBtn').innerHTML=selectedStatus+' <i class="fa-solid fa-caret-down"></i>';closeAllSheets();render();}});
+
+function openDownload(){document.getElementById('downloadPage').classList.add('show');}
+function closeDownload(){document.getElementById('downloadPage').classList.remove('show');}
+function openFileType(){
+  const choice=confirm("Select file type: OK=PDF, Cancel=Excel");
+  document.getElementById('fileTypeText').innerText=choice?"PDF":"Excel";
+}
+function selectAccount(){}
+function confirmDownload(){
+  if(confirm("Kindly Confirm: Your account statement for 7067065724 will be sent to D*@gmail.com in PDF format.\\n\\nClick OK to continue")){
+    const pin=prompt("Enter Payment PIN (use 1234 for demo):");
+    if(pin==="1234"){
+      alert("Successful! Your account statement will be sent to your email within 2 hours.");
+      closeDownload();
+    } else if(pin) alert("Incorrect PIN");
+  }
+}
+render();
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+  <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+  <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+  <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+  <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+  <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+  </div>
+  <script>
+  function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+  </script>
+</body>
+</html>

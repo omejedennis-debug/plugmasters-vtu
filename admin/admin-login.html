@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - PlugMasters</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:14px;}
+.card{background:white;width:100%;max-width:380px;border-radius:16px;padding:22px;border:1px solid #EEE;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+.logo{text-align:center;margin-bottom:14px;}
+.logo b{font-size:22px;color:#8B6914;}
+.input{width:100%;padding:12px 14px;border:1.5px solid #EEE;border-radius:10px;font-size:14px;margin:6px 0;outline:none;}
+.input:focus{border-color:#8B6914;}
+.btn{width:100%;padding:12px;background:#8B6914;color:white;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;margin-top:10px;}
+.btn:hover{background:#6d5210;}
+.small{font-size:11px;color:#888;text-align:center;margin-top:10px;}
+.badge{padding:4px 8px;border-radius:20px;font-size:10px;font-weight:700;color:white;background:#111;display:inline-block;margin:2px;}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="logo">
+<b>PlugMasters</b><br>
+<small style="color:#888;">Super Admin - 23 Menus</small><br>
+<span class="badge"><i class="fa-solid fa-user-shield"></i> Secure Login</span>
+</div>
+
+<div style="background:#FFF8E6;padding:10px;border-radius:10px;border:1px dashed #8B6914;margin-bottom:10px;">
+<small><b>Default Super Admin:</b><br>
+Phone: 07067065724<br>
+PIN: 1234<br>
+Role: Super Admin - All Access</small>
+</div>
+
+<label style="font-size:12px;font-weight:600;">Phone Number</label>
+<input class="input" id="phone" placeholder="07067065724" value="07067065724">
+
+<label style="font-size:12px;font-weight:600;">Admin PIN</label>
+<input class="input" id="pin" type="password" placeholder="Enter PIN 1234" value="1234">
+
+<button class="btn" onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> Login to Dashboard</button>
+
+<p class="small" id="msg"></p>
+
+<p class="small" style="margin-top:14px;">
+Staff Login: Support, Accountant, Viewer use their phone + PIN<br>
+All actions logged with IP, Device, Time in Audit Logs<br>
+<span style="color:#8B6914;">Fixed header + All 23 links attached on every page</span>
+</p>
+
+<div style="margin-top:12px;text-align:center;">
+<small style="font-size:10px;color:#AAA;">PlugMasters Admin v1.0 | 07067065724 Super Admin | 23 Pages Complete</small>
+</div>
+</div>
+
+<script>
+function login(){
+  let phone = document.getElementById('phone').value.trim();
+  let pin = document.getElementById('pin').value.trim();
+  let msg = document.getElementById('msg');
+
+  // Super Admin Check
+  if(phone === '07067065724' && pin === '1234'){
+    localStorage.setItem('plug_admin_logged','true');
+    localStorage.setItem('plug_admin_phone',phone);
+    localStorage.setItem('plug_admin_role','Super Admin');
+    msg.style.color='green';
+    msg.innerText='Login Success - Redirecting to Dashboard...';
+    setTimeout(()=>{location.href='admin-dashboard.html';},800);
+    return;
+  }
+  // Support Staff Example
+  if(phone === '08000000001' && pin === '1234'){
+    localStorage.setItem('plug_admin_logged','true');
+    localStorage.setItem('plug_admin_phone',phone);
+    localStorage.setItem('plug_admin_role','Support');
+    msg.style.color='green';
+    msg.innerText='Support Staff Login Success';
+    setTimeout(()=>{location.href='admin-dashboard.html';},800);
+    return;
+  }
+  // Accountant Example
+  if(phone === '09000000001' && pin === '1234'){
+    localStorage.setItem('plug_admin_logged','true');
+    localStorage.setItem('plug_admin_phone',phone);
+    localStorage.setItem('plug_admin_role','Accountant');
+    msg.style.color='green';
+    msg.innerText='Accountant Login Success';
+    setTimeout(()=>{location.href='admin-dashboard.html';},800);
+    return;
+  }
+
+  msg.style.color='red';
+  msg.innerText='Invalid Phone or PIN - Use 07067065724 / 1234 for Super Admin';
+}
+
+// If already logged, go dashboard
+if(localStorage.getItem('plug_admin_logged')==='true'){
+  // Uncomment if you want auto redirect
+  // location.href='admin-dashboard.html';
+}
+</script>
+</body>
+</html>

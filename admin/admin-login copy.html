@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - PlugMasters</title>
+<style>
+:root{--primary:#8B6914;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#111;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+.box{width:380px;background:white;border-radius:16px;padding:28px;}
+.logo{text-align:center;margin-bottom:20px;}.logo b{font-size:24px;color:var(--primary);}
+input{width:100%;padding:13px;border:1.5px solid #EEE;border-radius:10px;margin:8px 0;outline:none;}
+.btn{width:100%;padding:13px;background:var(--primary);color:white;border:none;border-radius:10px;font-weight:700;margin-top:12px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="box">
+<div class="logo"><b>PlugMasters Admin</b><br><small>Super Admin Login</small></div>
+<input id="email" placeholder="admin@plugmasters.com" value="admin@plugmasters.com">
+<input id="pass" type="password" placeholder="Password" value="admin123">
+<button class="btn" onclick="login()">Login to Dashboard</button>
+<p style="font-size:11px;color:#888;margin-top:12px;text-align:center;">Demo: admin@plugmasters.com / admin123<br>Role: Super Admin - See Profit</p>
+</div>
+<script>
+function login(){
+ let e=document.getElementById('email').value, p=document.getElementById('pass').value;
+ if(e==='admin@plugmasters.com' && p==='admin123'){
+  localStorage.setItem('plug_admin_logged','true');
+  localStorage.setItem('plug_admin_role','Super Admin');
+  location.href='admin-dashboard.html';
+ } else { alert('Wrong - Use admin@plugmasters.com / admin123'); }
+}
+</script>
+</body>
+</html>

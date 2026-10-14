@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electricity - PlugMasters VTU Main Build v1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--primary-light:#FFF8E6;--success:#00A86B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#F6F6F6;display:flex;justify-content:center;}
+.phone{width:390px;background:#F6F6F6;min-height:100vh;position:relative;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;border-bottom:1px solid #EEE;position:sticky;top:0;z-index:20;}
+.input-bar{display:flex;flex-direction:column;gap:10px;background:white;padding:12px 16px;}
+.row-input{display:flex;align-items:center;gap:8px;position:relative;}
+.net-box{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 10px;border-radius:20px;border:1.5px solid #EEE;font-weight:700;font-size:12px;background:white;}
+.net-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:white;background:#8B6914;}
+.row-input input, .row-input select{flex:1;border:1.5px solid #EEE;padding:10px 12px;border-radius:10px;outline:none;font-weight:600;}
+.dropdown{position:absolute;left:0;right:0;top:44px;background:white;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.15);z-index:20;display:none;padding:8px 0;max-height:280px;overflow:auto;}
+.dropdown.show{display:block;}
+.drop-item{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;}
+.recent-item{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #F5F5F5;}
+.type-tabs{display:flex;gap:10px;margin-top:6px;}
+.type-tab{flex:1;padding:10px;border-radius:10px;border:1.5px solid #EEE;text-align:center;font-size:13px;cursor:pointer;background:white;}
+.type-tab.active{border-color:var(--primary);background:var(--primary-light);color:var(--primary);font-weight:700;}
+.amt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
+.amt-card{border:1.5px solid #EEE;border-radius:10px;padding:10px;text-align:center;cursor:pointer;background:white;}
+.amt-card.active{border-color:var(--primary);background:var(--primary-light);}
+.pay{width:100%;margin-top:16px;padding:14px;border-radius:12px;border:none;background:var(--primary);color:white;font-weight:800;font-size:16px;}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:30;display:none;}.overlay.show{display:block;}
+.sheet{position:absolute;bottom:0;left:0;width:100%;background:white;border-radius:20px 20px 0 0;z-index:40;transform:translateY(100%);transition:0.35s;max-height:92vh;overflow:auto;}.sheet.show{transform:translateY(0);}
+.sheet-header{display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;}
+.amount-big{text-align:center;padding:20px 0 5px;font-size:28px;font-weight:900;}
+.details{padding:0 16px;}.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:13px;border-bottom:1px solid #F8F8F8;}
+.payment-box{background:#F9F9F9;border-radius:12px;padding:12px;margin:12px 0;}
+.pay-method-head{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;color:#666;}
+.insufficient{color:#D32F2F;font-size:11px;margin-top:4px;display:none;}.insufficient.show{display:block;}
+.add-money{color:var(--success);font-size:12px;font-weight:700;cursor:pointer;}
+.add-card{display:flex;align-items:center;gap:10px;padding:12px;border:1px dashed #DDD;border-radius:10px;margin-top:10px;cursor:pointer;background:white;}
+.pay-big{margin:16px;background:var(--primary);color:white;border:none;width:calc(100% - 32px);padding:14px;border-radius:12px;font-weight:800;font-size:16px;}
+.pay-big:disabled{background:#B9E0C8;}
+.pin-dots{display:flex;gap:12px;justify-content:center;margin:20px 0;}.dot{width:48px;height:48px;border:1.5px solid #DDD;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}.dot.filled{border-color:var(--primary);background:var(--primary-light);}
+.keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#EEE;margin-top:10px;}.key{padding:18px;background:white;text-align:center;font-size:20px;font-weight:600;cursor:pointer;}
+.switch{position:relative;display:inline-block;width:42px;height:24px;}.switch input{opacity:0;width:0;height:0;}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;transition:.3s;border-radius:24px;}.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%;}input:checked +.slider{background:#00A86B;}input:checked +.slider:before{transform:translateX(18px);}
+.reminder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;width:85%;border-radius:16px;padding:20px;text-align:center;z-index:60;display:none;box-shadow:0 10px 30px rgba(0,0,0,0.3);}.reminder.show{display:block;}
+.rem-btns{display:flex;flex-direction:column;gap:10px;margin-top:12px;}.btn-cancel{padding:12px;border-radius:10px;border:1.5px solid var(--primary);background:white;color:var(--primary);font-weight:700;}.btn-continue{padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;}
+.pin-error{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;width:85%;border-radius:18px;padding:24px;text-align:center;z-index:70;display:none;box-shadow:0 15px 40px rgba(0,0,0,0.3);}.pin-error.show{display:block;}
+.processing{position:absolute;top:0;left:0;width:100%;height:100%;background:white;z-index:80;display:none;flex-direction:column;align-items:center;justify-content:center;}.processing.show{display:flex;}.spinner{width:50px;height:50px;border:4px solid #F0E6C8;border-top:4px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;}@keyframes spin{to{transform:rotate(360deg);}}
+.success{position:absolute;top:0;left:0;width:100%;height:100%;background:#F6F6F6;z-index:90;display:none;}.success.show{display:block;}.check-circle{width:64px;height:64px;background:#00A86B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:32px;margin:30px auto 10px;}
+.form-input{width:100%;padding:12px;border:1.5px solid #E0E0E0;border-radius:10px;margin:8px 0;outline:none;}
+</style>
+
+<script>
+    // LOGIN PROTECTION FOR ALL PAGES
+    (function(){
+     if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+       location.href='login.html';
+     }
+    })();
+    </script>
+</head>
+<body>
+<div class="phone">
+  <div class="header"><span onclick="history.back()" style="cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></span><b>Electricity</b><a href="history.html?filter=Electricity" style="color:var(--primary);font-weight:700;text-decoration:none;">History</a></div>
+  <div class="input-bar">
+    <div class="row-input">
+      <div class="net-box" onclick="toggleDisco()"><div class="net-icon" id="discoIcon">IK</div><span id="discoName">IKEDC</span> ▼</div>
+      <div class="dropdown" id="discoDrop">
+        <div class="drop-item" onclick="pickDisco('IKEDC')">IKEDC - Ikeja Electric</div>
+        <div class="drop-item" onclick="pickDisco('EKEDC')">EKEDC - Eko Electric</div>
+        <div class="drop-item" onclick="pickDisco('AEDC')">AEDC - Abuja Electric</div>
+        <div class="drop-item" onclick="pickDisco('KEDCO')">KEDCO - Kano Electric</div>
+        <div class="drop-item" onclick="pickDisco('PHED')">PHED - Port Harcourt</div>
+        <div class="drop-item" onclick="pickDisco('IBEDC')">IBEDC - Ibadan Electric</div>
+      </div>
+    </div>
+    <div class="type-tabs"><div class="type-tab active" id="prepaidTab" onclick="pickType('Prepaid')">Prepaid</div><div class="type-tab" id="postpaidTab" onclick="pickType('Postpaid')">Postpaid</div></div>
+    <div class="row-input"><input type="text" id="meterNo" placeholder="Meter Number" value="12345678901"><span onclick="toggleRecent()" style="cursor:pointer;">▼</span>
+      <div class="dropdown" id="recentDrop"><div id="recentList"></div><div style="text-align:center;padding:10px;color:#888;font-size:13px;cursor:pointer;" onclick="clearRecent()">🗑️ Delete All</div></div>
+    </div>
+    <div class="row-input"><input type="number" id="meterAmt" placeholder="Amount (50 - 500,000)" value="1500" oninput="updateAmt()"></div>
+    <div class="amt-grid"><div class="amt-card" onclick="pickAmtCard(this,1000)">₦1,000</div><div class="amt-card active" onclick="pickAmtCard(this,1500)">₦1,500</div><div class="amt-card" onclick="pickAmtCard(this,2000)">₦2,000</div><div class="amt-card" onclick="pickAmtCard(this,3000)">₦3,000</div><div class="amt-card" onclick="pickAmtCard(this,5000)">₦5,000</div><div class="amt-card" onclick="pickAmtCard(this,10000)">₦10,000</div></div>
+    <button class="pay" id="payBtn" onclick="openConfirm()">Pay ₦1,500</button>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="handleOverlayClick()"></div>
+
+  <div class="sheet" id="confirmSheet">
+    <div class="sheet-header"><span onclick="closeConfirm()" style="cursor:pointer;">✕</span><span style="font-size:12px;color:var(--primary);font-weight:700;">Use Payment PIN</span></div>
+    <div class="amount-big" id="confirmAmount">₦1,500.00</div>
+    <div style="text-align:center;font-size:13px;color:#888;" id="confirmSub">₦1,500.00</div>
+    <div class="details">
+      <div class="row"><span>Product Name</span><span id="confirmProd">IKEDC</span></div>
+      <div class="row"><span>Meter Number</span><span id="confirmMeter">12345678901</span></div>
+      <div class="row"><span>Meter Type</span><span id="confirmType">Prepaid</span></div>
+      <div class="row"><span>Amount</span><span id="confirmAmt2">₦1,500.00</span></div>
+      <div class="row"><span>Use Cashback(₦<span id="cashbackBal">1,064.13</span>)</span><div style="display:flex;align-items:center;gap:10px;"><span id="cashbackDeduct">-₦1,500.00</span><label class="switch"><input type="checkbox" id="cashbackToggle" onchange="toggleCashback()"><span class="slider"></span></label></div></div>
+      <div class="row"><span>OPay Bonus</span><span style="color:#D32F2F;">+₦30 Cashback</span></div>
+      <div class="pay-method-head"><span>Payment Method</span><span onclick="openAddMoney()">All ></span></div>
+      <div class="payment-box">
+        <div style="display:flex;gap:8px;align-items:center;"><span style="width:24px;height:24px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;color:var(--success);font-size:12px;">↻</span><b style="font-size:13px;">Available Balance (₦<span id="availBalText">365.42</span>)</b></div>
+        <div class="insufficient" id="insufficientText">Insufficient balance</div>
+        <div style="height:1px;background:#EEE;margin:10px 0;"></div>
+        <div class="row" style="border:none;padding:6px 0;"><span>Wallet (₦0.00)</span><span class="add-money" onclick="openAddMoney()">Add Money ></span></div>
+        <div class="row" style="border:none;padding:6px 0;"><span>OWealth (₦<span id="owealthBal">365.42</span>)</span><span id="owealthDeduct">₦1,500.00</span></div>
+      </div>
+      <div class="add-card" onclick="openAddCard()"><span style="width:24px;height:24px;border-radius:50%;border:1px dashed #AAA;display:flex;align-items:center;justify-content:center;">+</span><b style="font-size:13px;">Add a Bank Card / Account</b></div>
+    </div>
+    <button class="pay-big" id="mainPayBtn" onclick="openPin()">Pay</button>
+  </div>
+
+  <div class="sheet" id="addMoneySheet"><div class="sheet-header"><span onclick="closeAddMoney()">✕</span><b>Add Money</b><span></span></div><div style="padding:16px;"><input type="number" id="addMoneyAmt" class="form-input" placeholder="Enter amount"><button class="pay-big" style="width:100%;margin:16px 0 0;" onclick="doAddMoney()">Continue</button></div></div>
+  <div class="sheet" id="addCardSheet"><div class="sheet-header"><span onclick="closeAddCard()">✕</span><b>Add Bank Card / Account</b><span></span></div><div style="padding:16px;"><input class="form-input" id="cardNumber" placeholder="Card Number"><div style="display:flex;gap:8px;"><input class="form-input" placeholder="MM/YY"><input class="form-input" placeholder="CVV"></div><input class="form-input" placeholder="Card PIN"><button class="pay-big" style="width:100%;margin:16px 0 0;" onclick="saveCard()">Add Card</button></div></div>
+  <div class="sheet" id="pinSheet"><div class="sheet-header"><span onclick="closePin()">✕</span><b>Enter Payment PIN</b><span></span></div><div class="pin-dots" id="pinDots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="keypad"><div class="key" onclick="enterPin('1')">1</div><div class="key" onclick="enterPin('2')">2</div><div class="key" onclick="enterPin('3')">3</div><div class="key" onclick="enterPin('4')">4</div><div class="key" onclick="enterPin('5')">5</div><div class="key" onclick="enterPin('6')">6</div><div class="key" onclick="enterPin('7')">7</div><div class="key" onclick="enterPin('8')">8</div><div class="key" onclick="enterPin('9')">9</div><div class="key"></div><div class="key" onclick="enterPin('0')">0</div><div class="key" onclick="delPin()">⌫</div></div></div>
+  <div class="reminder" id="reminder"><h3>Reminder</h3><p>Do you want to cancel this payment?</p><div class="rem-btns"><button class="btn-continue" onclick="continuePay()">Continue to pay</button><button class="btn-cancel" onclick="cancelPay()">Cancel</button></div></div>
+  <div class="pin-error" id="pinError"><h3>PIN Incorrect</h3><p id="pinErrorText"></p><button class="btn-continue" style="width:100%;margin-top:10px;" onclick="tryAgain()">Try again</button></div>
+  <div class="processing" id="processing"><div class="spinner"></div><h3>Transaction is currently being processed</h3></div>
+  <div class="success" id="successPage"><div style="display:flex;justify-content:space-between;padding:14px 16px;background:white;"><span onclick="location.reload()"><</span><span style="color:var(--primary);font-weight:700;">Done</span></div><div style="text-align:center;padding:20px;"><div class="check-circle">✓</div><h2>Successful</h2><h1 id="successAmt"></h1><p id="tokenText" style="margin-top:12px;font-weight:700;">Token: 1234-5678-9012-3456-7890</p></div></div>
+</div>
+<script>
+let recent=["12345678901","10987654321"];
+let selectedAmt=1500,currentDisco='IKEDC',currentType='Prepaid',cashbackBalance=1064.13,mainBalance=365.42,useCashback=false,pin='',attempts=5,fromSheet='';
+function toggleDisco(){document.getElementById('discoDrop').classList.toggle('show');}
+function pickDisco(name){currentDisco=name;document.getElementById('discoName').innerText=name;document.getElementById('discoIcon').innerText=name.substring(0,2);document.getElementById('discoDrop').classList.remove('show');}
+function pickType(type){currentType=type;document.getElementById('prepaidTab').classList.toggle('active',type=='Prepaid');document.getElementById('postpaidTab').classList.toggle('active',type=='Postpaid');}
+function toggleRecent(){renderRecent();document.getElementById('recentDrop').classList.toggle('show');}
+function renderRecent(){document.getElementById('recentList').innerHTML=recent.map(n=>`<div class="recent-item"><span onclick="useRecent('${n}')">${n}</span><span onclick="removeRecent('${n}')" style="cursor:pointer;"> X</span></div>`).join('');}
+function useRecent(n){document.getElementById('meterNo').value=n;document.getElementById('recentDrop').classList.remove('show');}
+function removeRecent(n){recent=recent.filter(x=>x!=n);renderRecent();}
+function clearRecent(){recent=[];renderRecent();}
+function pickAmtCard(el,amt){document.querySelectorAll('.amt-card').forEach(c=>c.classList.remove('active'));el.classList.add('active');selectedAmt=amt;document.getElementById('meterAmt').value=amt;document.getElementById('payBtn').innerText='Pay ₦'+amt.toLocaleString();}
+function updateAmt(){let v=parseInt(document.getElementById('meterAmt').value)||0;selectedAmt=v;document.getElementById('payBtn').innerText=v?'Pay ₦'+v.toLocaleString():'Pay';document.querySelectorAll('.amt-card').forEach(c=>c.classList.remove('active'));}
+function checkBalance(){let payable=useCashback? (selectedAmt<=cashbackBalance?0:selectedAmt-cashbackBalance):selectedAmt;const ins=document.getElementById('insufficientText'),btn=document.getElementById('mainPayBtn');if(payable>mainBalance){ins.classList.add('show');btn.disabled=true;btn.style.background='#B9E0C8';}else{ins.classList.remove('show');btn.disabled=false;btn.style.background='var(--primary)';}}
+function openConfirm(){if(!selectedAmt){alert('Enter amount');return;}document.getElementById('confirmAmount').innerText='₦'+selectedAmt.toLocaleString()+'.00';document.getElementById('confirmSub').innerText='₦'+selectedAmt.toLocaleString()+'.00';document.getElementById('confirmAmt2').innerText='₦'+selectedAmt.toLocaleString()+'.00';document.getElementById('confirmProd').innerText=currentDisco;document.getElementById('confirmMeter').innerText=document.getElementById('meterNo').value;document.getElementById('confirmType').innerText=currentType;document.getElementById('cashbackBal').innerText=cashbackBalance.toFixed(2);document.getElementById('availBalText').innerText=mainBalance.toFixed(2);document.getElementById('owealthBal').innerText=mainBalance.toFixed(2);document.getElementById('owealthDeduct').innerText='₦'+selectedAmt.toLocaleString()+'.00';document.getElementById('cashbackDeduct').innerText='-₦'+selectedAmt.toLocaleString()+'.00';document.getElementById('cashbackToggle').checked=false;useCashback=false;checkBalance();document.getElementById('overlay').classList.add('show');document.getElementById('confirmSheet').classList.add('show');fromSheet='confirm';}
+function closeConfirm(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('reminder').classList.add('show');fromSheet='confirm-closing';}
+function openPin(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('pinSheet').classList.add('show');pin='';renderPin();fromSheet='pin';}
+function closePin(){document.getElementById('pinSheet').classList.remove('show');document.getElementById('reminder').classList.add('show');fromSheet='pin-closing';}
+function continuePay(){document.getElementById('reminder').classList.remove('show');if(fromSheet.includes('pin'))openPin();else openConfirm();}
+function cancelPay(){document.getElementById('reminder').classList.remove('show');document.getElementById('overlay').classList.remove('show');document.getElementById('confirmSheet').classList.remove('show');document.getElementById('pinSheet').classList.remove('show');}
+function handleOverlayClick(){if(fromSheet=='confirm')closeConfirm();else if(fromSheet=='pin')closePin();}
+function enterPin(d){if(pin.length<4){pin+=d;renderPin();if(pin.length==4)setTimeout(checkPin,400);}}
+function delPin(){pin=pin.slice(0,-1);renderPin();}
+function renderPin(){const dots=document.querySelectorAll('#pinDots .dot');dots.forEach((dot,i)=>{dot.innerText=i<pin.length?'•':'';dot.className=i<pin.length?'dot filled':'dot';});}
+function toggleCashback(){useCashback=document.getElementById('cashbackToggle').checked;const topAmt=document.getElementById('confirmAmount'),subAmt=document.getElementById('confirmSub'),owealth=document.getElementById('owealthDeduct'),cashD=document.getElementById('cashbackDeduct');if(useCashback){if(selectedAmt<=cashbackBalance){topAmt.innerText='₦0.00';subAmt.innerText='₦0.00';owealth.innerText='₦0.00';cashD.innerText='-₦'+selectedAmt.toLocaleString()+'.00';cashD.style.color='#00A86B';}else{let r=selectedAmt-cashbackBalance;topAmt.innerText='₦'+r.toLocaleString()+'.00';subAmt.innerText='₦'+r.toLocaleString()+'.00';owealth.innerText='₦'+r.toLocaleString()+'.00';}}else{topAmt.innerText='₦'+selectedAmt.toLocaleString()+'.00';subAmt.innerText='₦'+selectedAmt.toLocaleString()+'.00';owealth.innerText='₦'+selectedAmt.toLocaleString()+'.00';cashD.innerText='-₦'+selectedAmt.toLocaleString()+'.00';cashD.style.color='#000';}checkBalance();}
+function checkPin(){if(pin==='1234'){let payable=useCashback? (selectedAmt<=cashbackBalance?0:selectedAmt-cashbackBalance):selectedAmt;if(useCashback){if(selectedAmt<=cashbackBalance)cashbackBalance-=selectedAmt;else{cashbackBalance=0;mainBalance-=payable;}}else mainBalance-=selectedAmt;document.getElementById('pinSheet').classList.remove('show');document.getElementById('processing').classList.add('show');setTimeout(()=>{document.getElementById('processing').classList.remove('show');document.getElementById('successPage').classList.add('show');document.getElementById('successAmt').innerText='₦'+selectedAmt.toLocaleString()+'.00';},2500);}else{attempts--;document.getElementById('pinErrorText').innerText='The PIN you entered is incorrect. You have '+attempts+' attempts remaining.';document.getElementById('pinError').classList.add('show');}}
+function tryAgain(){document.getElementById('pinError').classList.remove('show');pin='';renderPin();}
+function openAddMoney(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('addMoneySheet').classList.add('show');}
+function closeAddMoney(){document.getElementById('addMoneySheet').classList.remove('show');document.getElementById('confirmSheet').classList.add('show');}
+function doAddMoney(){let a=parseFloat(document.getElementById('addMoneyAmt').value);if(a){mainBalance+=a;document.getElementById('availBalText').innerText=mainBalance.toFixed(2);document.getElementById('owealthBal').innerText=mainBalance.toFixed(2);alert('₦'+a+' added!');closeAddMoney();checkBalance();}else alert('Enter amount');}
+function openAddCard(){document.getElementById('addMoneySheet').classList.remove('show');document.getElementById('confirmSheet').classList.remove('show');document.getElementById('addCardSheet').classList.add('show');}
+function closeAddCard(){document.getElementById('addCardSheet').classList.remove('show');document.getElementById('confirmSheet').classList.add('show');}
+function saveCard(){let c=document.getElementById('cardNumber').value;if(c.length>10){alert('Bank Card Added!');closeAddCard();}else alert('Enter valid card');}
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+    <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+    <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+    <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+    <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+    <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+    </div>
+    <script>
+    function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+    </script>
+</body>
+</html>

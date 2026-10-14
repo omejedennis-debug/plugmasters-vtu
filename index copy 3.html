@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlugMasters VTU - Main Build v1 FINAL with Bottom Nav</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--primary-light:#FFF8E6;--success:#00A86B;--bg:#F5F5F5;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:var(--bg);display:flex;justify-content:center;}
+.phone{width:390px;background:#F5F5F5;min-height:100vh;position:relative;overflow:hidden;padding-bottom:80px;}
+.header{padding:16px;background:white;display:flex;justify-content:space-between;align-items:center;}
+.header-left{font-size:12px;color:#888;}
+.balance-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.balance{font-size:22px;font-weight:900;}
+.eye{cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:#F0F0F0;border-radius:50%;}
+.icons{display:flex;gap:16px;font-size:18px;color:#333;}
+.icons a{color:#333;text-decoration:none;}
+.wallet-row{display:flex;gap:10px;margin:10px 16px;}
+.wallet-mini{flex:1;background:white;border-radius:12px;padding:10px;text-align:center;border:1px solid #F0F0F0;cursor:pointer;}
+.wallet-mini b{font-size:13px;display:block;}
+.wallet-mini small{font-size:10px;color:#888;}
+.ad-slider{margin:12px 16px;background:linear-gradient(90deg,var(--primary),#D4A017);border-radius:14px;padding:14px 16px;color:white;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;height:78px;}
+.ad-slide{position:absolute;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;transition:0.5s;}
+.services{background:white;border-radius:20px 20px 0 0;padding:16px;margin-top:10px;min-height:65vh;}
+.service-head{display:flex;justify-content:space-between;margin-bottom:14px;}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;}
+.item{text-align:center;cursor:pointer;text-decoration:none;color:#000;}
+.icon-box{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px;background:var(--primary-light);color:var(--primary);}
+.item b{font-size:11px;display:block;font-weight:600;}
+.trans-card{background:white;margin:12px 16px;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border:1px solid #F0F0F0;}
+
+/* BOTTOM NAV - NEW */
+.bottom-nav{position:absolute;bottom:0;left:0;width:100%;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:25;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;text-decoration:none;color:#999;font-size:10px;flex:1;}
+.nav-item.active{color:var(--primary);}
+.nav-item.active.nav-icon{background:var(--primary);color:white;}
+.nav-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;background:#F5F5F5;color:#999;transition:0.2s;}
+.nav-item.active.nav-icon{background:var(--primary);color:white;}
+
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:30;display:none;}.overlay.show{display:block;}
+.sheet{position:absolute;bottom:80px;left:0;width:100%;background:white;border-radius:20px 20px 0 0;z-index:40;transform:translateY(150%);transition:0.35s;max-height:75vh;overflow:auto;}.sheet.show{transform:translateY(0);}
+.sheet-header{display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;}
+.more-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;padding:16px;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="header">
+    <div>
+      <div class="header-left">Welcome, Master 👋 Total Balance</div>
+      <div class="balance-row"><div class="balance" id="balance">₦1,429.55</div><div class="eye" id="eyeBtn" onclick="toggleEye()">👁️</div></div>
+    </div>
+    <div class="icons">
+      <a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i></a>
+      <a href="settings.html"><i class="fa-solid fa-gear"></i></a>
+      <i class="fa-regular fa-bell"></i>
+    </div>
+  </div>
+
+  <div class="wallet-row">
+    <div class="wallet-mini" onclick="location.href='cashback.html'"><small>Cashback</small><b style="color:var(--success);">₦1,064.13</b></div>
+    <div class="wallet-mini" onclick="location.href='referral.html'"><small>Referral Earn</small><b style="color:var(--primary);">₦1,200</b></div>
+    <div class="wallet-mini" onclick="location.href='settings.html'"><small>KYC Level</small><b>Level 1</b></div>
+  </div>
+
+  <div class="ad-slider">
+    <div class="ad-slide" id="ad1"><div><b>PlugMasters Cashback</b><br><small>Get up to ₦100 cashback</small></div><div style="font-size:26px;">💰</div></div>
+    <div class="ad-slide" id="ad2" style="transform:translateX(100%);"><div><b>Refer & Earn ₦200</b><br><small>Invite friends, earn</small></div><div style="font-size:26px;">🎁</div></div>
+    <div class="ad-slide" id="ad3" style="transform:translateX(100%);"><div><b>Airtime to Cash 85%</b><br><small>Convert to wallet</small></div><div style="font-size:26px;">🔄</div></div>
+  </div>
+
+  <div class="services">
+    <div class="service-head"><b>Services</b><span style="color:var(--primary);font-size:12px;cursor:pointer;" onclick="openSettingsSheet()">Homepage Settings ></span></div>
+    <div class="grid">
+      <a href="airtime.html" class="item"><div class="icon-box">📱</div><b>Airtime</b></a>
+      <a href="data.html" class="item"><div class="icon-box">📶</div><b>Data</b></a>
+      <a href="tv.html" class="item"><div class="icon-box">📺</div><b>TV</b></a>
+      <a href="electricity.html" class="item"><div class="icon-box">💡</div><b>Electricity</b></a>
+      <a href="transfer.html" class="item"><div class="icon-box" style="background:#E8F5E9;color:#00A86B;">💸</div><b>Transfer</b></a>
+      <a href="convert.html" class="item"><div class="icon-box" style="background:#FFF3E0;color:#FF9800;">🔄</div><b>Convert</b></a>
+      <a href="referral.html" class="item"><div class="icon-box" style="background:#F3E5F5;color:#9C27B0;">🎁</div><b>Referral</b></a>
+      <a href="cashback.html" class="item"><div class="icon-box" style="background:#E0F7FA;color:#00ACC1;">💰</div><b>Cashback</b></a>
+      <a href="history.html" class="item"><div class="icon-box" style="background:#FCE4EC;color:#E91E63;">📊</div><b>History</b></a>
+      <a href="settings.html" class="item"><div class="icon-box" style="background:#F0F0F0;color:#333;">⚙️</div><b>Settings</b></a>
+      <div class="item" onclick="openMore()"><div class="icon-box" style="background:#F0F0F0;">⋯</div><b>More</b></div>
+    </div>
+    <div class="trans-card" onclick="location.href='history.html'">
+      <div><b style="font-size:13px;">Recent Transactions</b><br><small style="color:#888;">See all your 9 services</small></div>
+      <i class="fa-solid fa-chevron-right" style="color:#CCC;"></i>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION - 5 BUTTONS -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav-item active"><div class="nav-icon"><i class="fa-solid fa-house"></i></div><span>Homepage</span></a>
+    <a href="convert.html" class="nav-item"><div class="nav-icon"><i class="fa-solid fa-repeat"></i></div><span>Convert</span></a>
+    <a href="cashback.html" class="nav-item"><div class="nav-icon"><i class="fa-solid fa-coins"></i></div><span>Cashback</span></a>
+    <a href="referral.html" class="nav-item"><div class="nav-icon"><i class="fa-solid fa-gift"></i></div><span>Referral</span></a>
+    <a href="settings.html" class="nav-item"><div class="nav-icon"><i class="fa-solid fa-gear"></i></div><span>Settings</span></a>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+  <div class="sheet" id="moreSheet">
+    <div class="sheet-header"><b>More Services</b><span onclick="closeAll()" style="cursor:pointer;">✕</span></div>
+    <div class="more-grid">
+      <a href="airtime.html" class="item"><div class="icon-box">📱</div><b>Airtime</b></a>
+      <a href="data.html" class="item"><div class="icon-box">📶</div><b>Data</b></a>
+      <a href="tv.html" class="item"><div class="icon-box">📺</div><b>TV</b></a>
+      <a href="electricity.html" class="item"><div class="icon-box">💡</div><b>Electricity</b></a>
+      <a href="transfer.html" class="item"><div class="icon-box">💸</div><b>Transfer</b></a>
+      <a href="convert.html" class="item"><div class="icon-box">🔄</div><b>Convert</b></a>
+      <a href="referral.html" class="item"><div class="icon-box">🎁</div><b>Referral</b></a>
+      <a href="cashback.html" class="item"><div class="icon-box">💰</div><b>Cashback</b></a>
+      <a href="history.html" class="item"><div class="icon-box">📊</div><b>History</b></a>
+      <a href="settings.html" class="item"><div class="icon-box">⚙️</div><b>Settings</b></a>
+    </div>
+  </div>
+
+  <div class="sheet" id="settingsSheet">
+    <div class="sheet-header"><b>Homepage Settings</b><span onclick="closeAll()">✕</span></div>
+    <div style="padding:16px;">
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F0F0F0;"><span>Show Balance</span><label style="position:relative;display:inline-block;width:42px;height:24px;"><input type="checkbox" checked id="showBalToggle" onchange="toggleBalSetting()"><span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#00A86B;border-radius:24px;"></span></label></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;"><span>Primary Color #8B6914</span><input type="color" id="colorPick" value="#8B6914" onchange="changeColor(this.value)"></div>
+      <a href="settings.html" style="display:block;margin-top:12px;text-align:center;color:var(--primary);font-weight:700;text-decoration:none;">Go to Full Settings →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+let hidden=false, bal="₦1,429.55";
+function toggleEye(){hidden=!hidden;document.getElementById('balance').innerText=hidden?"****":bal;document.getElementById('eyeBtn').innerText=hidden?"🙈":"👁️";localStorage.setItem('plugmasters_hidden',hidden);}
+function loadEye(){let h=localStorage.getItem('plugmasters_hidden')==='true';if(h){hidden=true;document.getElementById('balance').innerText="****";document.getElementById('eyeBtn').innerText="🙈";}}
+let cur=0; const ads=[document.getElementById('ad1'),document.getElementById('ad2'),document.getElementById('ad3')];
+setInterval(()=>{ads[cur].style.transform="translateX(-100%)";cur=(cur+1)%ads.length;ads[cur].style.transform="translateX(0)";},3000);
+function openMore(){document.getElementById('overlay').classList.add('show');document.getElementById('moreSheet').classList.add('show');}
+function openSettingsSheet(){document.getElementById('overlay').classList.add('show');document.getElementById('settingsSheet').classList.add('show');}
+function closeAll(){document.getElementById('overlay').classList.remove('show');document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));}
+function toggleBalSetting(){let c=document.getElementById('showBalToggle').checked;document.getElementById('balance').style.display=c?'block':'none';}
+function changeColor(c){document.documentElement.style.setProperty('--primary',c);localStorage.setItem('plugmasters_theme',JSON.stringify({primary_color:c}));}
+function loadTheme(){let t=localStorage.getItem('plugmasters_theme');if(t){try{let j=JSON.parse(t);document.documentElement.style.setProperty('--primary',j.primary_color);document.getElementById('colorPick').value=j.primary_color;}catch(e){}}}
+loadEye(); loadTheme();
+</script>
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+  <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+  <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+  <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+  <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+  <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+  </div>
+  <script>
+  function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+  </script>
+</body>
+</html>

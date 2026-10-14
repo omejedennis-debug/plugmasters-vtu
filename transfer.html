@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transfer - PlugMasters VTU Main Build v1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--primary-light:#FFF8E6;--success:#00A86B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#F6F6F6;display:flex;justify-content:center;}
+.phone{width:390px;background:#F6F6F6;min-height:100vh;position:relative;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;border-bottom:1px solid #EEE;position:sticky;top:0;z-index:20;}
+.tabs{display:flex;background:white;padding:8px;gap:8px;}
+.tab{flex:1;padding:10px;border-radius:20px;text-align:center;font-size:13px;cursor:pointer;border:1.5px solid #EEE;background:white;}
+.tab.active{background:var(--primary);color:white;border-color:var(--primary);font-weight:700;}
+.form{background:white;padding:16px;margin-top:8px;border-radius:18px 18px 0 0;min-height:70vh;}
+.input{width:100%;padding:12px;border:1.5px solid #EEE;border-radius:10px;margin:8px 0;outline:none;font-weight:600;}
+.bank-box{display:flex;align-items:center;gap:8px;padding:10px;border:1.5px solid #EEE;border-radius:10px;margin:8px 0;cursor:pointer;}
+.bank-box img{width:32px;height:32px;border-radius:50%;background:#EEE;}
+.pay{width:100%;padding:14px;border-radius:12px;border:none;background:var(--primary);color:white;font-weight:800;margin-top:16px;}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:30;display:none;}.overlay.show{display:block;}
+.sheet{position:absolute;bottom:0;left:0;width:100%;background:white;border-radius:20px 20px 0 0;z-index:40;transform:translateY(100%);transition:0.35s;max-height:92vh;overflow:auto;}.sheet.show{transform:translateY(0);}
+.sheet-header{display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;}
+.row{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px solid #F8F8F8;}
+.payment-box{background:#F9F9F9;border-radius:12px;padding:12px;margin:12px 0;}
+.insufficient{color:#D32F2F;font-size:11px;margin-top:4px;display:none;}.insufficient.show{display:block;}
+.pin-dots{display:flex;gap:12px;justify-content:center;margin:20px 0;}.dot{width:48px;height:48px;border:1.5px solid #DDD;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}.dot.filled{border-color:var(--primary);background:var(--primary-light);}
+.keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#EEE;margin-top:10px;}.key{padding:18px;background:white;text-align:center;font-size:20px;font-weight:600;cursor:pointer;}
+.reminder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;width:85%;border-radius:16px;padding:20px;text-align:center;z-index:60;display:none;box-shadow:0 10px 30px rgba(0,0,0,0.3);}.reminder.show{display:block;}
+.rem-btns{display:flex;flex-direction:column;gap:10px;margin-top:12px;}.btn-cancel{padding:12px;border-radius:10px;border:1.5px solid var(--primary);background:white;color:var(--primary);font-weight:700;}.btn-continue{padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;}
+.success{position:absolute;top:0;left:0;width:100%;height:100%;background:#F6F6F6;z-index:90;display:none;}.success.show{display:block;}.check-circle{width:64px;height:64px;background:#00A86B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:32px;margin:30px auto 10px;}
+</style>
+
+<script>
+    // LOGIN PROTECTION FOR ALL PAGES
+    (function(){
+     if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+       location.href='login.html';
+     }
+    })();
+    </script>
+</head>
+<body>
+<div class="phone">
+  <div class="header"><span onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></span><b>Transfer</b><a href="history.html?filter=Transfer" style="color:var(--primary);font-weight:700;text-decoration:none;">History</a></div>
+  <div class="tabs"><div class="tab active" id="tabInter" onclick="switchTab('inter')">PlugMasters User</div><div class="tab" id="tabBank" onclick="switchTab('bank')">Other Banks</div></div>
+  <div class="form" id="interForm">
+    <p style="font-size:12px;color:#888;">Transfer to another PlugMasters user instantly, no charges</p>
+    <input class="input" id="interUser" placeholder="Username / Phone e.g 07067065724">
+    <input class="input" id="interAmt" type="number" placeholder="Amount (50 - 500,000)" oninput="updateBtn()">
+    <input class="input" id="interNote" placeholder="Note (optional)">
+    <button class="pay" id="interPayBtn" onclick="openConfirm('inter')">Continue</button>
+  </div>
+  <div class="form" id="bankForm" style="display:none;">
+    <p style="font-size:12px;color:#888;">Transfer to any bank in Nigeria - ₦10 charge</p>
+    <div class="bank-box" onclick="toggleBankDrop()"><div style="width:32px;height:32px;background:var(--primary);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;" id="bankIcon">UBA</div><span id="bankName">Select Bank</span><span style="margin-left:auto;">▼</span></div>
+    <div id="bankDrop" style="display:none;background:white;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.1);max-height:200px;overflow:auto;margin-bottom:8px;">
+      <div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid #F5F5F5;" onclick="pickBank('UBA')">UBA</div>
+      <div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid #F5F5F5;" onclick="pickBank('GTB')">GTBank</div>
+      <div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid #F5F5F5;" onclick="pickBank('Access')">Access Bank</div>
+      <div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid #F5F5F5;" onclick="pickBank('First Bank')">First Bank</div>
+      <div style="padding:10px 16px;cursor:pointer;" onclick="pickBank('OPay')">OPay</div>
+    </div>
+    <input class="input" id="acctNo" placeholder="Account Number (10 digits)" maxlength="10" oninput="verifyAcct()">
+    <div id="acctName" style="font-size:12px;color:var(--success);font-weight:700;padding:4px 0;display:none;">ADEBAYO JAMES</div>
+    <input class="input" id="bankAmt" type="number" placeholder="Amount" oninput="updateBtn()">
+    <button class="pay" id="bankPayBtn" onclick="openConfirm('bank')">Continue</button>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="handleOverlay()"></div>
+  <div class="sheet" id="confirmSheet">
+    <div class="sheet-header"><span onclick="closeConfirm()">✕</span><b>Confirm Transfer</b><span></span></div>
+    <div style="text-align:center;padding:20px 0 5px;font-size:28px;font-weight:900;" id="confirmAmount">₦0.00</div>
+    <div style="padding:0 16px;">
+      <div class="row"><span>Type</span><span id="confirmType">Inter User</span></div>
+      <div class="row"><span>Recipient</span><span id="confirmRec">-</span></div>
+      <div class="row"><span>Fee</span><span id="confirmFee">₦0</span></div>
+      <div class="row"><span>Amount</span><span id="confirmAmt2">₦0.00</span></div>
+      <div class="payment-box"><div style="display:flex;gap:8px;align-items:center;"><b style="font-size:13px;">Available Balance (₦<span id="availBal">365.42</span>)</b></div><div class="insufficient" id="insufficient">Insufficient balance</div></div>
+    </div>
+    <button class="pay" style="margin:16px;width:calc(100% - 32px);" id="finalPayBtn" onclick="openPin()">Pay</button>
+  </div>
+  <div class="sheet" id="pinSheet"><div class="sheet-header"><span onclick="closePin()">✕</span><b>Enter PIN</b><span></span></div><div class="pin-dots" id="pinDots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="keypad"><div class="key" onclick="enterPin('1')">1</div><div class="key" onclick="enterPin('2')">2</div><div class="key" onclick="enterPin('3')">3</div><div class="key" onclick="enterPin('4')">4</div><div class="key" onclick="enterPin('5')">5</div><div class="key" onclick="enterPin('6')">6</div><div class="key" onclick="enterPin('7')">7</div><div class="key" onclick="enterPin('8')">8</div><div class="key" onclick="enterPin('9')">9</div><div class="key"></div><div class="key" onclick="enterPin('0')">0</div><div class="key" onclick="delPin()">⌫</div></div></div>
+  <div class="reminder" id="reminder"><h3>Reminder</h3><p>Do you want to cancel this payment?</p><div class="rem-btns"><button class="btn-continue" onclick="continuePay()">Continue to pay</button><button class="btn-cancel" onclick="cancelPay()">Cancel</button></div></div>
+  <div class="success" id="successPage"><div style="display:flex;justify-content:space-between;padding:14px 16px;background:white;"><span onclick="location.reload()"><</span><span style="color:var(--primary);font-weight:700;">Done</span></div><div style="text-align:center;padding:20px;"><div class="check-circle">✓</div><h2>Transfer Successful</h2><h1 id="successAmt"></h1><p style="margin-top:10px;font-size:13px;color:#666;">Money don enter</p></div></div>
+</div>
+<script>
+let currentTab='inter',selectedAmt=0,mainBalance=365.42,pin='',fromSheet='',selectedBank='';
+function switchTab(t){currentTab=t;document.getElementById('tabInter').classList.toggle('active',t=='inter');document.getElementById('tabBank').classList.toggle('active',t=='bank');document.getElementById('interForm').style.display=t=='inter'?'block':'none';document.getElementById('bankForm').style.display=t=='bank'?'block':'none';}
+function toggleBankDrop(){let d=document.getElementById('bankDrop');d.style.display=d.style.display=='none'?'block':'none';}
+function pickBank(b){selectedBank=b;document.getElementById('bankName').innerText=b;document.getElementById('bankIcon').innerText=b.substring(0,3);document.getElementById('bankDrop').style.display='none';}
+function verifyAcct(){let v=document.getElementById('acctNo').value;if(v.length==10){document.getElementById('acctName').style.display='block';document.getElementById('acctName').innerText='ADEBAYO JAMES - Verified ✅';}else document.getElementById('acctName').style.display='none';}
+function updateBtn(){}
+function openConfirm(type){
+  if(type=='inter'){selectedAmt=parseFloat(document.getElementById('interAmt').value)||0;if(!selectedAmt||!document.getElementById('interUser').value){alert('Enter user and amount');return;}document.getElementById('confirmRec').innerText=document.getElementById('interUser').value;document.getElementById('confirmType').innerText='PlugMasters User';document.getElementById('confirmFee').innerText='₦0';}
+  else{selectedAmt=parseFloat(document.getElementById('bankAmt').value)||0;if(!selectedAmt||!selectedBank||document.getElementById('acctNo').value.length!=10){alert('Complete bank details');return;}document.getElementById('confirmRec').innerText=selectedBank+' - '+document.getElementById('acctNo').value;document.getElementById('confirmType').innerText='Other Banks';document.getElementById('confirmFee').innerText='₦10';selectedAmt+=10;}
+  document.getElementById('confirmAmount').innerText='₦'+selectedAmt.toLocaleString()+'.00';document.getElementById('confirmAmt2').innerText='₦'+selectedAmt.toLocaleString()+'.00';
+  if(selectedAmt>mainBalance)document.getElementById('insufficient').classList.add('show');else document.getElementById('insufficient').classList.remove('show');
+  document.getElementById('overlay').classList.add('show');document.getElementById('confirmSheet').classList.add('show');fromSheet='confirm';
+}
+function closeConfirm(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('reminder').classList.add('show');fromSheet='confirm-closing';}
+function openPin(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('pinSheet').classList.add('show');pin='';renderPin();fromSheet='pin';}
+function closePin(){document.getElementById('pinSheet').classList.remove('show');document.getElementById('reminder').classList.add('show');fromSheet='pin-closing';}
+function continuePay(){document.getElementById('reminder').classList.remove('show');if(fromSheet.includes('pin'))openPin();else document.getElementById('confirmSheet').classList.add('show');}
+function cancelPay(){document.getElementById('reminder').classList.remove('show');document.getElementById('overlay').classList.remove('show');document.getElementById('confirmSheet').classList.remove('show');document.getElementById('pinSheet').classList.remove('show');}
+function handleOverlay(){if(fromSheet=='confirm')closeConfirm();else if(fromSheet=='pin')closePin();}
+function enterPin(d){if(pin.length<4){pin+=d;renderPin();if(pin.length==4)setTimeout(checkPin,400);}}
+function delPin(){pin=pin.slice(0,-1);renderPin();}
+function renderPin(){document.querySelectorAll('#pinDots.dot').forEach((dot,i)=>{dot.innerText=i<pin.length?'•':'';dot.className=i<pin.length?'dot filled':'dot';});}
+function checkPin(){if(pin==='1234'){mainBalance-=selectedAmt;document.getElementById('pinSheet').classList.remove('show');document.getElementById('successPage').classList.add('show');document.getElementById('successAmt').innerText='₦'+selectedAmt.toLocaleString()+'.00';document.getElementById('overlay').classList.remove('show');}else alert('Wrong PIN, try 1234');}
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+    <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+    <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+    <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+    <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+    <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+    </div>
+    <script>
+    function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+    </script>
+</body>
+</html>

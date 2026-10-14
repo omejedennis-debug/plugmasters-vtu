@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cashback - PlugMasters VTU Main Build v1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--success:#00A86B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#F6F6F6;display:flex;justify-content:center;}
+.phone{width:390px;background:#F6F6F6;min-height:100vh;position:relative;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;border-bottom:1px solid #EEE;}
+.card{background:white;margin:12px 16px;border-radius:16px;padding:16px;}
+.bal-box{background:linear-gradient(135deg,#8B6914,#D4A017);color:white;border-radius:16px;padding:18px;}
+.switch{position:relative;display:inline-block;width:42px;height:24px;}.switch input{opacity:0;width:0;height:0;}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.3);transition:.3s;border-radius:24px;}.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%;}input:checked +.slider{background:var(--success);}input:checked +.slider:before{transform:translateX(18px);}
+.list-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F5F5F5;}
+.badge{background:#E8F5E9;color:#1B7A3A;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+</style>
+
+<script>
+    // LOGIN PROTECTION FOR ALL PAGES
+    (function(){
+     if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+       location.href='login.html';
+     }
+    })();
+    </script>
+</head>
+<body>
+<div class="phone">
+  <div class="header"><span onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></span><b>Cashback</b><a href="history.html?filter=Cashback" style="color:var(--primary);font-weight:700;text-decoration:none;font-size:13px;">History</a></div>
+  <div class="card">
+    <div class="bal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;"><div><small style="opacity:0.9;">Total Cashback Balance</small><h1 style="margin-top:4px;" id="cashBal">₦1,064.13</h1><small style="opacity:0.9;">Earned from all transactions</small></div><div style="width:48px;height:48px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">💰</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;background:rgba(255,255,255,0.15);padding:10px 12px;border-radius:10px;">
+        <div><b style="font-size:12px;">Auto-use Cashback</b><br><small style="font-size:10px;opacity:0.9;">Use cashback for next purchase</small></div>
+        <label class="switch"><input type="checkbox" id="autoUse" checked><span class="slider"></span></label>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <div style="flex:1;background:#F9F9F9;border-radius:12px;padding:10px;text-align:center;"><b style="font-size:14px;">₦3,450.20</b><br><small style="font-size:11px;color:#888;">Total Earned</small></div>
+      <div style="flex:1;background:#F9F9F9;border-radius:12px;padding:10px;text-align:center;"><b style="font-size:14px;">₦2,386.07</b><br><small style="font-size:11px;color:#888;">Total Used</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <b style="font-size:13px;">How Cashback Works</b>
+    <div style="margin-top:10px;font-size:11px;color:#666;line-height:1.6;">
+      • Airtime: 2% cashback instantly<br>
+      • Data: Up to 3% cashback depending on plan<br>
+      • TV/Electricity: ₦20 - ₦50 per transaction<br>
+      • Referral: ₦200 per person<br>
+      • You can turn on Auto-use to pay with cashback next time
+    </div>
+  </div>
+  <div class="card">
+    <b style="font-size:13px;">Cashback History</b>
+    <div style="margin-top:8px;">
+      <div class="list-item"><div><b style="font-size:13px;">MTN Airtime ₦500</b><br><small style="color:#888;">Today, 10:23 AM</small></div><div style="text-align:right;"><span style="color:var(--success);font-weight:700;">+₦10</span><br><span class="badge">Earned</span></div></div>
+      <div class="list-item"><div><b style="font-size:13px;">1GB Data Purchase</b><br><small style="color:#888;">Yesterday, 3:45 PM</small></div><div style="text-align:right;"><span style="color:var(--success);font-weight:700;">+₦15</span><br><span class="badge">Earned</span></div></div>
+      <div class="list-item"><div><b style="font-size:13px;">Used for DSTV Compact</b><br><small style="color:#888;">Oct 10, 2026</small></div><div style="text-align:right;"><span style="color:#D32F2F;font-weight:700;">-₦50</span><br><span style="background:#FFE9E9;color:#D32F2F;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">Used</span></div></div>
+      <div class="list-item"><div><b style="font-size:13px;">Referral - Adebayo T.</b><br><small style="color:#888;">Oct 9, 2026</small></div><div style="text-align:right;"><span style="color:var(--success);font-weight:700;">+₦200</span><br><span class="badge">Earned</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+    <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+    <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+    <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+    <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+    <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+    </div>
+    <script>
+    function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+    </script>
+</body>
+</html>

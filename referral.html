@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referral - PlugMasters VTU Main Build v1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--success:#00A86B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#F6F6F6;display:flex;justify-content:center;}
+.phone{width:390px;background:#F6F6F6;min-height:100vh;position:relative;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;border-bottom:1px solid #EEE;}
+.card{background:white;margin:12px 16px;border-radius:16px;padding:16px;}
+.code-box{background:linear-gradient(90deg,#8B6914,#D4A017);color:white;border-radius:12px;padding:16px;text-align:center;margin-top:10px;}
+.code{font-size:22px;font-weight:900;letter-spacing:2px;margin:8px 0;}
+.stats{display:flex;gap:10px;margin-top:12px;}
+.stat{flex:1;background:#F9F9F9;border-radius:12px;padding:12px;text-align:center;}
+.stat b{font-size:18px;display:block;}
+.btn{width:100%;padding:12px;border-radius:12px;border:none;font-weight:700;margin-top:10px;cursor:pointer;}
+.btn-primary{background:var(--primary);color:white;}
+.btn-outline{background:white;border:1.5px solid var(--primary);color:var(--primary);}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #F5F5F5;}
+.toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#333;color:white;padding:8px 16px;border-radius:20px;font-size:12px;display:none;z-index:50;}.toast.show{display:block;}
+</style>
+
+<script>
+    // LOGIN PROTECTION FOR ALL PAGES
+    (function(){
+     if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+       location.href='login.html';
+     }
+    })();
+    </script>
+</head>
+<body>
+<div class="phone">
+  <div class="header"><span onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></span><b>Refer & Earn</b><span></span></div>
+  <div class="card">
+    <h3 style="font-size:14px;">Invite friends, Earn ₦200 per referral</h3>
+    <p style="font-size:11px;color:#888;margin-top:4px;">When your friend registers and does first transaction, you get ₦200 instantly to wallet</p>
+    <div class="code-box">
+      <small>YOUR REFERRAL CODE</small>
+      <div class="code" id="refCode">PLUG-JAMES-123</div>
+      <small>Share your link below</small>
+      <div style="background:rgba(255,255,255,0.2);padding:8px;border-radius:8px;margin-top:8px;font-size:11px;word-break:break-all;" id="refLink">https://plugmasters.com/register?ref=PLUG-JAMES-123</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="copyCode()"><i class="fa-solid fa-copy"></i> Copy Code</button>
+      <button class="btn btn-outline" style="flex:1;" onclick="shareWhatsApp()"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><b>12</b><small>Total Referrals</small></div>
+      <div class="stat"><b>₦2,400</b><small>Earnings</small></div>
+      <div class="stat"><b>₦1,200</b><small>Wallet Balance</small></div>
+    </div>
+    <button class="btn btn-primary" onclick="withdraw()">Withdraw to Wallet</button>
+  </div>
+  <div class="card">
+    <b style="font-size:13px;">Your Referrals (12)</b>
+    <div style="margin-top:8px;">
+      <div class="list-item"><div><b style="font-size:13px;">Adebayo T.</b><br><small style="color:#888;">0703****123 - 2 days ago</small></div><span style="color:var(--success);font-weight:700;font-size:12px;">+₦200</span></div>
+      <div class="list-item"><div><b style="font-size:13px;">Chinedu O.</b><br><small style="color:#888;">0812****456 - 5 days ago</small></div><span style="color:var(--success);font-weight:700;font-size:12px;">+₦200</span></div>
+      <div class="list-item"><div><b style="font-size:13px;">Fatima K.</b><br><small style="color:#888;">0903****789 - 1 week ago</small></div><span style="color:var(--success);font-weight:700;font-size:12px;">+₦200</span></div>
+      <div class="list-item"><div><b style="font-size:13px;">Emeka J.</b><br><small style="color:#888;">0806****321 - Pending</small></div><span style="color:#FF9800;font-size:11px;">Pending first transaction</span></div>
+    </div>
+  </div>
+  <div class="toast" id="toast">Copied!</div>
+</div>
+<script>
+function copyCode(){navigator.clipboard.writeText(document.getElementById('refCode').innerText);showToast('Code Copied!');}
+function shareWhatsApp(){let link=document.getElementById('refLink').innerText;let text=`Join PlugMasters VTU with my code ${document.getElementById('refCode').innerText} and get bonus! ${link}`;window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);}
+function withdraw(){alert('₦1,200 referral earnings moved to your main wallet!');}
+function showToast(t){let el=document.getElementById('toast');el.innerText=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500);}
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+    <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+    <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+    <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+    <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+    <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+    </div>
+    <script>
+    function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+    </script>
+</body>
+</html>

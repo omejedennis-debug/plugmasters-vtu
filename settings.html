@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - PlugMasters VTU Main Build v1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--success:#00A86B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#F6F6F6;display:flex;justify-content:center;}
+.phone{width:390px;background:#F6F6F6;min-height:100vh;position:relative;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;border-bottom:1px solid #EEE;}
+.profile{background:white;padding:16px;display:flex;gap:12px;align-items:center;}
+.avatar{width:56px;height:56px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;}
+.group{background:white;margin-top:8px;padding:0 16px;}
+.group-title{font-size:11px;color:#888;padding:12px 0 6px;letter-spacing:1px;font-weight:700;}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #F5F5F5;cursor:pointer;}
+.row-left{display:flex;gap:12px;align-items:center;}
+.icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.sheet{position:absolute;bottom:0;left:0;width:100%;background:white;border-radius:20px 20px 0 0;z-index:40;transform:translateY(100%);transition:0.35s;max-height:85vh;overflow:auto;}.sheet.show{transform:translateY(0);}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:30;display:none;}.overlay.show{display:block;}
+.input{width:100%;padding:12px;border:1.5px solid #EEE;border-radius:10px;margin:8px 0;outline:none;}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;background:var(--primary);color:white;font-weight:700;margin-top:10px;}
+.switch{position:relative;display:inline-block;width:42px;height:24px;}.switch input{opacity:0;width:0;height:0;}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;transition:.3s;border-radius:24px;}.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%;}input:checked +.slider{background:var(--success);}input:checked +.slider:before{transform:translateX(18px);}
+</style>
+
+<script>
+    // LOGIN PROTECTION FOR ALL PAGES
+    (function(){
+     if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+       location.href='login.html';
+     }
+    })();
+    </script>
+</head>
+<body>
+<div class="phone">
+  <div class="header"><span onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></span><b>Settings</b><span></span></div>
+  <div class="profile"><div class="avatar">JM</div><div><b>James Master</b><br><small style="color:#888;">070 6706 5724 • Level 1 - Not Verified</small><br><small style="color:var(--primary);font-weight:700;" onclick="openKYC()">Upgrade KYC →</small></div></div>
+
+  <div class="group"><div class="group-title">ACCOUNT</div>
+    <div class="row" onclick="openProfile()"><div class="row-left"><div class="icon" style="background:#E3F2FD;color:#1976D2;">👤</div><span>Personal Info</span></div><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div>
+    <div class="row" onclick="openKYC()"><div class="row-left"><div class="icon" style="background:#FFF3E0;color:#FF9800;">🪪</div><span>KYC Verification</span></div><div style="display:flex;gap:6px;align-items:center;"><span style="font-size:11px;background:#FFF3CD;color:#8B6914;padding:3px 8px;border-radius:10px;">Not Verified</span><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div></div>
+    <div class="row" onclick="openSecurity()"><div class="row-left"><div class="icon" style="background:#E8F5E9;color:#00A86B;">🔒</div><span>Security & PIN</span></div><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#F3E5F5;color:#9C27B0;">🏦</div><span>Bank Accounts & Cards</span></div><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div>
+  </div>
+
+  <div class="group"><div class="group-title">PREFERENCES</div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#FFF8E6;color:var(--primary);">🎨</div><span>Theme Color</span></div><input type="color" value="#8B6914" style="border:none;width:32px;height:32px;border-radius:50%;"></div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#E0F7FA;color:#00ACC1;">🔔</div><span>Notifications</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#FCE4EC;color:#E91E63;">👁️</div><span>Hide Balance</span></div><label class="switch"><input type="checkbox" id="hideBal"><span class="slider"></span></label></div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#E8EAF6;color:#3F51B5;">🌐</div><span>Language</span></div><span style="color:#888;font-size:12px;">English ></span></div>
+  </div>
+
+  <div class="group"><div class="group-title">SUPPORT & ABOUT</div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#E8F5E9;color:#00A86B;">💬</div><span>Contact Support</span></div><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#FFF3E0;color:#FF9800;">⭐</div><span>Rate Us</span></div><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div>
+    <div class="row"><div class="row-left"><div class="icon" style="background:#F0F0F0;color:#666;">ℹ️</div><span>About PlugMasters</span></div><span style="color:#888;font-size:11px;">v1.0.0 Main Build</span></div>
+    <div class="row" style="color:#D32F2F;"><div class="row-left"><div class="icon" style="background:#FFEBEE;color:#D32F2F;">🚪</div><span>Logout</span></div><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+  <div class="sheet" id="profileSheet"><div style="display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;"><b>Personal Info</b><span onclick="closeAll()" style="cursor:pointer;">✕</span></div><div style="padding:16px;"><input class="input" value="James Master" placeholder="Full Name"><input class="input" value="070 6706 5724" placeholder="Phone"><input class="input" value="james@plugmasters.com" placeholder="Email"><button class="btn" onclick="closeAll()">Save</button></div></div>
+  <div class="sheet" id="kycSheet"><div style="display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;"><b>KYC Verification</b><span onclick="closeAll()">✕</span></div><div style="padding:16px;"><p style="font-size:12px;color:#888;">Upgrade to Level 2 to increase transaction limit to ₦5,000,000</p><input class="input" placeholder="BVN (11 digits)"><input class="input" placeholder="NIN (11 digits)"><input class="input" placeholder="ID Number"><div style="border:1.5px dashed #DDD;border-radius:12px;padding:20px;text-align:center;margin:10px 0;"><div style="font-size:24px;">📷</div><small>Upload ID Card Photo</small></div><button class="btn" onclick="closeAll()">Submit KYC</button></div></div>
+  <div class="sheet" id="securitySheet"><div style="display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;"><b>Security & PIN</b><span onclick="closeAll()">✕</span></div><div style="padding:16px;"><p style="font-size:12px;color:#888;">Current PIN: 1234 (for testing)</p><input class="input" type="password" placeholder="Old PIN"><input class="input" type="password" placeholder="New PIN (4 digits)"><input class="input" type="password" placeholder="Confirm New PIN"><button class="btn" onclick="closeAll()">Change PIN</button><div style="margin-top:16px;"><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F5F5F5;"><span style="font-size:13px;">Biometric Login</span><label class="switch"><input type="checkbox"><span class="slider"></span></label></div></div></div></div>
+</div>
+<script>
+function openProfile(){document.getElementById('overlay').classList.add('show');document.getElementById('profileSheet').classList.add('show');}
+function openKYC(){document.getElementById('overlay').classList.add('show');document.getElementById('kycSheet').classList.add('show');}
+function openSecurity(){document.getElementById('overlay').classList.add('show');document.getElementById('securitySheet').classList.add('show');}
+function closeAll(){document.getElementById('overlay').classList.remove('show');document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));}
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+    <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+    <a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+    <a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+    <a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+    <a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+    </div>
+    <script>
+    function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+    </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Data - PlugMasters VTU Main Build v1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--primary:#8B6914;--primary-light:#FFF8E6;--success:#00A86B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#F6F6F6;display:flex;justify-content:center;}
+.phone{width:390px;background:#F5F5F5;min-height:100vh;position:relative;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:white;border-bottom:1px solid #EEE;position:sticky;top:0;z-index:20;}
+.input-bar{display:flex;align-items:center;gap:8px;background:white;padding:12px 16px;position:relative;}
+.net-box{display:flex;align-items:center;gap:4px;cursor:pointer;padding:4px 6px;border-radius:20px;border:1.5px solid #EEE;}
+.net-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;}
+.net-icon.mtn{background:#FFCC00;color:#000;}.net-icon.airtel{background:#FF0000;color:#FFF;}.net-icon.glo{background:#00A651;color:#FFF;}.net-icon.t2{background:#111;color:#FFF;}.net-icon.vitel{background:#0066FF;color:#FFF;}
+.input-bar input{flex:1;border:none;outline:none;font-size:15px;font-weight:700;}
+.contact-btn{width:32px;height:32px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;}
+.dropdown{position:absolute;left:16px;right:16px;top:52px;background:white;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.15);z-index:20;display:none;padding:8px 0;max-height:280px;overflow:auto;}
+.dropdown.show{display:block;}
+.drop-item{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;}
+.drop-item.radio{width:20px;height:20px;border:2px solid #CCC;border-radius:50%;margin-left:auto;}
+.drop-item.active.radio{border-color:var(--primary);background:var(--primary);box-shadow:inset 0 0 0 3px white;}
+.recent-item{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #F5F5F5;}
+.warn{background:#FFF3CD;border:1px solid #FFE69C;padding:8px 12px;font-size:11px;display:flex;gap:6px;color:#664D03;}
+.banner{margin:10px 16px;background:linear-gradient(90deg,#0ABAB5,#1A1A6C);border-radius:12px;padding:10px 14px;color:white;display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+.tabs{display:flex;gap:16px;overflow-x:auto;padding:10px 16px;background:white;white-space:nowrap;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{font-size:13px;color:#888;padding-bottom:4px;border-bottom:2px solid transparent;cursor:pointer;}
+.tab.active{color:#000;font-weight:700;border-color:var(--primary);}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 16px;background:white;}
+.card{border:1px solid #EAEAEA;border-radius:10px;text-align:center;padding:8px 4px;background:white;cursor:pointer;}
+.card.active{border-color:var(--primary);background:var(--primary-light);}
+.card b{font-size:14px;display:block;}.card small{font-size:10px;color:#666;display:block;margin:2px 0;}
+.cash{font-size:9px;color:var(--success);font-weight:700;}
+.service{background:white;margin-top:10px;padding:12px 16px;}
+.service-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;cursor:pointer;}
+.service-icon{width:36px;height:36px;background:#E8F5E9;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--success);}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:30;display:none;}.overlay.show{display:block;}
+.sheet{position:absolute;bottom:0;left:0;width:100%;background:white;border-radius:20px 20px 0 0;z-index:40;transform:translateY(100%);transition:0.35s;max-height:92vh;overflow:auto;}.sheet.show{transform:translateY(0);}
+.sheet-header{display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid #EEE;}
+.amount-big{text-align:center;padding:20px 0 5px;font-size:28px;font-weight:900;}
+.details{padding:0 16px;}.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:13px;border-bottom:1px solid #F8F8F8;}.row.label{color:#777;}.row.val{font-weight:600;}
+.payment-box{background:#F9F9F9;border-radius:12px;padding:12px;margin:12px 0;}
+.pay-method-head{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;color:#666;}
+.insufficient{color:#D32F2F;font-size:11px;margin-top:4px;display:none;}.insufficient.show{display:block;}
+.add-money{color:var(--success);font-size:12px;font-weight:700;cursor:pointer;}
+.add-card{display:flex;align-items:center;gap:10px;padding:12px;border:1px dashed #DDD;border-radius:10px;margin-top:10px;cursor:pointer;background:white;}
+.pay-big{margin:16px;background:var(--primary);color:white;border:none;width:calc(100% - 32px);padding:14px;border-radius:12px;font-weight:800;font-size:16px;}
+.pay-big:disabled{background:#B9E0C8;}
+.pin-dots{display:flex;gap:12px;justify-content:center;margin:20px 0;}.dot{width:48px;height:48px;border:1.5px solid #DDD;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}.dot.filled{border-color:var(--primary);background:var(--primary-light);}
+.keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#EEE;margin-top:10px;}.key{padding:18px;background:white;text-align:center;font-size:20px;font-weight:600;cursor:pointer;}
+.switch{position:relative;display:inline-block;width:42px;height:24px;}.switch input{opacity:0;width:0;height:0;}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;transition:.3s;border-radius:24px;}.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%;}input:checked +.slider{background:#00A86B;}input:checked +.slider:before{transform:translateX(18px);}
+.reminder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;width:85%;border-radius:16px;padding:20px;text-align:center;z-index:60;display:none;box-shadow:0 10px 30px rgba(0,0,0,0.3);}.reminder.show{display:block;}
+.rem-btns{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.btn-cancel{padding:12px;border-radius:10px;border:1.5px solid var(--primary);background:white;color:var(--primary);font-weight:700;}
+.btn-continue{padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;}
+.pin-error{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;width:85%;border-radius:18px;padding:24px;text-align:center;z-index:70;display:none;box-shadow:0 15px 40px rgba(0,0,0,0.3);}.pin-error.show{display:block;}
+.processing{position:absolute;top:0;left:0;width:100%;height:100%;background:white;z-index:80;display:none;flex-direction:column;align-items:center;justify-content:center;}.processing.show{display:flex;}.spinner{width:50px;height:50px;border:4px solid #F0E6C8;border-top:4px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;}@keyframes spin{to{transform:rotate(360deg);}}
+.success{position:absolute;top:0;left:0;width:100%;height:100%;background:#F6F6F6;z-index:90;display:none;}.success.show{display:block;}
+.check-circle{width:64px;height:64px;background:#00A86B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:32px;margin:30px auto 10px;}
+.ussd-page{position:absolute;top:0;left:0;width:100%;height:100%;background:white;z-index:50;display:none;overflow:auto;}.ussd-page.show{display:block;}
+.ussd-row{display:flex;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #F5F5F5;cursor:pointer;}
+.popup{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;width:80%;border-radius:14px;z-index:60;display:none;text-align:center;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.2);}.popup.show{display:block;}
+.popup-btns{display:flex;border-top:1px solid #EEE;}.popup-btns div{flex:1;padding:12px;cursor:pointer;}.popup-btns div:last-child{color:var(--success);font-weight:700;border-left:1px solid #EEE;}
+.toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#333;color:white;padding:8px 16px;border-radius:20px;font-size:12px;z-index:70;display:none;}.toast.show{display:block;}
+.form-input{width:100%;padding:12px;border:1.5px solid #E0E0E0;border-radius:10px;margin:8px 0;outline:none;}
+</style>
+<script>
+  // LOGIN PROTECTION FOR ALL PAGES
+  (function(){
+   if(localStorage.getItem('plugmasters_is_logged')!=='true'){
+     location.href='login.html';
+   }
+  })();
+  </script>
+</head>
+<body>
+<div class="phone">
+  <div class="header"><span onclick="history.back()" style="cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></span><b>Mobile Data</b><a href="history.html?filter=Mobile Data" style="color:var(--primary);font-weight:700;text-decoration:none;">History</a></div>
+  <div class="warn"><i class="fa-solid fa-triangle-exclamation"></i> OPay detected that your screen is being recorded...</div>
+  <div class="input-bar">
+    <div class="net-box" onclick="toggleNet()"><div class="net-icon mtn" id="netIcon">MTN</div> ▼</div>
+    <input type="tel" id="phone" value="070 6706 5724">
+    <span onclick="toggleRecent()" style="cursor:pointer;">▼</span>
+    <div class="contact-btn" onclick="pickContact()">👤</div>
+    <div class="dropdown" id="netDrop"><div class="drop-item active" onclick="pickNet('mtn','MTN','mtn')"><div class="net-icon mtn">MTN</div> MTN <div class="radio"></div></div><div class="drop-item" onclick="pickNet('airtel','Airtel','airtel')"><div class="net-icon airtel">A</div> Airtel <div class="radio"></div></div><div class="drop-item" onclick="pickNet('glo','GLO','glo')"><div class="net-icon glo">GLO</div> GLO <div class="radio"></div></div><div class="drop-item" onclick="pickNet('t2','T2','t2')"><div class="net-icon t2">T2</div> T2 Mobile <div class="radio"></div></div><div class="drop-item" onclick="pickNet('vitel','VITEL','vitel')"><div class="net-icon vitel">VT</div> VITEL <div class="radio"></div></div></div>
+    <div class="dropdown" id="recentDrop"><div id="recentList"></div><div style="text-align:center;padding:10px;color:#888;font-size:13px;cursor:pointer;" onclick="clearRecent()">🗑️ Delete All</div></div>
+  </div>
+  <div class="banner"><span>Top-up your Data anytime, anywhere.<br><b>Simply Dial *955*4* mobile no#</b></span><span>📱</span></div>
+  <div style="background:white;"><div style="display:flex;justify-content:space-between;padding:8px 16px;"><b style="font-size:14px;">Data Plans</b><i class="fa-solid fa-table-cells"></i></div><div class="tabs" id="planTabs"><div class="tab active" onclick="switchPlan('HOT',this)">HOT</div><div class="tab" onclick="switchPlan('Extra Night',this)">Extra Night</div><div class="tab" onclick="switchPlan('Daily',this)">Daily</div><div class="tab" onclick="switchPlan('Weekly',this)">Weekly</div><div class="tab" onclick="switchPlan('Monthly',this)">Monthly</div><div class="tab" onclick="switchPlan('Broadband',this)">Broadband</div><div class="tab" onclick="switchPlan('XtraValue',this)">XtraValue</div></div><div class="grid" id="dataGrid"></div></div>
+  <div class="service"><b>Mobile Data Service</b><div class="service-item" onclick="openUSSD()"><div style="display:flex;gap:10px;align-items:center;"><div class="service-icon"><i class="fa-solid fa-circle-info"></i></div><div><b style="font-size:13px;">USSD enquiry</b><br><small style="font-size:11px;color:#888;">Check phone balance and more</small></div></div><i class="fa-solid fa-chevron-right" style="color:#CCC;"></i></div></div>
+  <div class="overlay" id="overlay" onclick="handleOverlayClick()"></div>
+
+  <div class="sheet" id="confirmSheet">
+    <div class="sheet-header"><span onclick="closeConfirm()" style="cursor:pointer;">✕</span><span style="font-size:12px;color:var(--primary);font-weight:700;">Use Payment PIN</span></div>
+    <div class="amount-big" id="confirmAmount">₦0.00</div>
+    <div style="text-align:center;font-size:13px;color:#888;" id="confirmSubAmount">₦0.00</div>
+    <div class="details">
+      <div class="row"><span class="label">Product Name</span><span class="val" id="confirmProdNet"><span class="net-icon mtn" style="display:inline-flex;width:20px;height:20px;">MTN</span> Mobile Data</span></div>
+      <div class="row"><span class="label">Recipient Mobile</span><span class="val" id="confirmPhone">070 6706 5724</span></div>
+      <div class="row"><span class="label">Data Bundle</span><span class="val" id="confirmBundle">3.5GB Weekly Plan</span></div>
+      <div class="row"><span class="label">Amount</span><span class="val" id="confirmAmt2">₦0.00</span></div>
+      <div class="row"><span class="label">Use Cashback(₦<span id="cashbackBal">1,064.13</span>)</span><div style="display:flex;align-items:center;gap:10px;"><span class="val" id="cashbackDeduct">-₦0.00</span><label class="switch"><input type="checkbox" id="cashbackToggle" onchange="toggleCashback()"><span class="slider"></span></label></div></div>
+      <div class="row"><span class="label">OPay Bonus</span><span class="val" style="color:#D32F2F;" id="bonusText">+₦30 Cashback</span></div>
+      <div class="pay-method-head"><span>Payment Method</span><span onclick="openAddMoney()" style="cursor:pointer;">All ></span></div>
+      <div class="payment-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:8px;align-items:center;"><span style="width:24px;height:24px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;color:var(--success);font-size:12px;">↻</span><b style="font-size:13px;">Available Balance (₦<span id="availBalText">365.42</span>)</b> <i class="fa-solid fa-circle-info" style="color:#888;font-size:12px;"></i></div></div>
+        <div class="insufficient" id="insufficientText">Insufficient balance</div>
+        <div style="height:1px;background:#EEE;margin:10px 0;"></div>
+        <div class="row" style="border:none;padding:6px 0;"><span class="label">Wallet (₦0.00)</span><span class="add-money" onclick="openAddMoney()">Add Money ></span></div>
+        <div class="row" style="border:none;padding:6px 0;"><span class="label">OWealth (₦<span id="owealthBal">365.42</span>)</span><span class="val" id="owealthDeduct">₦0.00</span></div>
+      </div>
+      <div class="add-card" onclick="openAddCard()"><span style="width:24px;height:24px;border-radius:50%;border:1px dashed #AAA;display:flex;align-items:center;justify-content:center;">+</span><b style="font-size:13px;">Add a Bank Card / Account</b></div>
+    </div>
+    <button class="pay-big" id="mainPayBtn" onclick="openPin()">Pay</button>
+  </div>
+
+  <div class="sheet" id="addMoneySheet"><div class="sheet-header"><span onclick="closeAddMoney()">✕</span><b>Add Money</b><span></span></div><div style="padding:16px;"><p style="font-size:13px;color:#666;margin-bottom:10px;">Select payment method to fund your wallet - Links to payment system</p><div class="add-card"><span style="background:var(--primary);color:white;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;">🏦</span><div><b>Bank Transfer</b><br><small>Free & instant</small></div></div><div class="add-card"><span style="background:#00A86B;color:white;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;">💳</span><div><b>Debit Card</b><br><small>Add money with card</small></div></div><input type="number" id="addMoneyAmt" class="form-input" placeholder="Enter amount e.g 2000"><button class="pay-big" style="width:100%;margin:16px 0 0;" onclick="doAddMoney()">Continue</button></div></div>
+  <div class="sheet" id="addCardSheet"><div class="sheet-header"><span onclick="closeAddCard()">✕</span><b>Add Bank Card / Account</b><span></span></div><div style="padding:16px;"><p style="font-size:13px;color:#666;">Enter your card details - Links to card entry page</p><input class="form-input" id="cardNumber" placeholder="Card Number"><div style="display:flex;gap:8px;"><input class="form-input" placeholder="MM/YY"><input class="form-input" placeholder="CVV"></div><input class="form-input" placeholder="Card PIN"><button class="pay-big" style="width:100%;margin:16px 0 0;" onclick="saveCard()">Add Card</button></div></div>
+
+  <div class="sheet" id="pinSheet"><div class="sheet-header"><span onclick="closePin()" style="cursor:pointer;">✕</span><b>Enter Payment PIN</b><span></span></div><div class="pin-dots" id="pinDots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="keypad"><div class="key" onclick="enterPin('1')">1</div><div class="key" onclick="enterPin('2')">2</div><div class="key" onclick="enterPin('3')">3</div><div class="key" onclick="enterPin('4')">4</div><div class="key" onclick="enterPin('5')">5</div><div class="key" onclick="enterPin('6')">6</div><div class="key" onclick="enterPin('7')">7</div><div class="key" onclick="enterPin('8')">8</div><div class="key" onclick="enterPin('9')">9</div><div class="key"></div><div class="key" onclick="enterPin('0')">0</div><div class="key" onclick="delPin()">⌫</div></div></div>
+  <div class="reminder" id="reminder"><h3>Reminder</h3><p>Do you want to cancel this payment?</p><div class="rem-btns"><button class="btn-continue" onclick="continuePay()">Continue to pay</button><button class="btn-cancel" onclick="cancelPay()">Cancel</button></div></div>
+  <div class="pin-error" id="pinError"><div style="width:60px;height:60px;margin:0 auto 12px;background:#FFE9E9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;">❌</div><h3>PIN Incorrect</h3><p id="pinErrorText"></p><button class="btn-continue" style="width:100%;" onclick="tryAgain()">Try again</button></div>
+  <div class="processing" id="processing"><div class="spinner"></div><h3>Transaction is currently being processed</h3></div>
+  <div class="success" id="successPage"><div style="display:flex;justify-content:space-between;padding:14px 16px;background:white;"><span onclick="location.reload()" style="font-size:20px;cursor:pointer;"><</span><span style="color:var(--primary);font-weight:700;">Done</span></div><div style="text-align:center;padding:20px;"><div class="check-circle">✓</div><h2>Successful</h2><h1 id="successAmt"></h1></div></div>
+  <div class="ussd-page" id="ussdPage"><div class="header"><span onclick="closeUSSD()"><i class="fa-solid fa-arrow-left"></i></span><b>USSD Codes</b><span></span></div><div style="padding:16px;"><div class="ussd-row" onclick="showCopy('*663#')"><div><b>Check mobile phone number</b><br><small>*663#</small></div><i class="fa-solid fa-chevron-right"></i></div><div class="ussd-row" onclick="showCopy('*310#')"><div><b>Check airtime balance</b><br><small>*310#</small></div><i class="fa-solid fa-chevron-right"></i></div><div class="ussd-row" onclick="showCopy('*323#')"><div><b>Check data balance</b><br><small>*323#</small></div><i class="fa-solid fa-chevron-right"></i></div></div></div>
+  <div class="popup" id="copyPopup"><div style="padding:16px;"><small>Copy to call <b id="copyCode"></b></small></div><div class="popup-btns"><div onclick="hideCopy()">Cancel</div><div onclick="doCopy()">Copy</div></div></div>
+  <div class="toast" id="toast">Copied!</div>
+</div>
+<script>
+const plans={
+"HOT":[{gb:"1GB",day:"1 Day",price:500,cash:"₦7.5",badge:"1GB + 1 Bonus"},{gb:"2.5GB",day:"1 Day",price:750,cash:"₦15",badge:""},{gb:"500M",day:"7 Days",price:500,cash:"₦17.5",badge:""},{gb:"2.5GB",day:"2 Days",price:600,cash:"₦18",badge:""},{gb:"1GB",day:"7 Days",price:600,cash:"₦15",badge:""},{gb:"3.5GB",day:"7 Days",price:1500,cash:"₦30",badge:""},{gb:"2GB",day:"30 Days",price:1500,cash:"₦30",badge:""},{gb:"7GB",day:"30 Days",price:3500,cash:"₦70",badge:"Extra Night Data"}],
+"Extra Night":[{gb:"500M",day:"7 Days",price:500,cash:"₦7.5",badge:"Extra Night Data"}],
+"Daily":[{gb:"1GB",day:"1 Day",price:500,cash:"₦7.5",badge:""}],
+"Weekly":[{gb:"3.5GB",day:"7 Days",price:1500,cash:"₦30",badge:"Weekly"}],
+"Monthly":[{gb:"2GB",day:"30 Days",price:1500,cash:"₦30",badge:""},{gb:"7GB",day:"30 Days",price:3500,cash:"₦70",badge:""}],
+"Broadband":[{gb:"30GB",day:"30 Days",price:8000,cash:"₦160",badge:""}],
+"XtraValue":[{gb:"1GB",day:"1 Day",price:500,cash:"₦7.5",badge:""}]
+};
+let recentNumbers=["070 6706 5724","090 5350 4806","081 3819 4017"];
+let selected=null,cashbackBalance=1064.13,mainBalance=365.42,useCashback=false,pin='',attempts=5,fromSheet='',currentCode='';
+function toggleNet(){document.getElementById('netDrop').classList.toggle('show');}
+function pickNet(id,name,cls){document.getElementById('netIcon').innerText=name.substring(0,3);document.getElementById('netIcon').className='net-icon '+cls;document.getElementById('netDrop').classList.remove('show');}
+function toggleRecent(){renderRecent();document.getElementById('recentDrop').classList.toggle('show');}
+function renderRecent(){document.getElementById('recentList').innerHTML=recentNumbers.map(n=>`<div class="recent-item"><span onclick="useRecent('${n}')">${n}</span><span onclick="removeRecent('${n}')" style="cursor:pointer;"> X</span></div>`).join('');}
+function useRecent(n){document.getElementById('phone').value=n;document.getElementById('recentDrop').classList.remove('show');}
+function removeRecent(n){recentNumbers=recentNumbers.filter(x=>x!=n);renderRecent();}
+function clearRecent(){recentNumbers=[];renderRecent();}
+function pickContact(){const c=prompt("Enter contact number:"); if(c){document.getElementById('phone').value=c;}}
+function renderGrid(type){document.getElementById('dataGrid').innerHTML=plans[type].map(p=>`<div class="card" onclick="pickData(this,'${p.gb}','${p.day}',${p.price},'${p.cash}')"><b>${p.gb}</b><small>${p.day}</small><small>₦${p.price}</small><div class="cash">₦${p.cash} Cashback</div></div>`).join('');}
+function switchPlan(type,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderGrid(type);}
+function pickData(el,gb,day,price,cash){document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));el.classList.add('active');selected={gb,day,price,cash};openConfirm();}
+function checkBalance(){
+  let payable=useCashback? (selected.price<=cashbackBalance?0:selected.price-cashbackBalance):selected.price;
+  const insufficient=document.getElementById('insufficientText'), payBtn=document.getElementById('mainPayBtn');
+  if(payable>mainBalance){insufficient.classList.add('show');payBtn.disabled=true;payBtn.style.background='#B9E0C8';} else {insufficient.classList.remove('show');payBtn.disabled=false;payBtn.style.background='var(--primary)';}
+}
+function openConfirm(){
+  document.getElementById('confirmAmount').innerText='₦'+selected.price.toLocaleString()+'.00';
+  document.getElementById('confirmSubAmount').innerText='₦'+selected.price.toLocaleString()+'.00';
+  document.getElementById('confirmAmt2').innerText='₦'+selected.price.toLocaleString()+'.00';
+  document.getElementById('confirmPhone').innerText=document.getElementById('phone').value;
+  document.getElementById('confirmBundle').innerText=selected.gb+' '+selected.day+' Plan';
+  document.getElementById('bonusText').innerText='+'+selected.cash+' Cashback';
+  document.getElementById('cashbackBal').innerText=cashbackBalance.toFixed(2);
+  document.getElementById('availBalText').innerText=mainBalance.toFixed(2);
+  document.getElementById('owealthBal').innerText=mainBalance.toFixed(2);
+  document.getElementById('owealthDeduct').innerText='₦'+selected.price.toLocaleString()+'.00';
+  document.getElementById('cashbackDeduct').innerText='-₦'+selected.price.toLocaleString()+'.00';
+  document.getElementById('cashbackToggle').checked=false;useCashback=false;checkBalance();
+  document.getElementById('overlay').classList.add('show');document.getElementById('confirmSheet').classList.add('show');fromSheet='confirm';
+}
+function closeConfirm(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('reminder').classList.add('show');fromSheet='confirm-closing';}
+function openPin(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('pinSheet').classList.add('show');pin='';renderPin();fromSheet='pin';}
+function closePin(){document.getElementById('pinSheet').classList.remove('show');document.getElementById('reminder').classList.add('show');fromSheet='pin-closing';}
+function continuePay(){document.getElementById('reminder').classList.remove('show');if(fromSheet.includes('pin'))openPin();else openConfirm();}
+function cancelPay(){document.getElementById('reminder').classList.remove('show');document.getElementById('overlay').classList.remove('show');document.getElementById('confirmSheet').classList.remove('show');document.getElementById('pinSheet').classList.remove('show');}
+function handleOverlayClick(){if(fromSheet=='confirm')closeConfirm();else if(fromSheet=='pin')closePin();}
+function enterPin(d){if(pin.length<4){pin+=d;renderPin();if(pin.length==4)setTimeout(checkPin,400);}}
+function delPin(){pin=pin.slice(0,-1);renderPin();}
+function renderPin(){const dots=document.querySelectorAll('#pinDots.dot');dots.forEach((dot,i)=>{dot.innerText=i<pin.length?'•':'';dot.className=i<pin.length?'dot filled':'dot';});}
+function toggleCashback(){
+  useCashback=document.getElementById('cashbackToggle').checked;
+  const topAmt=document.getElementById('confirmAmount'), subAmt=document.getElementById('confirmSubAmount'), owealth=document.getElementById('owealthDeduct'), cashD=document.getElementById('cashbackDeduct');
+  if(useCashback){
+    if(selected.price<=cashbackBalance){topAmt.innerText='₦0.00';subAmt.innerText='₦0.00';owealth.innerText='₦0.00';cashD.innerText='-₦'+selected.price.toLocaleString()+'.00';cashD.style.color='#00A86B';}
+    else{let r=selected.price-cashbackBalance;topAmt.innerText='₦'+r.toLocaleString()+'.00';subAmt.innerText='₦'+r.toLocaleString()+'.00';owealth.innerText='₦'+r.toLocaleString()+'.00';cashD.innerText='-₦'+cashbackBalance.toFixed(2);}
+  } else {topAmt.innerText='₦'+selected.price.toLocaleString()+'.00';subAmt.innerText='₦'+selected.price.toLocaleString()+'.00';owealth.innerText='₦'+selected.price.toLocaleString()+'.00';cashD.innerText='-₦'+selected.price.toLocaleString()+'.00';cashD.style.color='#000';}
+  checkBalance();
+}
+function checkPin(){
+  if(pin==='1234'){
+    let payable=useCashback? (selected.price<=cashbackBalance?0:selected.price-cashbackBalance):selected.price;
+    if(useCashback){if(selected.price<=cashbackBalance)cashbackBalance-=selected.price;else{cashbackBalance=0;mainBalance-=payable;}}else mainBalance-=selected.price;
+    document.getElementById('pinSheet').classList.remove('show');document.getElementById('processing').classList.add('show');
+    setTimeout(()=>{document.getElementById('processing').classList.remove('show');document.getElementById('successPage').classList.add('show');document.getElementById('successAmt').innerText=selected.price.toLocaleString()+'.00';},2500);
+  } else {attempts--;document.getElementById('pinErrorText').innerText='The PIN you entered is incorrect. You have '+attempts+' attempts remaining.';document.getElementById('pinError').classList.add('show');}
+}
+function tryAgain(){document.getElementById('pinError').classList.remove('show');pin='';renderPin();}
+function openAddMoney(){document.getElementById('confirmSheet').classList.remove('show');document.getElementById('addMoneySheet').classList.add('show');}
+function closeAddMoney(){document.getElementById('addMoneySheet').classList.remove('show');document.getElementById('confirmSheet').classList.add('show');}
+function doAddMoney(){let a=parseFloat(document.getElementById('addMoneyAmt').value);if(a){mainBalance+=a;document.getElementById('availBalText').innerText=mainBalance.toFixed(2);document.getElementById('owealthBal').innerText=mainBalance.toFixed(2);alert('₦'+a+' added!');closeAddMoney();checkBalance();} else alert('Enter amount');}
+function openAddCard(){document.getElementById('addMoneySheet').classList.remove('show');document.getElementById('confirmSheet').classList.remove('show');document.getElementById('addCardSheet').classList.add('show');}
+function closeAddCard(){document.getElementById('addCardSheet').classList.remove('show');document.getElementById('confirmSheet').classList.add('show');}
+function saveCard(){let c=document.getElementById('cardNumber').value;if(c.length>10){alert('Bank Card Added!');closeAddCard();} else alert('Enter valid card details');}
+function openUSSD(){document.getElementById('ussdPage').classList.add('show');}
+function closeUSSD(){document.getElementById('ussdPage').classList.remove('show');}
+function showCopy(code){currentCode=code;document.getElementById('copyCode').innerText=code;document.getElementById('copyPopup').classList.add('show');}
+function hideCopy(){document.getElementById('copyPopup').classList.remove('show');}
+function doCopy(){navigator.clipboard.writeText(currentCode);hideCopy();document.getElementById('toast').classList.add('show');setTimeout(()=>document.getElementById('toast').classList.remove('show'),1500);}
+renderGrid('HOT');
+</script>
+
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:white;border-top:1px solid #EEE;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:50;">
+<a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-house"></i></span><span>Homepage</span></a>
+<a href="convert.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-repeat"></i></span><span>Convert</span></a>
+<a href="cashback.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-coins"></i></span><span>Cashback</span></a>
+<a href="referral.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gift"></i></span><span>Referral</span></a>
+<a href="settings.html" style="display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#999;font-size:10px;flex:1;"><span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;"><i class="fa-solid fa-gear"></i></span><span>Settings</span></a>
+</div>
+<script>
+function logout(){localStorage.setItem('plugmasters_is_logged','false');location.href='login.html';}
+</script>
+</body>
+</html>
