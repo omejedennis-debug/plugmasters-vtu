@@ -1,76 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sign Up - PlugMasters</title>
-<style>
-*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{margin:0;background:#f8f5ec;display:flex;justify-content:center;padding:20px}
-.box{background:#fff;max-width:400px;width:100%;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
-h2{text-align:center;color:#8B6914;margin:0 0 10px}
-input{width:100%;padding:13px;border:1.5px solid #ddd;border-radius:10px;margin:8px 0;font-size:15px}
-.btn{width:100%;background:#8B6914;color:#fff;border:none;padding:14px;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:10px}
-a{color:#8B6914;text-decoration:none;font-weight:bold}
-.msg{padding:10px;border-radius:8px;margin-top:10px;text-align:center;display:none;font-size:13px}
-.err{background:#ffe6e6;color:#d00} .ok{background:#e6ffe6;color:#0a0}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup - Plugmasters VTU</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="box">
-<h2>Create Account</h2>
-<input id="name" placeholder="Full Name">
-<input id="phone" placeholder="Phone e.g 07067065724">
-<input id="email" placeholder="Email e.g james@gmail.com">
-<input id="password" type="password" placeholder="Password (min 6)">
-<button class="btn" id="btn">Create Account</button>
-<div class="msg err" id="err"></div>
-<div class="msg ok" id="ok"></div>
-<p style="text-align:center;font-size:13px;margin-top:14px">Already have account? <a href="login.html">Login</a></p>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+<div class="bg-white p-8 rounded-xl w-96">
+<h2 class="text-2xl font-bold mb-6 text-center">Create Account</h2>
+<input id="name" placeholder="Full Name" class="w-full p-3 border rounded mb-3">
+<input id="phone" placeholder="Phone 070..." class="w-full p-3 border rounded mb-3">
+<input id="email" placeholder="Email" class="w-full p-3 border rounded mb-3">
+<input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded mb-3">
+<button id="btn" class="w-full bg-blue-600 text-white p-3 rounded font-bold">Create Account</button>
+<p id="msg" class="text-center mt-3 text-sm"></p>
 </div>
 
 <script type="module">
-import { db } from './firebase.js';
-import { collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-document.getElementById('btn').addEventListener('click', async()=>{
-  const name=document.getElementById('name').value.trim();
-  const phone=document.getElementById('phone').value.trim();
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value.trim();
-  const err=document.getElementById('err');
-  const ok=document.getElementById('ok');
-  err.style.display='none'; ok.style.display='none';
+const firebaseConfig = {
+  apiKey: "AIzaSyCpQl-jOS4-6bLa5L383dqR5y3JmFT5exA",
+  authDomain: "plugmasters-vtu.firebaseapp.com",
+  projectId: "plugmasters-vtu",
+  storageBucket: "plugmasters-vtu.firebasestorage.app",
+  messagingSenderId: "217536430232",
+  appId: "1:217536430232:web:8a56dd1f34b38a380e10ed",
+  measurementId: "G-DMX4JC8X78"
+};
 
-  if(!name||!phone||!email||!password){ err.textContent='Fill all fields'; err.style.display='block'; return; }
-  if(password.length<6){ err.textContent='Password min 6'; err.style.display='block'; return; }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  const btn=document.getElementById('btn');
-  btn.textContent='Creating...'; btn.disabled=true;
-
-  try{
-    // check if phone exists
-    const q=query(collection(db,'users'), where('phone','==',phone));
-    const snap=await getDocs(q);
-    if(!snap.empty){ throw new Error('Phone already registered, login instead'); }
-
-    await addDoc(collection(db,'users'),{
+document.getElementById('btn').onclick = async () => {
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const msg = document.getElementById('msg');
+  
+  if(!name || !phone || !email || !password){ msg.textContent="Fill all fields"; msg.className="text-red-600 text-center mt-3 text-sm"; return; }
+  
+  msg.textContent="Creating account..."; 
+  msg.className="text-blue-600 text-center mt-3 text-sm";
+  
+  try {
+    // Check if user exists
+    const q = query(collection(db, "users"), where("phone", "==", phone));
+    const snap = await getDocs(q);
+    if(!snap.empty){ msg.textContent="Phone already exists"; msg.className="text-red-600 text-center mt-3 text-sm"; return; }
+    
+    await addDoc(collection(db, "users"), {
       name, phone, email, password,
-      wallet:0,
-      blocked:false,
-      createdAt: new Date().toISOString()
+      wallet: 0,
+      role: "user",
+      createdAt: new Date()
     });
-
-    ok.textContent='✅ Account created! Redirecting to login...';
-    ok.style.display='block';
-    setTimeout(()=>{ window.location.href='login.html'; },1500);
-
-  }catch(e){
-    err.textContent=e.message;
-    err.style.display='block';
-    btn.textContent='Create Account'; btn.disabled=false;
+    
+    msg.textContent="Account created! Redirecting...";
+    msg.className="text-green-600 text-center mt-3 text-sm";
+    setTimeout(()=>{ window.location.href="login.html"; },1500);
+    
+  } catch(e) {
+    console.error(e);
+    msg.textContent="Error: " + e.message;
+    msg.className="text-red-600 text-center mt-3 text-sm";
   }
-});
+};
 </script>
 </body>
 </html>
