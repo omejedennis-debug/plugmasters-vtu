@@ -205,6 +205,10 @@ localStorage.removeItem('plug_admin_phone');
 localStorage.removeItem('plug_admin_role');
 location.href='admin-login.html';
 }
+
+  if(!localStorage.getItem('pm_admin')){
+  window.location.href='admin-login.html';
+}
 </script>
 </body>
 </html>
