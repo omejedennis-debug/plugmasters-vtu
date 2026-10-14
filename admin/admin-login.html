@@ -1,104 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Login - PlugMasters</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlugMasters - Super Admin</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:14px;}
-.card{background:white;width:100%;max-width:380px;border-radius:16px;padding:22px;border:1px solid #EEE;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
-.logo{text-align:center;margin-bottom:14px;}
-.logo b{font-size:22px;color:#8B6914;}
-.input{width:100%;padding:12px 14px;border:1.5px solid #EEE;border-radius:10px;font-size:14px;margin:6px 0;outline:none;}
-.input:focus{border-color:#8B6914;}
-.btn{width:100%;padding:12px;background:#8B6914;color:white;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;margin-top:10px;}
-.btn:hover{background:#6d5210;}
-.small{font-size:11px;color:#888;text-align:center;margin-top:10px;}
-.badge{padding:4px 8px;border-radius:20px;font-size:10px;font-weight:700;color:white;background:#111;display:inline-block;margin:2px;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#f5f1e6;padding:15px}
+.container{max-width:480px;margin:0 auto;background:#fff;border-radius:16px;padding:25px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+h1{text-align:center;color:#8B6914;font-size:28px;margin-bottom:2px}
+.subtitle{text-align:center;color:#888;margin-bottom:15px}
+.badge{display:flex;justify-content:center;margin-bottom:15px}
+.badge span{background:#111;color:#fff;padding:6px 14px;border-radius:20px;font-size:13px}
+.info-box{border:1.5px dashed #8B6914;border-radius:12px;padding:14px;margin-bottom:20px;background:#fffdf5;font-size:14px;line-height:1.6}
+.info-box b{color:#111}
+.info-box a{color:#0d2dff;text-decoration:underline;font-weight:bold}
+label{font-weight:bold;font-size:14px;margin:12px 0 6px;display:block}
+input{width:100%;padding:14px;border:1.5px solid #ddd;border-radius:10px;font-size:16px;outline:none}
+input:focus{border-color:#8B6914}
+.btn{width:100%;background:#8B6914;color:#fff;border:none;padding:15px;border-radius:12px;font-size:16px;font-weight:bold;margin-top:20px;cursor:pointer}
+.btn:active{transform:scale(.98)}
+.error{color:red;text-align:center;margin-top:12px;font-size:14px;display:none}
+.hint{text-align:center;font-size:12px;color:#888;margin-top:15px;line-height:1.5}
+
+/* Dashboard after login */
+#dashboard{display:none}
+table{width:100%;border-collapse:collapse;margin-top:15px;font-size:13px}
+th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+th{background:#8B6914;color:#fff}
+.card{background:#fff;border-radius:12px;padding:15px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.logout{background:#111;color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;float:right}
 </style>
 </head>
 <body>
-<div class="card">
-<div class="logo">
-<b>PlugMasters</b><br>
-<small style="color:#888;">Super Admin - 23 Menus</small><br>
-<span class="badge"><i class="fa-solid fa-user-shield"></i> Secure Login</span>
+<div class="container" id="loginBox">
+<h1>PlugMasters</h1>
+<p class="subtitle">Super Admin - 23 Menus</p>
+<div class="badge"><span>🛡️ Secure Login</span></div>
+
+<div class="info-box">
+<b>Default Super Admin:</b><br>
+Phone: <a>07067065724</a><br>
+PIN: <a>1234</a><br>
+Role: Super Admin - All Access<br><br>
+<b>Your Firebase Admin:</b><br>
+Email: admin@plugmasters.com<br>
+Password: Admin123!
 </div>
 
-<div style="background:#FFF8E6;padding:10px;border-radius:10px;border:1px dashed #8B6914;margin-bottom:10px;">
-<small><b>Default Super Admin:</b><br>
-Phone: 07067065724<br>
-PIN: 1234<br>
-Role: Super Admin - All Access</small>
-</div>
+<label>Phone Number or Email</label>
+<input id="phone" placeholder="07067065724 or admin@plugmasters.com" value="07067065724">
 
-<label style="font-size:12px;font-weight:600;">Phone Number</label>
-<input class="input" id="phone" placeholder="07067065724" value="07067065724">
+<label>Admin PIN / Password</label>
+<input id="pin" type="password" placeholder="1234 or Admin123!" value="1234">
 
-<label style="font-size:12px;font-weight:600;">Admin PIN</label>
-<input class="input" id="pin" type="password" placeholder="Enter PIN 1234" value="1234">
+<button class="btn" onclick="login()">➔ Login to Dashboard</button>
+<p class="error" id="errorMsg">Invalid Phone or PIN - Use 07067065724 / 1234</p>
 
-<button class="btn" onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> Login to Dashboard</button>
-
-<p class="small" id="msg"></p>
-
-<p class="small" style="margin-top:14px;">
+<p class="hint">
 Staff Login: Support, Accountant, Viewer use their phone + PIN<br>
 All actions logged with IP, Device, Time in Audit Logs<br>
-<span style="color:#8B6914;">Fixed header + All 23 links attached on every page</span>
+<b style="color:#8B6914">Fixed header + All 23 links attached on every page</b>
 </p>
+</div>
 
-<div style="margin-top:12px;text-align:center;">
-<small style="font-size:10px;color:#AAA;">PlugMasters Admin v1.0 | 07067065724 Super Admin | 23 Pages Complete</small>
+<div class="container" id="dashboard" style="max-width:900px">
+<button class="logout" onclick="logout()">Logout</button>
+<h2>Super Admin Dashboard</h2>
+<p style="margin:10px 0;color:#666">Welcome, <b id="adminName">Super Admin</b> | All Users & Wallet</p>
+<div class="card"><h3 id="count">Loading users...</h3>
+<table id="usersTable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Wallet</th><th>Date</th></tr></thead><tbody></tbody></table>
 </div>
 </div>
 
-<script>
-function login(){
-  let phone = document.getElementById('phone').value.trim();
-  let pin = document.getElementById('pin').value.trim();
-  let msg = document.getElementById('msg');
+<script type="module">
+import { auth, db } from './firebase.js';
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Super Admin Check
-  if(phone === '07067065724' && pin === '1234'){
-    localStorage.setItem('plug_admin_logged','true');
-    localStorage.setItem('plug_admin_phone',phone);
-    localStorage.setItem('plug_admin_role','Super Admin');
-    msg.style.color='green';
-    msg.innerText='Login Success - Redirecting to Dashboard...';
-    setTimeout(()=>{location.href='admin-dashboard.html';},800);
+window.login = async function(){
+  const phone = document.getElementById('phone').value.trim();
+  const pin = document.getElementById('pin').value.trim();
+  const error = document.getElementById('errorMsg');
+
+  // 1. Hardcoded Super Admin
+  if(phone === "07067065724" && pin === "1234"){
+    localStorage.setItem('pm_admin','super');
+    showDashboard("Super Admin (07067065724)");
     return;
   }
-  // Support Staff Example
-  if(phone === '08000000001' && pin === '1234'){
-    localStorage.setItem('plug_admin_logged','true');
-    localStorage.setItem('plug_admin_phone',phone);
-    localStorage.setItem('plug_admin_role','Support');
-    msg.style.color='green';
-    msg.innerText='Support Staff Login Success';
-    setTimeout(()=>{location.href='admin-dashboard.html';},800);
+  // 2. Your Firebase Admin (email login)
+  if((phone === "admin@plugmasters.com" || phone === "07067065724") && (pin === "Admin123!" || pin === "1234" || pin === "07067065724")){
+    // allow flexible
+    localStorage.setItem('pm_admin','super');
+    showDashboard("Super Admin (Firebase)");
     return;
   }
-  // Accountant Example
-  if(phone === '09000000001' && pin === '1234'){
-    localStorage.setItem('plug_admin_logged','true');
-    localStorage.setItem('plug_admin_phone',phone);
-    localStorage.setItem('plug_admin_role','Accountant');
-    msg.style.color='green';
-    msg.innerText='Accountant Login Success';
-    setTimeout(()=>{location.href='admin-dashboard.html';},800);
-    return;
+  // 3. Try Firebase Email login for admin@plugmasters.com
+  if(phone.includes('@')){
+    try{
+      await signInWithEmailAndPassword(auth, phone, pin);
+      localStorage.setItem('pm_admin','firebase');
+      showDashboard(phone);
+      return;
+    }catch(e){
+      error.textContent = e.message;
+      error.style.display='block';
+      return;
+    }
   }
 
-  msg.style.color='red';
-  msg.innerText='Invalid Phone or PIN - Use 07067065724 / 1234 for Super Admin';
+  error.style.display='block';
 }
 
-// If already logged, go dashboard
-if(localStorage.getItem('plug_admin_logged')==='true'){
-  // Uncomment if you want auto redirect
-  // location.href='admin-dashboard.html';
+function showDashboard(name){
+  document.getElementById('loginBox').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('adminName').textContent=name;
+  loadUsers();
+}
+
+async function loadUsers(){
+  try{
+    const snap = await getDocs(collection(db,'users'));
+    const tbody = document.querySelector('#usersTable tbody');
+    tbody.innerHTML='';
+    let count=0;
+    snap.forEach(doc=>{
+      count++;
+      const u=doc.data();
+      tbody.innerHTML+=`<tr><td>${u.name||'-'}</td><td>${u.phone||'-'}</td><td>${u.email||'-'}</td><td>₦${u.wallet||0}</td><td>${(u.createdAt||'').slice(0,10)}</td></tr>`;
+    });
+    document.getElementById('count').textContent=`Total Users: ${count}`;
+    if(count===0) document.getElementById('count').textContent='No users yet - Create one via /signup.html';
+  }catch(e){
+    document.getElementById('count').textContent='Error loading users: '+e.message+' - Enable Firestore in console';
+  }
+}
+
+window.logout = function(){
+  localStorage.removeItem('pm_admin');
+  location.reload();
+}
+
+// Auto-login if already logged
+if(localStorage.getItem('pm_admin')){
+  document.getElementById('loginBox').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  loadUsers();
 }
 </script>
 </body>
