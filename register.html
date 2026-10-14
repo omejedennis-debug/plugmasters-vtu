@@ -42,21 +42,31 @@ body{background:#F5F5F5;display:flex;justify-content:center;}
   <div class="link"><a href="login.html">Login Here</a></div>
   <p style="font-size:10px;text-align:center;color:#AAA;margin-top:20px;">By registering you agree to our Terms & KYC Policy - Level 1 Limit ₦50,000</p>
 </div>
-<script>
-function register(){
-  let name=document.getElementById('fullName').value, phone=document.getElementById('phone').value, email=document.getElementById('email').value, pass=document.getElementById('password').value, ref=document.getElementById('referral').value;
-  if(!name||!phone||!pass){alert("Fill all required fields");return;}
-  if(phone.length<11){alert("Phone must be 11 digits");return;}
-  if(pass.length<6){alert("Password min 6 chars");return;}
-  let users=JSON.parse(localStorage.getItem('plugmasters_users')||'[]');
-  if(users.find(u=>u.phone===phone)){alert("Phone already registered, Login");return;}
-  users.push({name,phone,email,pass,referral:ref||'',balance:1429.55,cashback:1064.13,kyc:1});
-  localStorage.setItem('plugmasters_users',JSON.stringify(users));
-  localStorage.setItem('plugmasters_current_phone',phone);
-  localStorage.setItem('plugmasters_otp', '123456');
-  alert("OTP sent: 123456 - For demo");
-  location.href='otp-verify.html';
-}
+<script type="module">
+import { auth, db } from './firebase.js';
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const form = document.querySelector('form');
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.querySelector('input[name="name"]')?.value || document.querySelector('input[placeholder*="Name"]')?.value;
+  const phone = document.querySelector('input[name="phone"]')?.value || document.querySelector('input[placeholder*="Phone"]')?.value;
+  const email = document.querySelector('input[type="email"]').value;
+  const password = document.querySelector('input[type="password"]').value;
+
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, "users", cred.user.uid), {
+      name, phone, email,
+      wallet: 0,
+      role: "user",
+      createdAt: new Date().toISOString()
+    });
+    alert('Account created! Welcome to PlugMasters');
+    window.location.href = 'index.html';
+  }catch(err){ alert(err.message); }
+});
 </script>
 </body>
 </html>
