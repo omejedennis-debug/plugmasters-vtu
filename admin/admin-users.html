@@ -2,135 +2,46 @@
 <html>
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Users - PlugMasters Admin</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root{--primary:#8B6914;--bg:#F5F5F5;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{background:var(--bg);}
-.topbar{position:fixed;top:0;left:0;width:100%;height:60px;background:#111;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:100;}
-.top-left{display:flex;align-items:center;gap:12px;}
-.top-right{display:flex;align-items:center;gap:10px;background:#1E1E1E;padding:6px 12px;border-radius:30px;border:1px solid #333;}
-.top-right small{color:#BBB;font-size:12px;white-space:nowrap;}
-.logout-btn{width:34px;height:34px;border-radius:50%;background:#E53935;color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
-.hamburger{font-size:22px;cursor:pointer;padding:8px 10px;background:#1E1E1E;border-radius:8px;}
-.sidebar{width:260px;background:#111;color:white;min-height:100vh;padding:16px;position:fixed;top:60px;left:0;overflow:auto;transform:translateX(-100%);transition:0.3s;z-index:99;height:calc(100vh - 60px);}
-.sidebar.show{transform:translateX(0);}
-.menu-item{padding:11px 12px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:10px;color:#CCC;margin:2px 0;text-decoration:none;}
-.menu-item:hover,.menu-item.active{background:var(--primary);color:white;}
-.main{margin-left:0;margin-top:60px;padding:14px;}
-.main.shift{margin-left:260px;}
-.cards{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
-.card{background:white;padding:12px;border-radius:12px;border:1px solid #EEE;}
-.card small{color:#888;font-size:11px;display:block;}
-.card b{font-size:14px;}
-.section{background:white;border-radius:12px;padding:14px;border:1px solid #EEE;overflow:auto;min-height:70vh;}
-table{width:100%;border-collapse:collapse;margin-top:10px;display:block;overflow-x:auto;white-space:nowrap;}
-th,td{padding:10px;border-bottom:1px solid #EEE;font-size:12px;text-align:left;}
-th{background:#F9F9F9;font-size:11px;text-transform:uppercase;color:#666;}
-.btn{padding:7px 10px;background:var(--primary);color:white;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;margin:2px;}
-.btn-red{background:#E53935;}.btn-green{background:#00A86B;}.btn-blue{background:#1976D2;}
-.input{padding:10px;border:1.5px solid #EEE;border-radius:8px;font-size:13px;width:100%;margin:4px 0;outline:none;}
-.badge{padding:3px 7px;border-radius:20px;font-size:10px;font-weight:700;color:white;}
-.overlay{position:fixed;top:60px;left:0;width:100%;height:calc(100vh - 60px);background:rgba(0,0,0,0.5);z-index:98;display:none;}
-.overlay.show{display:block;}
-.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:400px;background:white;border-radius:14px;padding:18px;z-index:200;display:none;box-shadow:0 10px 30px rgba(0,0,0,0.3);}
-.modal.show{display:block;}
-@media(min-width:901px){.sidebar{transform:translateX(0);}.main{margin-left:260px;}.overlay{display:none!important;}.hamburger{display:none;}}
-@media(max-width:900px){.cards{grid-template-columns:1fr 1fr;}.sidebar{width:280px;}}
-</style>
+<title>Users - PlugMasters</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="topbar">
-<div class="top-left"><span class="hamburger" onclick="toggleSide()"><i class="fa-solid fa-bars"></i></span><b style="color:#8B6914;">PlugMasters</b><span style="font-size:12px;color:#888;">/ Users</span></div>
-<div class="top-right"><i class="fa-solid fa-user-shield" style="color:#8B6914;"></i><small>Super Admin</small><button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+<body class="bg-[#fdf6e9] min-h-screen">
+<div class="bg-[#7a5a1a] text-white p-4 flex justify-between">
+<button onclick="history.back()" class="bg-white text-black px-3 py-1 rounded-full text-sm">← Back</button>
+<h1 class="font-bold">All Users LIVE</h1>
 </div>
-<div class="overlay" id="overlay" onclick="toggleSide()"></div>
-
-<div class="sidebar" id="sidebar">
-<b style="color:#8B6914;">PlugMasters - 23 Menu</b>
-<a href="admin-dashboard.html" class="menu-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-<a href="admin-users.html" class="menu-item active"><i class="fa-solid fa-users"></i> Users (1,245)</a>
-<a href="admin-transactions.html" class="menu-item"><i class="fa-solid fa-list"></i> Transactions</a>
-<a href="admin-pricing.html" class="menu-item"><i class="fa-solid fa-tags"></i> VTU Pricing</a>
-<a href="admin-transfers.html" class="menu-item"><i class="fa-solid fa-money-bill-transfer"></i> Transfers</a>
-<a href="admin-convert.html" class="menu-item"><i class="fa-solid fa-repeat"></i> Conversions (5)</a>
-<a href="admin-referral.html" class="menu-item"><i class="fa-solid fa-gift"></i> Referral</a>
-<a href="admin-cashback.html" class="menu-item"><i class="fa-solid fa-coins"></i> Cashback</a>
-<a href="admin-promo.html" class="menu-item"><i class="fa-solid fa-ticket"></i> Promo Codes</a>
-<a href="admin-api.html" class="menu-item"><i class="fa-solid fa-plug"></i> API Switch</a>
-<a href="admin-wallet.html" class="menu-item"><i class="fa-solid fa-wallet"></i> Wallet & Finance</a>
-<a href="admin-kyc.html" class="menu-item"><i class="fa-solid fa-id-card"></i> KYC (12)</a>
-<a href="admin-dispute.html" class="menu-item"><i class="fa-solid fa-headset"></i> Disputes</a>
-<a href="admin-content.html" class="menu-item"><i class="fa-solid fa-bullhorn"></i> Content & Ads</a>
-<a href="admin-maintenance.html" class="menu-item"><i class="fa-solid fa-screwdriver-wrench"></i> Maintenance</a>
-<a href="admin-fraud.html" class="menu-item"><i class="fa-solid fa-shield"></i> Fraud & Blacklist</a>
-<a href="admin-bulk.html" class="menu-item"><i class="fa-solid fa-layer-group"></i> Bulk Actions</a>
-<a href="admin-loyalty.html" class="menu-item"><i class="fa-solid fa-crown"></i> Loyalty Tiers</a>
-<a href="admin-limits.html" class="menu-item"><i class="fa-solid fa-sliders"></i> Limits & Fees</a>
-<a href="admin-affiliate.html" class="menu-item"><i class="fa-solid fa-user-group"></i> Affiliate/Agent</a>
-<a href="admin-report.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i> Profit Report</a>
-<a href="admin-audit.html" class="menu-item"><i class="fa-solid fa-clipboard-list"></i> Audit Logs</a>
-<a href="admin-settings.html" class="menu-item"><i class="fa-solid fa-gear"></i> Settings & Staff</a>
-<div style="height:80px;"></div>
-</div>
-
-<div class="main" id="main">
-<div class="cards">
-<div class="card"><small>Total Users</small><b>1,245</b><small style="color:green;">+12 today</small></div>
-<div class="card"><small>Active Today</small><b>320</b></div>
-<div class="card"><small>Blocked</small><b style="color:red;">8</b></div>
-<div class="card"><small>Total Wallet</small><b>₦1,850,400</b></div>
-</div>
-
-<div class="section">
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-<h3>All Users</h3>
-<div style="display:flex;gap:6px;">
-<input class="input" id="searchInput" placeholder="Search phone, name, PLUG-CODE" style="width:220px;" oninput="filterUsers()">
-<button class="btn btn-blue" onclick="exportCSV()">Export CSV</button>
+<div class="p-4">
+<div class="bg-white rounded-xl p-4 shadow">
+<table class="w-full text-sm"><thead><tr class="bg-[#7a5a1a] text-white"><th class="p-2 text-left">Name</th><th>Phone</th><th>Wallet</th><th>Action</th></tr></thead><tbody id="list"></tbody></table>
 </div>
 </div>
-
-<table id="userTable">
-<tr><th>Phone</th><th>Name</th><th>Email</th><th>Balance</th><th>Cashback</th><th>KYC</th><th>Tier</th><th>Status</th><th>Joined</th><th>Action</th></tr>
-<tr><td>07067065724</td><td>James Master</td><td>james@gmail.com</td><td>₦1,429.55</td><td>₦1,064.13</td><td><span class="badge" style="background:orange;">Level 1</span></td><td>Gold</td><td><span class="badge" style="background:green;">Active</span></td><td>Oct 10</td><td><button class="btn" onclick="viewUser('07067065724')">View</button><button class="btn btn-green" onclick="openCredit('07067065724')">Credit</button><button class="btn btn-red" onclick="blockUser(this)">Block</button></td></tr>
-<tr><td>08012345678</td><td>Adebayo T.</td><td>ade@gmail.com</td><td>₦5,200.00</td><td>₦320.50</td><td><span class="badge" style="background:green;">Level 2</span></td><td>Silver</td><td><span class="badge" style="background:green;">Active</span></td><td>Oct 12</td><td><button class="btn">View</button><button class="btn btn-green">Credit</button><button class="btn btn-red">Block</button></td></tr>
-<tr><td>09087654321</td><td>Chioma K.</td><td>chioma@gmail.com</td><td>₦250.00</td><td>₦100.00</td><td><span class="badge" style="background:orange;">Level 1</span></td><td>Bronze</td><td><span class="badge" style="background:green;">Active</span></td><td>Oct 13</td><td><button class="btn">View</button><button class="btn btn-green">Credit</button><button class="btn btn-red">Block</button></td></tr>
-<tr><td>07011111111</td><td>Fraud User</td><td>fraud@test.com</td><td>₦0.00</td><td>₦0.00</td><td><span class="badge" style="background:red;">Level 1</span></td><td>Bronze</td><td><span class="badge" style="background:red;">Blocked</span></td><td>Oct 14</td><td><button class="btn">View</button><button class="btn">Unblock</button></td></tr>
-</table>
-
-<div style="margin-top:16px;padding:12px;background:#FFF8E6;border-radius:10px;border:1px dashed #8B6914;">
-<b style="font-size:13px;">Quick Stats for Selected User 07067065724:</b><br>
-<small style="font-size:12px;">Referrals: 12 • Total Spent: ₦150,000 • Transactions: 45 • Last Login: Today 10:23 AM from IP 102.89.34.12 • Device: Android • Referral Code: PLUG-JAMES-123</small>
-</div>
-</div>
-</div>
-
-<div class="modal" id="creditModal">
-<h3>Manual Credit / Debit</h3>
-<p style="font-size:12px;color:#888;margin:6px 0;">User: <b id="creditPhone">07067065724</b></p>
-<select class="input" id="creditType"><option value="credit">Credit (Add Money)</option><option value="debit">Debit (Remove Money)</option></select>
-<input class="input" id="creditAmount" placeholder="Amount e.g 10000" type="number">
-<input class="input" id="creditReason" placeholder="Reason e.g Refund for failed DSTV">
-<input class="input" id="adminPin" placeholder="Enter Admin PIN to confirm" type="password">
-<div style="display:flex;gap:8px;margin-top:10px;">
-<button class="btn btn-green" style="flex:1;" onclick="confirmCredit()">Confirm</button>
-<button class="btn btn-red" style="flex:1;" onclick="closeModal()">Cancel</button>
-</div>
-</div>
-
-<script>
-if(localStorage.getItem('plug_admin_logged')!=='true'){location.href='admin-login.html';}
-function toggleSide(){document.getElementById('sidebar').classList.toggle('show');document.getElementById('overlay').classList.toggle('show');document.getElementById('main').classList.toggle('shift');}
-function logout(){localStorage.setItem('plug_admin_logged','false');location.href='admin-login.html';}
-function viewUser(phone){alert('Viewing full profile for '+phone+'\nBalance ₦1,429.55\nCashback ₦1,064.13\nReferral 12\nTransactions 45\nKYC Level 1\nTier Gold\nLogin IP 102.89.34.12\nDevice Android\nBlock/Unblock, Reset PIN to 1234, Change phone');}
-function openCredit(phone){document.getElementById('creditPhone').innerText=phone;document.getElementById('creditModal').classList.add('show');}
-function closeModal(){document.getElementById('creditModal').classList.remove('show');}
-function confirmCredit(){let amt=document.getElementById('creditAmount').value, type=document.getElementById('creditType').value, reason=document.getElementById('creditReason').value;if(!amt||!reason){alert('Enter amount and reason');return;}alert(type.toUpperCase()+' ₦'+amt+' to '+document.getElementById('creditPhone').innerText+'\nReason: '+reason+'\nSuccess! Wallet updated + Audit Log created');closeModal();}
-function blockUser(btn){if(btn.innerText==='Block'){btn.innerText='Unblock';btn.classList.remove('btn-red');btn.classList.add('btn-green');alert('User blocked + added to fraud list');}else{btn.innerText='Block';btn.classList.add('btn-red');alert('User unblocked');}}
-function filterUsers(){let q=document.getElementById('searchInput').value.toLowerCase();let rows=document.querySelectorAll('#userTable tr');rows.forEach((r,i)=>{if(i===0)return;r.style.display=r.innerText.toLowerCase().includes(q)?'':'none';});}
-function exportCSV(){alert('Exporting 1,245 users to CSV for accountant\nColumns: Phone, Name, Balance, Cashback, KYC, Referrals, Total Spent');}
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCpQl-jOS4-6bLa5L383dqR5y3JmFT5exA",
+  authDomain: "plugmasters-vtu.firebaseapp.com",
+  projectId: "plugmasters-vtu",
+  storageBucket: "plugmasters-vtu.firebasestorage.app",
+  messagingSenderId: "217536430232",
+  appId: "1:217536430232:web:8a56dd1f34b38a380e10ed"
+};
+const db = getFirestore(initializeApp(firebaseConfig));
+async function load(){
+  const snap = await getDocs(collection(db,"users"));
+  let h="";
+  snap.forEach(d=>{
+    const u=d.data();
+    h+=`<tr class="border-b"><td class="p-2">${u.name}</td><td class="p-2">${u.phone}</td><td class="p-2">₦${u.wallet||0}</td><td class="p-2"><button onclick="fund('${d.id}',${u.wallet||0})" class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Fund +1429</button></td></tr>`;
+  });
+  document.getElementById('list').innerHTML=h;
+}
+window.fund = async (id, oldW)=>{
+  const amt = 1429;
+  await updateDoc(doc(db,"users",id), {wallet: oldW+amt});
+  alert('Funded ₦'+amt); load();
+};
+load();
 </script>
 </body>
 </html>
